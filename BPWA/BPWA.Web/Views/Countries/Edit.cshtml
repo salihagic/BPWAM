@@ -1,0 +1,78 @@
+﻿@model CountryUpdateModel
+@{ Layout = null; }
+
+<form asp-controller="Countries"
+      asp-action="Edit"
+      method="PUT"
+      class="kt-form kt-form--fit">
+
+    <input type="hidden" asp-for="Id" />
+
+    <div class="modal-header">
+        <h5 class="modal-title">
+            @Translations.Edit_country
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+    </div>
+
+    <div class="modal-body">
+
+        <div class="col-md-12 row">
+            <div class="col-md form-group">
+                <label>@Translations.Code</label>
+                <input asp-for="Code" class="form-control m-input" placeholder="@Translations.Code">
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
+
+            <div class="col-md form-group">
+                <label>@Translations.Name</label>
+                <input asp-for="Name" class="form-control m-input" placeholder="@Translations.Name">
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-md-12 row">
+            <div class="col-md form-group">
+                <label>@Translations.Currencies</label>
+                <select asp-for="CurrencyIds" id="modal_@nameof(CountryAddModel.CurrencyIds)" multiple="multiple" class="form-control select2">
+                    @foreach (var item in Model.CurrencyIdsSelectList)
+                    {
+                        <option value="@item.Value" selected="selected">@item.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="CurrencyIds" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-md-12 row">
+            <div class="col-md form-group">
+                <label>@Translations.Languages</label>
+                <select asp-for="LanguageIds" id="modal_@nameof(CountryAddModel.LanguageIds)" multiple="multiple" class="form-control select2">
+                    @foreach (var item in Model.LanguageIdsSelectList)
+                    {
+                        <option value="@item.Value" selected="selected">@item.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="LanguageIds" class="text-danger"></span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">@Translations.Close</button>
+        <button class="modal_submit_close_button btn btn-primary" type="button">@Translations.Save</button>
+    </div>
+
+</form>
+
+<script>
+
+    Select2AjaxCurrencies({
+        element: '#modal_@nameof(CountryAddModel.CurrencyIds)',
+    });
+    Select2AjaxLanguages({
+        element: '#modal_@nameof(CountryAddModel.LanguageIds)',
+    });
+
+</script>

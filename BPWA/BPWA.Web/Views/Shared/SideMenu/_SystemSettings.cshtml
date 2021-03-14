@@ -1,0 +1,103 @@
+﻿@inject IViewHelperService viewHelperService
+@{ Layout = null;}
+
+@if (viewHelperService.ShouldShowSystemSettingsSection())
+{
+    <li class="kt-menu__section ">
+        <h4 class="kt-menu__section-text">System settings</h4>
+        <i class="kt-menu__section-icon flaticon-more-v2"></i>
+    </li>
+}
+
+@if (viewHelperService.ShouldShowAuthSection())
+{
+    <li class="kt-menu__item  kt-menu__item--submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
+        <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
+            <i class="kt-menu__link-icon flaticon2-shield"></i>
+            <span class="kt-menu__link-text">Auth settings</span>
+            <i class="kt-menu__ver-arrow la la-angle-right"></i>
+        </a>
+        <div class="kt-menu__submenu" kt-hidden-height="200" style="">
+            <span class="kt-menu__arrow"></span>
+            <ul class="kt-menu__subnav">
+                <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">Geolocations</span></span></li>
+                @if (viewHelperService.ShouldShowRolesSection())
+                {
+                    <li class="kt-menu__item " aria-haspopup="true">
+                        <a asp-controller="Roles" asp-action="Index" class="kt-menu__link ">
+                            <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
+                                <span></span>
+                            </i>
+                            <span class="kt-menu__link-text">@Translations.Roles</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </li>
+}
+
+@if (viewHelperService.ShouldShowGeolocationsSection())
+{
+    <li class="kt-menu__item  kt-menu__item--submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
+        <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
+            <i class="kt-menu__link-icon flaticon-globe"></i>
+            <span class="kt-menu__link-text">Geolocations</span>
+            <i class="kt-menu__ver-arrow la la-angle-right"></i>
+        </a>
+        <div class="kt-menu__submenu" kt-hidden-height="200" style="">
+            <span class="kt-menu__arrow"></span>
+            <ul class="kt-menu__subnav">
+                <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true">
+                    <span class="kt-menu__link">
+                        <span class="kt-menu__link-text">Geolocations</span>
+                    </span>
+                </li>
+                @if (viewHelperService.ShouldShowCountriesSection())
+                {
+                    <li class="kt-menu__item " aria-haspopup="true">
+                        <a asp-controller="Countries" asp-action="Index" class="kt-menu__link">
+                            <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
+                                <span></span>
+                            </i>
+                            <span class="kt-menu__link-text">@Translations.Countries</span>
+                        </a>
+                    </li>
+                }
+                @if (viewHelperService.ShouldShowCitiesSection())
+                {
+                    <li class="kt-menu__item " aria-haspopup="true">
+                        <a asp-controller="Cities" asp-action="Index" class="kt-menu__link ">
+                            <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
+                                <span></span>
+                            </i>
+                            <span class="kt-menu__link-text">@Translations.Cities</span>
+                        </a>
+                    </li>
+                }
+                @if (viewHelperService.ShouldShowCurrenciesSection())
+                {
+                    <li class="kt-menu__item " aria-haspopup="true">
+                        <a asp-controller="Currencies" asp-action="Index" class="kt-menu__link ">
+                            <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
+                                <span></span>
+                            </i>
+                            <span class="kt-menu__link-text">@Translations.Currencies</span>
+                        </a>
+                    </li>
+                }
+                @if (viewHelperService.ShouldShowLanguagesSection())
+                {
+                    <li class="kt-menu__item" aria-haspopup="true">
+                        <a asp-controller="Languages" asp-action="Index" class="kt-menu__link ">
+                            <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
+                                <span></span>
+                            </i>
+                            <span class="kt-menu__link-text">@Translations.Languages</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </li>
+}

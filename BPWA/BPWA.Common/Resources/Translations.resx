@@ -1,0 +1,405 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Sign_in" xml:space="preserve">
+    <value>Sign in</value>
+  </data>
+  <data name="Concurrency_failure" xml:space="preserve">
+    <value>Concurrency_failure</value>
+  </data>
+  <data name="Default_error" xml:space="preserve">
+    <value>Default_error</value>
+  </data>
+  <data name="Duplicate_email" xml:space="preserve">
+    <value>Duplicate_email</value>
+  </data>
+  <data name="Duplicate_role_name" xml:space="preserve">
+    <value>Duplicate_role_name</value>
+  </data>
+  <data name="Duplicate_user_name" xml:space="preserve">
+    <value>Duplicate_user_name</value>
+  </data>
+  <data name="Invalid_email" xml:space="preserve">
+    <value>Invalid_email</value>
+  </data>
+  <data name="Invalid_role_name" xml:space="preserve">
+    <value>Invalid_role_name</value>
+  </data>
+  <data name="Invalid_token" xml:space="preserve">
+    <value>Invalid_token</value>
+  </data>
+  <data name="Invalid_user_name" xml:space="preserve">
+    <value>Invalid_user_name</value>
+  </data>
+  <data name="Login_already_associated" xml:space="preserve">
+    <value>Login already associated</value>
+  </data>
+  <data name="Password_mismatch" xml:space="preserve">
+    <value>Password mismatch</value>
+  </data>
+  <data name="Password_requires_digit" xml:space="preserve">
+    <value>Password requires_digit</value>
+  </data>
+  <data name="Password_requires_lower" xml:space="preserve">
+    <value>Password requires_lower</value>
+  </data>
+  <data name="Password_requires_non_alphanumeric" xml:space="preserve">
+    <value>Password requires_non_alphanumeric</value>
+  </data>
+  <data name="Password_requires_unique_chars" xml:space="preserve">
+    <value>Password requires_unique_chars</value>
+  </data>
+  <data name="Password_requires_upper" xml:space="preserve">
+    <value>Password requires_upper</value>
+  </data>
+  <data name="Password_too_short" xml:space="preserve">
+    <value>Password too short</value>
+  </data>
+  <data name="Recovery_code_redemption_failed" xml:space="preserve">
+    <value>Recovery code redemption failed</value>
+  </data>
+  <data name="User_already_has_password" xml:space="preserve">
+    <value>User already has password</value>
+  </data>
+  <data name="User_already_in_role" xml:space="preserve">
+    <value>User already in role</value>
+  </data>
+  <data name="User_lockout_not_enabled" xml:space="preserve">
+    <value>User lockout not enabled</value>
+  </data>
+  <data name="User_not_in_role" xml:space="preserve">
+    <value>User not in role</value>
+  </data>
+  <data name="Account_locked_out" xml:space="preserve">
+    <value>Account locked out</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="Login_not_allowed" xml:space="preserve">
+    <value>Login not allowed</value>
+  </data>
+  <data name="Login_required_two_factor" xml:space="preserve">
+    <value>Two factor authentication required</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="User_name_or_email" xml:space="preserve">
+    <value>Username or email</value>
+  </data>
+  <data name="User_name_or_email_invalid" xml:space="preserve">
+    <value>Username or email invalid</value>
+  </data>
+  <data name="Invalid_username_or_password" xml:space="preserve">
+    <value>Invalid username or password</value>
+  </data>
+  <data name="Required_field" xml:space="preserve">
+    <value>Required field</value>
+  </data>
+  <data name="Hi" xml:space="preserve">
+    <value>Hi</value>
+  </data>
+  <data name="Add_error" xml:space="preserve">
+    <value>There was an error while trying to add an item</value>
+  </data>
+  <data name="Add_success" xml:space="preserve">
+    <value>Successfully added item</value>
+  </data>
+  <data name="Delete_error" xml:space="preserve">
+    <value>There was an error while trying to delete an item</value>
+  </data>
+  <data name="Delete_success" xml:space="preserve">
+    <value>Successfully deleted an item</value>
+  </data>
+  <data name="Edit_error" xml:space="preserve">
+    <value>There was an error while trying to edit an item</value>
+  </data>
+  <data name="Edit_success" xml:space="preserve">
+    <value>Successfully edited an item</value>
+  </data>
+  <data name="Countries" xml:space="preserve">
+    <value>Countries</value>
+  </data>
+  <data name="Displaying" xml:space="preserve">
+    <value>Displaying</value>
+  </data>
+  <data name="First" xml:space="preserve">
+    <value>First</value>
+  </data>
+  <data name="Last" xml:space="preserve">
+    <value>Last</value>
+  </data>
+  <data name="More_pages" xml:space="preserve">
+    <value>More_pages</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="No_records_found" xml:space="preserve">
+    <value>No records found</value>
+  </data>
+  <data name="Of" xml:space="preserve">
+    <value>Of</value>
+  </data>
+  <data name="Page_number" xml:space="preserve">
+    <value>Page number</value>
+  </data>
+  <data name="Please_wait" xml:space="preserve">
+    <value>Please wait</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="Records" xml:space="preserve">
+    <value>Records</value>
+  </data>
+  <data name="Select_page_size" xml:space="preserve">
+    <value>Select page size</value>
+  </data>
+  <data name="Are you sure" xml:space="preserve">
+    <value>Are you sure</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>Deleted</value>
+  </data>
+  <data name="Record_has_been_deleted" xml:space="preserve">
+    <value>Record has been deleted</value>
+  </data>
+  <data name="Yes_delete_it" xml:space="preserve">
+    <value>Yes, delete it</value>
+  </data>
+  <data name="You_wont_be_able_to_revert_this" xml:space="preserve">
+    <value>You won't be able to revert this</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="Code" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Add_country" xml:space="preserve">
+    <value>Add country</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Edit_country" xml:space="preserve">
+    <value>Edit country</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Save_and_continue" xml:space="preserve">
+    <value>Save and continue</value>
+  </data>
+  <data name="Cities" xml:space="preserve">
+    <value>Cities</value>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="Add_city" xml:space="preserve">
+    <value>Add city</value>
+  </data>
+  <data name="Edit_city" xml:space="preserve">
+    <value>Edit city</value>
+  </data>
+  <data name="Select_country" xml:space="preserve">
+    <value>Select country</value>
+  </data>
+  <data name="Add_currency" xml:space="preserve">
+    <value>Add currency</value>
+  </data>
+  <data name="Add_language" xml:space="preserve">
+    <value>Add language</value>
+  </data>
+  <data name="Choose_an_option" xml:space="preserve">
+    <value>Choose an option</value>
+  </data>
+  <data name="Clear_filters" xml:space="preserve">
+    <value>Clear filters</value>
+  </data>
+  <data name="Currencies" xml:space="preserve">
+    <value>Currencies</value>
+  </data>
+  <data name="Edit_currency" xml:space="preserve">
+    <value>Edit currency</value>
+  </data>
+  <data name="Edit_language" xml:space="preserve">
+    <value>Edit language</value>
+  </data>
+  <data name="Languages" xml:space="preserve">
+    <value>Languages</value>
+  </data>
+  <data name="New_record" xml:space="preserve">
+    <value>New record</value>
+  </data>
+  <data name="PDF" xml:space="preserve">
+    <value>PDF</value>
+  </data>
+  <data name="Print" xml:space="preserve">
+    <value>Print</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Symbol" xml:space="preserve">
+    <value>Symbol</value>
+  </data>
+  <data name="Add_role" xml:space="preserve">
+    <value>Add role</value>
+  </data>
+  <data name="Edit_role" xml:space="preserve">
+    <value>Edit role</value>
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Roles</value>
+  </data>
+  <data name="CitiesManagement" xml:space="preserve">
+    <value>Cities management</value>
+  </data>
+  <data name="CountriesManagement" xml:space="preserve">
+    <value>Countries management</value>
+  </data>
+  <data name="CurrenciesManagement" xml:space="preserve">
+    <value>Currencies management</value>
+  </data>
+  <data name="LanguagesManagement" xml:space="preserve">
+    <value>Languages management</value>
+  </data>
+  <data name="RolesManagement" xml:space="preserve">
+    <value>Roles management</value>
+  </data>
+  <data name="Update role" xml:space="preserve">
+    <value>Update role</value>
+  </data>
+</root>

@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BPWA.Web", "BPWA.Web\BPWA.Web.csproj", "{8E36C068-BFB9-4C15-8B41-8D76DF29FDF0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BPWA.Api", "BPWA.Api\BPWA.Api.csproj", "{0ABC834F-8C54-4765-9329-C99FCD835184}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BPWA.Core", "BPWA.Core\BPWA.Core.csproj", "{1A102001-9238-4C42-8A7E-A5B5F16CE7A7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BPWA.DAL", "BPWA.DAL\BPWA.DAL.csproj", "{94376E39-98AF-4782-AC7C-56E8797887E9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BPWA.Web.Services", "BPWA.Web.Services\BPWA.Web.Services.csproj", "{0594B0A5-F8E6-4218-A8F4-0C91D133B716}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BPWA.Api.Services", "BPWA.Api.Services\BPWA.Api.Services.csproj", "{85FB4D08-7864-412E-ABD0-48E1F4EBF7A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BPWA.Common", "BPWA.Common\BPWA.Common.csproj", "{D793040B-FB73-439D-ADD9-897A65BC08D2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8E36C068-BFB9-4C15-8B41-8D76DF29FDF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E36C068-BFB9-4C15-8B41-8D76DF29FDF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E36C068-BFB9-4C15-8B41-8D76DF29FDF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E36C068-BFB9-4C15-8B41-8D76DF29FDF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0ABC834F-8C54-4765-9329-C99FCD835184}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0ABC834F-8C54-4765-9329-C99FCD835184}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0ABC834F-8C54-4765-9329-C99FCD835184}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0ABC834F-8C54-4765-9329-C99FCD835184}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A102001-9238-4C42-8A7E-A5B5F16CE7A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A102001-9238-4C42-8A7E-A5B5F16CE7A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A102001-9238-4C42-8A7E-A5B5F16CE7A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A102001-9238-4C42-8A7E-A5B5F16CE7A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94376E39-98AF-4782-AC7C-56E8797887E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94376E39-98AF-4782-AC7C-56E8797887E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94376E39-98AF-4782-AC7C-56E8797887E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94376E39-98AF-4782-AC7C-56E8797887E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0594B0A5-F8E6-4218-A8F4-0C91D133B716}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0594B0A5-F8E6-4218-A8F4-0C91D133B716}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0594B0A5-F8E6-4218-A8F4-0C91D133B716}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0594B0A5-F8E6-4218-A8F4-0C91D133B716}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85FB4D08-7864-412E-ABD0-48E1F4EBF7A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85FB4D08-7864-412E-ABD0-48E1F4EBF7A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85FB4D08-7864-412E-ABD0-48E1F4EBF7A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85FB4D08-7864-412E-ABD0-48E1F4EBF7A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D793040B-FB73-439D-ADD9-897A65BC08D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D793040B-FB73-439D-ADD9-897A65BC08D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D793040B-FB73-439D-ADD9-897A65BC08D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D793040B-FB73-439D-ADD9-897A65BC08D2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {03C5F74E-EB02-411D-9B92-BFAA7327B1C4}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,41 @@
+﻿@model LanguageUpdateModel
+@{ Layout = null; }
+
+<form asp-controller="Languages" 
+      asp-action="Edit" 
+      method="PUT" 
+      class="kt-form kt-form--fit">
+
+    <input type="hidden" asp-for="Id" />
+
+    <div class="modal-header">
+        <h5 class="modal-title">
+            @Translations.Edit_language
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+    </div>
+    
+    <div class="modal-body">
+
+        <div class="col-md-12 row">
+            <div class="col-md form-group">
+                <label>@Translations.Code</label>
+                <input asp-for="Code" class="form-control m-input" placeholder="@Translations.Code">
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
+
+            <div class="col-md form-group">
+                <label>@Translations.Name</label>
+                <input asp-for="Name" class="form-control m-input" placeholder="@Translations.Name">
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">@Translations.Close</button>
+        <button class="modal_submit_close_button btn btn-primary" type="button">@Translations.Save</button>
+    </div>
+
+</form>

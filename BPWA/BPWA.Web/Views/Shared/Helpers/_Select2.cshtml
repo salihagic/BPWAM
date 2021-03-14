@@ -1,0 +1,102 @@
+﻿@{ Layout = null; }
+
+<script>
+
+    function Select2AjaxAppClaims(options) {
+        Select2Ajax({
+            element: options.element,
+            url: '@Url.Action("Dropdown", "AppClaims")',
+            map: (x) => {
+                return {
+                    id: x.value,
+                    text: x.text
+                };
+            },
+            placeholder: 'Select app claim',
+            ...options
+        });
+    }
+
+    function Select2AjaxCountries(options) {
+        Select2Ajax({
+            element: options.element,
+            url: '@Url.Action("Dropdown", "Countries")',
+            map: (x) => {
+                return {
+                    id: x.id,
+                    text: x.name
+                };
+            },
+            placeholder: 'Select country',
+            ...options
+        });
+    }
+
+    function Select2AjaxCurrencies(options) {
+        Select2Ajax({
+            element: options.element,
+            url: '@Url.Action("Dropdown", "Currencies")',
+            map: (x) => {
+                return {
+                    id: x.id,
+                    text: x.name
+                };
+            },
+            placeholder: 'Select currency',
+            ...options
+        });
+    }
+    
+    function Select2AjaxLanguages(options) {
+        Select2Ajax({
+            element: options.element,
+            url: '@Url.Action("Dropdown", "Languages")',
+            map: (x) => {
+                return {
+                    id: x.id,
+                    text: x.name
+                };
+            },
+            placeholder: 'Select language',
+            ...options
+        });
+    }
+
+    function Select2Ajax(options) {
+        $(options.element).select2({
+            ajax: {
+                url: options.url,
+                data: options.data || function (params) {
+                    return {
+                        name: params.term,
+                        pagination: {
+                            skip: (params.page * 10) || 0
+                        }
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.results.map(options.map),
+                        pagination: {
+                            more: data.pagination.more
+                        }
+                    };
+                },
+                type: 'POST',
+            },
+            placeholder: options.placeholder,
+        });
+
+
+        $(options.element).change(function (e) {
+            if (options.onChange != undefined) {
+                options.onChange($(this));
+            }
+
+            if (options.onChangeCopyTextTo != undefined) {
+                $(options.onChangeCopyTextTo).val($(this).select2('data')[0]['text']);
+            }
+        });
+    }
+
+</script>

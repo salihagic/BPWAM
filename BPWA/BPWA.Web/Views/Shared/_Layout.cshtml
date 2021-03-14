@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js"></script>
+    <script>
+        WebFont.load({
+            google: { "families": ["Poppins:300,400,500,600,700", "Roboto:300,400,500,600,700"] },
+            active: function () {
+                sessionStorage.fonts = true;
+            }
+        });
+    </script>
+
+    <partial name="Helpers/_Scripts.cshtml" />
+    <partial name="Helpers/_Styles.cshtml" />
+    <partial name="Helpers/_Select2.cshtml" />
+    <partial name="Helpers/_Modals.cshtml" />
+    <partial name="Helpers/_Datatable.cshtml" />
+
+    <link rel="shortcut icon" href="~/images/logo.png" />
+</head>
+<body class="kt-header--fixed kt-header-mobile--fixed kt-subheader--fixed kt-subheader--enabled kt-subheader--solid kt-aside--enabled">
+
+    <script>
+
+        var sideMenuToggleStateClassFixed = 'kt-aside--fixed';
+        var sideMenuToggleStateClassMinimized = 'kt-aside--minimize';
+
+        $(document).on('click', '#kt_aside_toggler', function (e) { toggleSideMenuState(); });
+
+        var sideMenuToggleState = localStorage.getItem('side_menu_toggle_state') || sideMenuToggleStateClassFixed;
+        setSideMenuState(sideMenuToggleState);
+
+        function toggleSideMenuState() {
+            var sideMenuToggleState = localStorage.getItem('side_menu_toggle_state');
+            var newSideMenuToggleState = sideMenuToggleState == sideMenuToggleStateClassFixed ? sideMenuToggleStateClassMinimized : sideMenuToggleStateClassFixed;
+
+            clearSideMenuState();
+            setSideMenuState(newSideMenuToggleState);
+        }
+
+        function setSideMenuState(newSideMenuToggleState) {
+            $('body').addClass(newSideMenuToggleState);
+            localStorage.setItem('side_menu_toggle_state', newSideMenuToggleState);
+        }
+
+        function clearSideMenuState() {
+            $('body').removeClass(sideMenuToggleStateClassFixed);
+            $('body').removeClass(sideMenuToggleStateClassMinimized);
+        }
+
+    </script>
+
+    <div class="kt-grid kt-grid--hor kt-grid--root">
+        <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--ver kt-page">
+
+            <partial name="SideMenu/_SideMenu.cshtml" />
+
+            <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor kt-wrapper" id="kt_wrapper">
+
+                <partial name="Header/_Header.cshtml" />
+
+                <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+
+                    @*<partial name="_Subheader.cshtml" />*@
+
+                    <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
+                        @RenderBody()
+                    </div>
+
+                </div>
+
+                @*<partial name="_Footer.cshtml" />*@
+
+            </div>
+        </div>
+    </div>
+
+    <div id="kt_scrolltop" class="kt-scrolltop">
+        <i class="fa fa-arrow-up"></i>
+    </div>
+
+    @*<partial name="_StickyToolbar.cshtml" />*@
+
+    @await Component.InvokeAsync("NToastNotify")
+
+</body>
+</html>

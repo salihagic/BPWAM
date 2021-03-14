@@ -1,0 +1,61 @@
+﻿@model CountryDTO
+@{ Layout = null; }
+
+<div class="modal-header">
+    <h5 class="modal-title">
+        @Translations.Details
+    </h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+
+    <div class="col-md-12 row">
+        <div class="col-md form-group">
+            <label>@Translations.Code</label>
+            <input asp-for="Code" class="form-control m-input" disabled>
+        </div>
+
+        <div class="col-md form-group">
+            <label>@Translations.Name</label>
+            <input asp-for="Name" class="form-control m-input" disabled>
+        </div>
+    </div>
+
+    @if (Model.Currencies.IsNotEmpty())
+    {
+        <div class="col-md-12 row">
+            <div class="col-md">
+                <label>@Translations.Currencies</label>
+            </div>
+            <div class="col-md-6"></div>
+            @foreach (var item in Model.Currencies)
+            {
+                <div class="col-md-6 form-group">
+                    <input value="@item.Name" class="form-control m-input" disabled>
+                </div>
+            }
+        </div>
+    }
+
+    @if (Model.Languages.IsNotEmpty())
+    {
+        <div class="col-md-12 row">
+            <div class="col-md">
+                <label>@Translations.Languages</label>
+            </div>
+            <div class="col-md-6"></div>
+            @foreach (var item in Model.Languages)
+            {
+                <div class="col-md-6 form-group">
+                    <input value="@item.Name" class="form-control m-input" disabled>
+                </div>
+            }
+        </div>
+    }
+
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Translations.Close</button>
+</div>

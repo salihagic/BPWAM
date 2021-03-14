@@ -1,0 +1,112 @@
+﻿@{ Layout = null; }
+
+<style>
+
+    .modal_spinner {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        padding: 7em 0;
+    }
+</style>
+
+<div class="modal fade" id="modal_centered" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var modal = $('#modal_centered');
+    var modalDialog = $('#modal_centered .modal-dialog');
+    var modalContent = $('#modal_centered .modal-content');
+
+    function SetDefaultModalState() {
+        $(modalContent).html('<div class="modal_spinner"><div class="kt-spinner kt-spinner--lg kt-spinner--info"></div></div>');
+        $('.modal_spinner').css('display', 'flex');
+        $(modalDialog).removeClass();
+        $(modalDialog).addClass('modal-dialog modal-dialog-centered');
+    }
+
+    function OpenModal(element) {
+        if(element)
+
+        SetDefaultModalState();
+        $(modalDialog).addClass($(element).data('modalclass'));
+        $(modal).modal().show();
+        $(modalContent).load($(element).attr('href') || $(element).data('url'));
+    }
+
+    $(document).ready(function (e) {
+        SetDefaultModalState();
+
+        $(modal).on('hidden.bs.modal', function () {
+            SetDefaultModalState();
+        });
+    });
+
+    function ToggleSpinnerOnButton(element) {
+        $(element).toggleClass('kt-spinner kt-spinner--right kt-spinner--sm kt-spinner--light');
+    }
+
+    $(document).on('click', '.modal_submit_close_button', function (e) {
+        var button = $(this);
+        ToggleSpinnerOnButton(button);
+        var form = $(this).closest('form')[0];
+        var formData = $(form).serialize();
+        var url = $(form).attr('action');
+        var type = $(form).attr('method');
+
+        $.ajax({
+            url: url,
+            type: type,
+            data: formData,
+            success: (data) => {
+
+                if (data.success) {
+                    $(modal).modal('toggle');
+                    $('.datatable_search_form').submit();
+                } else {
+                    $(modalContent).html(data);
+                }
+            },
+            complete: function (data) {
+                ToggleSpinnerOnButton(button);
+            }
+        });
+
+    });
+
+    $(document).on('click', '.modal_submit_continue_button', function (e) {
+        var button = $(this);
+        ToggleSpinnerOnButton(button);
+        var form = $(this).closest('form')[0];
+        var formData = $(form).serialize();
+        var url = $(form).attr('action');
+        var type = $(form).attr('method');
+
+        $.ajax({
+            url: url,
+            type: type,
+            data: formData,
+            success: (data) => {
+
+                if (data.success) {
+                    $(form)[0].reset();
+                    $('.field-validation-error').remove();
+                    $('.datatable_search_form').submit();
+                } else {
+                    $(modalContent).html(data);
+                }
+            },
+            complete: function (data) {
+                ToggleSpinnerOnButton(button);
+            }
+        });
+
+    });
+
+</script>

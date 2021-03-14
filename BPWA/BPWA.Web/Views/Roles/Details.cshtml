@@ -1,0 +1,35 @@
+﻿@model RoleDTO
+@{ Layout = null; }
+
+<div class="modal-header">
+    <h5 class="modal-title">
+        @Translations.Details
+    </h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+
+    <div class="col-md-12 row">
+        <div class="col-md form-group">
+            <label>@Translations.Name</label>
+            <input asp-for="Name" class="form-control m-input" disabled>
+        </div>
+    </div>
+        <div class="claim_item col-md-12 row">
+    @foreach (var item in Model.RoleClaims)
+    {
+            <div class="col-md-6 form-group">
+                <label class="kt-checkbox kt-checkbox--single">
+                    <input type="checkbox" name="Claims" value="@item" checked disabled><span></span>
+                    <label>@Translations.ResourceManager.GetString(item.ClaimValue, Translations.Culture)</label>
+                </label>
+            </div>
+    }
+        </div>
+
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Translations.Close</button>
+</div>

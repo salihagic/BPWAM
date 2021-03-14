@@ -1,0 +1,200 @@
+﻿@{ Layout = null; }
+
+<script>
+
+    $(document).on('click', '.datatable_search_form_reset_button', function(e) {
+        $(this).closest('form')[0].reset();
+        $('.select2').change();
+    });
+
+    $(document).on('click', '.datatable_add_button', function (e) {
+        if ($(this).data('fullpage') != true) {
+            e.preventDefault();
+            OpenModal(this);
+        }
+    });
+
+    $(document).on('click', '.datatable_edit_button', function(e) {
+        if ($(this).data('fullpage') != true) {
+            e.preventDefault();
+            OpenModal(this);
+        }
+    });
+
+    $(document).on('click', '.datatable_details_button', function (e) {
+        if ($(this).data('fullpage') != true) {
+            e.preventDefault();
+            OpenModal(this);
+        }
+    });
+
+    $(document).on('click', '.datatable_delete_button', function(e) {
+        e.preventDefault();
+
+        DatatableDeleteRow({
+            url: `${$(this).attr('href')}`,
+            searchFormElement: '.datatable_search_form',
+        });
+    });
+
+    function DatatableBasicActions(options) {
+        return `\
+                ${DatatableDetailsButton(options)}
+                ${DatatableEditButton(options)}
+                ${DatatableDeleteButton(options)}
+            `;
+    }
+
+    function DatatableDetailsButton(options) {
+        return `
+                <a href="${options.detailsUrl}" data-fullpage=${options.fullPage} data-modalclass="${options.modalClass}" class="btn btn-sm btn-clean btn-icon btn-icon-sm datatable_details_button" title="@Translations.Details">\
+                    <i class="flaticon2-paper"></i>\
+                </a>\
+            `;
+    }
+
+    function DatatableEditButton(options) {
+        return `
+                <a href="${options.editUrl}" data-fullpage=${options.fullPage} data-modalclass="${options.modalClass}" class="btn btn-sm btn-clean btn-icon btn-icon-sm datatable_edit_button" title="@Translations.Edit">\
+                    <i class="flaticon-edit"></i>\
+                </a>\
+            `;
+    }
+
+    function DatatableDeleteButton(options) {
+        return `
+                <a href="${options.deleteUrl}" data-modalclass="${options.modalClass}" class="btn btn-sm btn-clean btn-icon btn-icon-sm datatable_delete_button" title="@Translations.Delete">\
+                    <i class="flaticon2-trash"></i>\
+                </a>\
+            `;
+    }
+
+    function DatatableDeleteRow(options) {
+        Swal.fire({
+            title: '@Translations.Are_you_sure?',
+            text: "@Html.Raw(Translations.You_wont_be_able_to_revert_this)!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '@Translations.Yes_delete_it!'
+        }).then((result) => {
+
+            if (result.value) {
+
+                $.ajax({
+                    url: options.url,
+                    type: 'DELETE',
+                    success: (data) => {
+                        Swal.fire(
+                            '@Translations.Deleted!',
+                            '@Translations.Record_has_been_deleted.',
+                            'success'
+                        );
+
+                        $(options.searchFormElement).submit();
+                    }
+                });
+
+            }
+        });
+    }
+
+    function DatatableAjax(options) {
+
+        var datatable;
+
+        var KTDatatableRemoteAjax = function() {
+            var demo = function() {
+
+                datatable = $(options.element).KTDatatable({
+                    data: {
+                        type: 'remote',
+                        source: {
+                            read: {
+                                url: `${options.url}?${$(options.searchFormElement).serialize()}`,
+                                map: function(raw) {
+                                    var dataSet = raw;
+                                    if (typeof raw.data !== 'undefined') {
+                                        dataSet = raw.data;
+                                    }
+                                    if (options.print) {
+                                        setTimeout(() => print(), 2000 + dataSet.length);
+                                    }
+                                    return dataSet;
+                                },
+                                type: 'GET'
+                            },
+                        },
+                        pageSize: options.serverPaging != undefined ? null : 10,
+                        serverPaging: true,
+                        serverSorting: true,
+                        serverFiltering: true,
+                    },
+
+                    layout: {
+                        scroll: true,
+                        footer: false
+                    },
+
+                    sortable: true,
+
+                    pagination: options.serverPaging != undefined ? false : true,
+
+                    columns: options.columns,
+
+                    translate: {
+                        records: {
+                            processing: '@Translations.Please_wait...',
+                            noRecords: '@Translations.No_records_found'
+                        },
+                        toolbar: {
+                            pagination: {
+                                items: {
+                                    default: {
+                                        first: '@Translations.First',
+                                        prev: '@Translations.Previous',
+                                        next: '@Translations.Next',
+                                        last: '@Translations.Last',
+                                        more: '@Translations.More_pages',
+                                        input: '@Translations.Page_number',
+                                        select: '@Translations.Select_page_size'
+                                    },
+                                    info: '@Translations.Displaying {{start}} - {{end}} @Translations.Of.ToLower() {{total}} @Translations.Records.ToLower()'
+                                }
+                            }
+                        }
+                    }
+                });
+
+                $(options.searchFormElement).submit(function(e) {
+                    e.preventDefault();
+                    datatable.options.data.source.read.url = `${options.url}?${$(this).serialize()}`;
+                    datatable.reload();
+                });
+            };
+
+            return {
+                init: function() {
+                    demo();
+                },
+            };
+        }();
+
+        KTDatatableRemoteAjax.init();
+
+        return datatable;
+    }
+
+    function DatatableActionsColumnOptions() {
+        return {
+            field: 'Actions',
+            title: '@Translations.Actions',
+            sortable: false,
+            width: 110,
+            overflow: 'visible',
+            autoHide: false,
+        };
+    }
+
+</script>
