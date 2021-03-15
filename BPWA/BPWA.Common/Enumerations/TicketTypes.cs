@@ -3,6 +3,7 @@
     public enum TicketTypes
     {
         Bug,
-        Feature
+        Feature,
+        Exception
     }
 }

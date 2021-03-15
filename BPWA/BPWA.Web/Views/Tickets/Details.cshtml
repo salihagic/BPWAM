@@ -1,4 +1,4 @@
-﻿@model CityDTO
+﻿@model TicketDTO
 @{ Layout = null; }
 
 <div class="modal-header">
@@ -11,14 +11,21 @@
 <div class="modal-body">
 
     <div class="col-md-12 row">
-        <div class="col-md form-group">
-            <label>@Translations.Name</label>
-            <input asp-for="Name" class="form-control m-input" disabled>
+        <div class="col-md-12 form-group">
+            <label>@Translations.Title</label>
+            <input asp-for="Title" class="form-control m-input" disabled>
         </div>
-
-        <div class="col-md form-group">
-            <label>@Translations.Country</label>
-            <input asp-for="Country.Name" class="form-control m-input" disabled>
+        <div class="col-md-6 form-group">
+            <label>@Translations.Ticket_type</label>
+            <input value="@TranslationsHelper.Translate(Model.TicketType.ToString())" class="form-control m-input" disabled>
+        </div>
+        <div class="col-md-6 form-group">
+            <label>@Translations.Ticket_status</label>
+            <input value="@TranslationsHelper.Translate(Model.TicketStatus.ToString())" class="form-control m-input" disabled>
+        </div>
+        <div class="col-md-12 form-group">
+            <label>@Translations.Description</label>
+            <textarea disabled asp-for="Description" class="form-control m-input" placeholder="@Translations.Description"></textarea>
         </div>
     </div>
 

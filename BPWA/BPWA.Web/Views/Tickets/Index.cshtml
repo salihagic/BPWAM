@@ -1,4 +1,4 @@
-﻿@*@model TicketSearchModel
+﻿@model TicketSearchModel
 
 <div class="kt-portlet kt-portlet--mobile col-lg-12">
     <form method="POST" class="datatable_search_form">
@@ -17,22 +17,6 @@
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <ul class="kt-nav">
-                                <li class="kt-nav__section kt-nav__section--first">
-                                    <span class="kt-nav__section-text">@Translations.Choose_an_option</span>
-                                </li>
-                                <li class="kt-nav__item">
-                                    <a href="@Url.Action("Report", "Tickets", new { reportOption = ReportOptions.Pdf })" target="_blank" class="kt-nav__link">
-                                        <i class="kt-nav__link-icon la la-file-pdf-o"></i>
-                                        <span class="kt-nav__link-text">@Translations.PDF</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <button type="button" class="btn btn-default btn-icon-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="la la-download"></i> @Translations.Print
-                        </button>
                         <button data-url="@Url.Action("Add", "Tickets")" class="datatable_add_button btn btn-brand btn-elevate btn-icon-sm" type="button">
                             <i class="la la-plus"></i>
                             @Translations.New_record
@@ -49,11 +33,14 @@
         </div>
         <div class="kt-portlet__head kt-portlet__head--lg">
             <div class="col-md-12 row mt-4">
-                <div class="col-md-6 form-group">
+                <div class="col-md form-group">
                     <input asp-for="Title" placeholder="@Translations.Title" class="form-control kt-input">
                 </div>
-                <div class="col-md-6 form-group">
-                    <select asp-for="CountryId" class="form-control select2"></select>
+                <div class="col-md form-group">
+                    <select asp-for="TicketTypes" class="form-control select2"></select>
+                </div>
+                <div class="col-md form-group">
+                    <select asp-for="TicketStatuses" multiple="multiple" class="form-control select2"></select>
                 </div>
             </div>
         </div>
@@ -70,8 +57,12 @@
 
     $(document).ready(function() {
 
-        Select2AjaxCountries({
-            element: '#@nameof(TicketSearchModel.CountryId)',
+        Select2TicketTypes({
+            element: '#@nameof(TicketSearchModel.TicketTypes)',
+        });
+
+        Select2TicketStatuses({
+            element: '#@nameof(TicketSearchModel.TicketStatuses)',
         });
 
         DatatableAjax({
@@ -80,12 +71,43 @@
             searchFormElement: '.datatable_search_form',
             columns: [
                 {
-                    field: '@nameof(TicketDTO.Name).ToCamelCase()',
+                    field: '@nameof(TicketDTO.Title).ToCamelCase()',
                     title: '@Translations.Name',
                 },
                 {
-                    field: '@nameof(TicketDTO.Country).ToCamelCase().@nameof(TicketDTO.Country.Name).ToCamelCase()',
-                    title: '@Translations.Country',
+                    field: '@nameof(TicketDTO.Description).ToCamelCase()',
+                    title: '@Translations.Description',
+                },
+                {
+                    field: '@nameof(TicketDTO.TicketType).ToCamelCase()',
+                    title: '@Translations.Ticket_type',
+                    template: function (row) {
+                        var type = {
+                            0: { 'title': '@TranslationsHelper.Translate(TicketTypes.Bug.ToString())', 'class': 'kt-badge--danger' },
+                            1: { 'title': '@TranslationsHelper.Translate(TicketTypes.Feature.ToString())', 'class': 'kt-badge--info' },
+                            2: { 'title': '@TranslationsHelper.Translate(TicketTypes.Exception.ToString())', 'class': 'kt-badge--warning' },
+                        };
+                        if (typeof type[row.ticketType] === 'undefined') {
+                            return data;
+                        }
+                        return '<span class="kt-badge ' + type[row.ticketType].class + ' kt-badge--inline kt-badge--pill">' + type[row.ticketType].title + '</span>';
+                    },
+                },
+                {
+                    field: '@nameof(TicketDTO.TicketStatus).ToCamelCase()',
+                    title: '@Translations.Ticket_status',
+                    template: function (row) {
+                        var status = {
+                            0: { 'title': '@TranslationsHelper.Translate(TicketStatuses.Open.ToString())', 'class': 'kt-badge--info' },
+                            1: { 'title': '@TranslationsHelper.Translate(TicketStatuses.Closed.ToString())', 'class': 'kt-badge--success' },
+                            2: { 'title': '@TranslationsHelper.Translate(TicketStatuses.InProgress.ToString())', 'class': 'kt-badge--warning' },
+                            3: { 'title': '@TranslationsHelper.Translate(TicketStatuses.Rejected.ToString())', 'class': 'kt-badge--danger' },
+                        };
+                        if (typeof status[row.ticketStatus] === 'undefined') {
+                            return data;
+                        }
+                        return '<span class="kt-badge ' + status[row.ticketStatus].class + ' kt-badge--inline kt-badge--pill">' + status[row.ticketStatus].title + '</span>';
+                    },
                 },
                 {
                     template: (row) => DatatableBasicActions({
@@ -99,6 +121,6 @@
         });
     });
 
-</script>*@
+</script>
 
 

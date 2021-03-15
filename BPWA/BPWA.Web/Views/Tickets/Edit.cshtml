@@ -1,16 +1,16 @@
-﻿@model CityUpdateModel
+﻿@model TicketUpdateModel
 @{ Layout = null; }
 
-<form asp-controller="Cities"
+<form asp-controller="Tickets"
       asp-action="Edit"
-      method="PUT" 
+      method="PUT"
       class="kt-form kt-form--fit">
 
-    <input type="hidden" asp-for="Id" />
+    <input asp-for="Id" type="hidden" />
 
     <div class="modal-header">
         <h5 class="modal-title">
-            @Translations.Edit_city
+            @Translations.Update_ticket
         </h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
     </div>
@@ -18,21 +18,27 @@
     <div class="modal-body">
 
         <div class="col-md-12 row">
-            <div class="col-md form-group">
-                <label>@Translations.Name</label>
-                <input asp-for="Name" class="form-control m-input" placeholder="@Translations.Name">
-                <span asp-validation-for="Name" class="text-danger"></span>
+            <div class="col-md-12 form-group">
+                <label>@Translations.Title</label>
+                <input asp-for="Title" class="form-control m-input" placeholder="@Translations.Name">
+                <span asp-validation-for="Title" class="text-danger"></span>
             </div>
-
-            <div class="col-md form-group">
-                <label>@Translations.Country</label>
-                <input asp-for="SelectedCountry" type="hidden">
-                <select asp-for="CountryId" id="modal_@nameof(CityUpdateModel.CountryId)" class="form-control select2">
-                    <option value="@Model.CountryId" selected="selected">
-                        @(Model.SelectedCountry ?? Translations.Select_country)
-                    </option>
+            <div class="col-md-6 form-group">
+                <label>@Translations.Ticket_type</label>
+                <select asp-for="TicketType" id="modal_@nameof(TicketUpdateModel.TicketType)" class="form-control select2">
                 </select>
-                <span asp-validation-for="CountryId" class="text-danger"></span>
+                <span asp-validation-for="TicketType" class="text-danger"></span>
+            </div>
+            <div class="col-md-6 form-group">
+                <label>@Translations.Ticket_status</label>
+                <select asp-for="TicketStatus" id="modal_@nameof(TicketUpdateModel.TicketStatus)" class="form-control select2">
+                </select>
+                <span asp-validation-for="TicketStatus" class="text-danger"></span>
+            </div>
+            <div class="col-md-12 form-group">
+                <label>@Translations.Description</label>
+                <textarea asp-for="Description" class="form-control m-input" placeholder="@Translations.Description"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
         </div>
 
@@ -47,9 +53,12 @@
 
 <script>
 
-    Select2AjaxCountries({
-        element: '#modal_@nameof(CityUpdateModel.CountryId)',
-        onChangeCopyTextTo: '#@nameof(CityUpdateModel.SelectedCountry)',
+    Select2TicketTypes({
+        element: '#modal_@nameof(TicketUpdateModel.TicketType)'
+    });
+    
+    Select2TicketStatuses({
+        element: '#modal_@nameof(TicketUpdateModel.TicketStatus)'
     });
 
 </script>

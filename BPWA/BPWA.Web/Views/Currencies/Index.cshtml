@@ -17,22 +17,6 @@
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <ul class="kt-nav">
-                                <li class="kt-nav__section kt-nav__section--first">
-                                    <span class="kt-nav__section-text">@Translations.Choose_an_option</span>
-                                </li>
-                                <li class="kt-nav__item">
-                                    <a href="@Url.Action("Report", "Currencies", new { reportOption = ReportOptions.Pdf })" target="_blank" class="kt-nav__link">
-                                        <i class="kt-nav__link-icon la la-file-pdf-o"></i>
-                                        <span class="kt-nav__link-text">@Translations.PDF</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <button type="button" class="btn btn-default btn-icon-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="la la-download"></i> @Translations.Print
-                        </button>
                         <button data-url="@Url.Action("Add", "Currencies")" class="datatable_add_button btn btn-brand btn-elevate btn-icon-sm" type="button">
                             <i class="la la-plus"></i>
                             @Translations.New_record
