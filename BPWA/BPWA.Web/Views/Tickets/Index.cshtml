@@ -88,26 +88,29 @@
                             2: { 'title': '@TranslationsHelper.Translate(TicketTypes.Exception.ToString())', 'class': 'kt-badge--warning' },
                         };
                         if (typeof type[row.ticketType] === 'undefined') {
-                            return data;
+                            return row.ticketTypeString;
                         }
                         return '<span class="kt-badge ' + type[row.ticketType].class + ' kt-badge--inline kt-badge--pill">' + type[row.ticketType].title + '</span>';
                     },
+                    textAlign: 'center'
                 },
                 {
                     field: '@nameof(TicketDTO.TicketStatus).ToCamelCase()',
                     title: '@Translations.Ticket_status',
                     template: function (row) {
+                        console.log(row.ticketStatus);
                         var status = {
                             0: { 'title': '@TranslationsHelper.Translate(TicketStatuses.Open.ToString())', 'class': 'kt-badge--info' },
                             1: { 'title': '@TranslationsHelper.Translate(TicketStatuses.Closed.ToString())', 'class': 'kt-badge--success' },
-                            2: { 'title': '@TranslationsHelper.Translate(TicketStatuses.InProgress.ToString())', 'class': 'kt-badge--warning' },
-                            3: { 'title': '@TranslationsHelper.Translate(TicketStatuses.Rejected.ToString())', 'class': 'kt-badge--danger' },
+                            2: { 'title': '@TranslationsHelper.Translate(TicketStatuses.Rejected.ToString())', 'class': 'kt-badge--danger' },
+                            3: { 'title': '@TranslationsHelper.Translate(TicketStatuses.InProgress.ToString())', 'class': 'kt-badge--warning' },
                         };
                         if (typeof status[row.ticketStatus] === 'undefined') {
-                            return data;
+                            return row.ticketStatusString;
                         }
                         return '<span class="kt-badge ' + status[row.ticketStatus].class + ' kt-badge--inline kt-badge--pill">' + status[row.ticketStatus].title + '</span>';
                     },
+                    textAlign: 'center'
                 },
                 {
                     template: (row) => DatatableBasicActions({

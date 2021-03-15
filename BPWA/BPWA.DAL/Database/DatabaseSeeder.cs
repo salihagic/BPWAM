@@ -23,7 +23,7 @@ namespace BPWA.DAL.Database
                 return;
 
             //await databaseContext.Database.EnsureDeletedAsync();
-            await databaseContext.Database.EnsureCreatedAsync();
+            //await databaseContext.Database.EnsureCreatedAsync();
 
             try
             {

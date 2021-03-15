@@ -1,6 +1,6 @@
 ﻿@inject IDropdownHelperService DropdownHelperService
 @{
-    Layout = null; 
+    Layout = null;
     var appClaimsJson = JsonConvert.SerializeObject(DropdownHelperService.GetAppClaims().Select(x => new { id = x.Value, text = x.Text }).ToList());
     var ticketTypesJson = JsonConvert.SerializeObject(DropdownHelperService.GetTicketTypes().Select(x => new { id = x.Value, text = x.Text }).ToList());
     var ticketStatusesJson = JsonConvert.SerializeObject(DropdownHelperService.GetTicketStatuses().Select(x => new { id = x.Value, text = x.Text }).ToList());
@@ -61,7 +61,7 @@
             ...options
         });
     }
-    
+
     function Select2AjaxLanguages(options) {
         Select2Ajax({
             element: options.element,
@@ -82,6 +82,10 @@
             data: options.data,
             placeholder: options.placeholder,
         });
+
+        if (options.initialValue != undefined) {
+            $(options.element).val(options.initialValue).trigger('change');
+        }
 
         $(options.element).change(function (e) {
             if (options.onChange != undefined) {

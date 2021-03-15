@@ -25,14 +25,12 @@
             </div>
             <div class="col-md-6 form-group">
                 <label>@Translations.Ticket_type</label>
-                <select asp-for="TicketType" id="modal_@nameof(TicketUpdateModel.TicketType)" class="form-control select2">
-                </select>
+                <select asp-for="TicketType" id="modal_@nameof(TicketUpdateModel.TicketType)" class="form-control select2"></select>
                 <span asp-validation-for="TicketType" class="text-danger"></span>
             </div>
             <div class="col-md-6 form-group">
                 <label>@Translations.Ticket_status</label>
-                <select asp-for="TicketStatus" id="modal_@nameof(TicketUpdateModel.TicketStatus)" class="form-control select2">
-                </select>
+                <select asp-for="TicketStatus" id="modal_@nameof(TicketUpdateModel.TicketStatus)" class="form-control select2"></select>
                 <span asp-validation-for="TicketStatus" class="text-danger"></span>
             </div>
             <div class="col-md-12 form-group">
@@ -54,11 +52,13 @@
 <script>
 
     Select2TicketTypes({
-        element: '#modal_@nameof(TicketUpdateModel.TicketType)'
+        element: '#modal_@nameof(TicketUpdateModel.TicketType)',
+        initialValue: '@Model.TicketType.ToString()',
     });
-    
+
     Select2TicketStatuses({
-        element: '#modal_@nameof(TicketUpdateModel.TicketStatus)'
+        element: '#modal_@nameof(TicketUpdateModel.TicketStatus)',
+        initialValue: '@Model.TicketStatus.ToString()',
     });
 
 </script>
