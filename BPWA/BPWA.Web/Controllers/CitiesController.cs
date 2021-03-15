@@ -9,7 +9,7 @@ using NToastNotify;
 
 namespace BPWA.Controllers
 {
-    [Authorize(Policy = AppPolicies.CitiesManagement)]
+    [Authorize(Policy = AppClaims.Authorization.CitiesManagement)]
     public class CitiesController :
         BaseCRUDController<
             City,

@@ -1,18 +1,33 @@
-﻿@{ Layout = null; }
+﻿@inject IDropdownHelperService DropdownHelperService
+@{
+    Layout = null; 
+    var appClaimsJson = JsonConvert.SerializeObject(DropdownHelperService.GetAppClaims().Select(x => new { id = x.Value, text = x.Text }).ToList());
+    var ticketTypesJson = JsonConvert.SerializeObject(DropdownHelperService.GetTicketTypes().Select(x => new { id = x.Value, text = x.Text }).ToList());
+    var ticketStatusesJson = JsonConvert.SerializeObject(DropdownHelperService.GetTicketStatuses().Select(x => new { id = x.Value, text = x.Text }).ToList());
+}
 
 <script>
 
-    function Select2AjaxAppClaims(options) {
-        Select2Ajax({
-            element: options.element,
-            url: '@Url.Action("Dropdown", "AppClaims")',
-            map: (x) => {
-                return {
-                    id: x.value,
-                    text: x.text
-                };
-            },
+    function Select2AppClaims(options) {
+        Select2({
+            data: @Html.Raw(appClaimsJson),
             placeholder: 'Select app claim',
+            ...options
+        });
+    }
+
+    function Select2TicketTypes(options) {
+        Select2({
+            data: @Html.Raw(ticketTypesJson),
+            placeholder: 'Select ticket types',
+            ...options
+        });
+    }
+
+    function Select2TicketStatuses(options) {
+        Select2({
+            data: @Html.Raw(ticketStatusesJson),
+            placeholder: 'Select ticket statuses',
             ...options
         });
     }
@@ -62,6 +77,23 @@
         });
     }
 
+    function Select2(options) {
+        $(options.element).select2({
+            data: options.data,
+            placeholder: options.placeholder,
+        });
+
+        $(options.element).change(function (e) {
+            if (options.onChange != undefined) {
+                options.onChange($(this));
+            }
+
+            if (options.onChangeCopyTextTo != undefined) {
+                $(options.onChangeCopyTextTo).val($(this).select2('data')[0]['text']);
+            }
+        });
+    }
+
     function Select2Ajax(options) {
         $(options.element).select2({
             ajax: {
@@ -86,7 +118,6 @@
             },
             placeholder: options.placeholder,
         });
-
 
         $(options.element).change(function (e) {
             if (options.onChange != undefined) {

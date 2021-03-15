@@ -1,17 +1,17 @@
-﻿@model RoleSearchModel
+﻿@*@model TicketSearchModel
 
 <div class="kt-portlet kt-portlet--mobile col-lg-12">
     <form method="POST" class="datatable_search_form">
-        
+
         <input asp-for="IsDeleted" type="hidden" />
-        
+
         <div class="kt-portlet__head kt-portlet__head--lg">
             <div class="kt-portlet__head-label">
                 <span class="kt-portlet__head-icon">
-                    <i class="kt-font-brand kt-menu__link-icon flaticon2-shield"></i>
+                    <i class="kt-font-brand kt-menu__link-icon flaticon-globe"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                    @Translations.Roles
+                    @Translations.Tickets
                 </h3>
             </div>
             <div class="kt-portlet__head-toolbar">
@@ -23,7 +23,7 @@
                                     <span class="kt-nav__section-text">@Translations.Choose_an_option</span>
                                 </li>
                                 <li class="kt-nav__item">
-                                    <a href="@Url.Action("Report", "Roles", new { reportOption = ReportOptions.Pdf })" target="_blank" class="kt-nav__link">
+                                    <a href="@Url.Action("Report", "Tickets", new { reportOption = ReportOptions.Pdf })" target="_blank" class="kt-nav__link">
                                         <i class="kt-nav__link-icon la la-file-pdf-o"></i>
                                         <span class="kt-nav__link-text">@Translations.PDF</span>
                                     </a>
@@ -33,7 +33,7 @@
                         <button type="button" class="btn btn-default btn-icon-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="la la-download"></i> @Translations.Print
                         </button>
-                        <button data-url="@Url.Action("Add", "Roles")" data-modalclass="modal-lg" class="datatable_add_button btn btn-brand btn-elevate btn-icon-sm" type="button">
+                        <button data-url="@Url.Action("Add", "Tickets")" class="datatable_add_button btn btn-brand btn-elevate btn-icon-sm" type="button">
                             <i class="la la-plus"></i>
                             @Translations.New_record
                         </button>
@@ -49,11 +49,11 @@
         </div>
         <div class="kt-portlet__head kt-portlet__head--lg">
             <div class="col-md-12 row mt-4">
-                <div class="col-md form-group">
-                    <input asp-for="Name" placeholder="@Translations.Name" class="form-control kt-input">
+                <div class="col-md-6 form-group">
+                    <input asp-for="Title" placeholder="@Translations.Title" class="form-control kt-input">
                 </div>
-                <div class="col-md form-group">
-                    <select asp-for="Claims" multiple="multiple" class="form-control select2"></select>
+                <div class="col-md-6 form-group">
+                    <select asp-for="CountryId" class="form-control select2"></select>
                 </div>
             </div>
         </div>
@@ -68,26 +68,30 @@
 
 <script>
 
-    $(document).ready(function () {
-        Select2AppClaims({
-            element: '#@nameof(RoleSearchModel.Claims)',
+    $(document).ready(function() {
+
+        Select2AjaxCountries({
+            element: '#@nameof(TicketSearchModel.CountryId)',
         });
 
-       DatatableAjax({
+        DatatableAjax({
             element: '.datatable',
-            url: '@Url.Action("IndexJson", "Roles")',
+            url: '@Url.Action("IndexJson", "Tickets")',
             searchFormElement: '.datatable_search_form',
             columns: [
                 {
-                    field: '@nameof(RoleDTO.Name).ToCamelCase()',
+                    field: '@nameof(TicketDTO.Name).ToCamelCase()',
                     title: '@Translations.Name',
                 },
                 {
+                    field: '@nameof(TicketDTO.Country).ToCamelCase().@nameof(TicketDTO.Country.Name).ToCamelCase()',
+                    title: '@Translations.Country',
+                },
+                {
                     template: (row) => DatatableBasicActions({
-                        detailsUrl: `@Url.Action("Details", "Roles")/${row.id}`,
-                        editUrl: `@Url.Action("Edit", "Roles")/${row.id}`,
-                        deleteUrl: `@Url.Action("Delete", "Roles")/${row.id}`,
-                        modalClass: 'modal-lg'
+                        detailsUrl: `@Url.Action("Details", "Tickets")/${row.id}`,
+                        editUrl: `@Url.Action("Edit", "Tickets")/${row.id}`,
+                        deleteUrl: `@Url.Action("Delete", "Tickets")/${row.id}`
                     }),
                     ...DatatableActionsColumnOptions(),
                 }
@@ -95,6 +99,6 @@
         });
     });
 
-</script>
+</script>*@
 
 

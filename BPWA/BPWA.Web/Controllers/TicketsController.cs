@@ -9,22 +9,22 @@ using NToastNotify;
 
 namespace BPWA.Controllers
 {
-    [Authorize(Policy = AppClaims.Authorization.LanguagesManagement)]
-    public class LanguagesController :
+    [Authorize(Policy = AppClaims.Authorization.TicketsManagement)]
+    public class TicketsController :
         BaseCRUDController<
-            Language,
-            LanguageSearchModel,
-            LanguageDTO,
-            LanguageAddModel,
-            LanguageUpdateModel
+            Ticket,
+            TicketSearchModel,
+            TicketDTO,
+            TicketAddModel,
+            TicketUpdateModel
             >
     {
-        public LanguagesController(
-            ILanguagesWebService languagesWebService,
+        public TicketsController(
+            ITicketsWebService ticketsWebService,
             IToastNotification toast,
             IMapper mapper
             ) :
-            base(languagesWebService, toast, mapper)
+            base(ticketsWebService, toast, mapper)
         { }
     }
 }

@@ -27,9 +27,9 @@ namespace BPWA.DAL.Database
 
             try
             {
-                //await SeedRoles(serviceProvider);
-                //await SeedUsers(serviceProvider);
-                //await SeedGeolocations(serviceProvider);
+                await SeedRoles(serviceProvider);
+                await SeedUsers(serviceProvider);
+                await SeedGeolocations(serviceProvider);
             }
             catch (Exception e)
             {
@@ -41,53 +41,43 @@ namespace BPWA.DAL.Database
         {
             var rolesService = serviceProvider.GetService<IRolesService>();
 
-            foreach (var appRole in AppRolesHelper.All)
+            var superadminRole = await rolesService.GetEntityWithClaimsByName("Superadmin");
+
+            if (superadminRole == null)
             {
-                var role = await rolesService.GetEntityWithClaimsByName(appRole);
-
-                if (role == null)
+                superadminRole = new Role
                 {
-                    role = new Role
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Name = appRole,
-                        RoleClaims = new List<RoleClaim>()
-                    };
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "Superadmin",
+                    RoleClaims = new List<RoleClaim>()
+                };
 
-                    await rolesService.Add(role);
-                }
-
-                #region SuperAdmin add all claims
-                if (role.Name == AppRoles.SuperAdmin)
-                {
-                    var currentRoleClaimIds = role.RoleClaims.Select(x => x.Id).ToList();
-
-                    var newRoleClaims = AppClaimsHelper.Authorization.All.Select(x => new RoleClaim
-                    {
-                        RoleId = role.Id,
-                        ClaimType = AppClaimsHelper.Authorization.Type,
-                        ClaimValue = x
-                    })
-                    .Where(x => !role.RoleClaims.Any(y => y.ClaimValue == x.ClaimValue))
-                    .ToList();
-
-                    role.RoleClaims.AddRange(newRoleClaims);
-
-                    await rolesService.UpdateEntity(role);
-                }
-                #endregion SuperAdmin add all claims
+                await rolesService.Add(superadminRole);
             }
+
+            var newRoleClaims = AppClaimsHelper.Authorization.All.Select(x => new RoleClaim
+            {
+                RoleId = superadminRole.Id,
+                ClaimType = AppClaimsHelper.Authorization.Type,
+                ClaimValue = x
+            })
+            .Where(x => !superadminRole.RoleClaims.Any(y => y.ClaimValue == x.ClaimValue))
+            .ToList();
+
+            superadminRole.RoleClaims.AddRange(newRoleClaims);
+
+            await rolesService.UpdateEntity(superadminRole);
         }
 
         private static async Task SeedUsers(IServiceProvider serviceProvider)
         {
             var usersService = serviceProvider.GetService<IUsersService>();
 
-            #region Super Admin
+            #region Superadmin
 
-            var superAdminUser = await usersService.GetEntityByUserNameOrEmail("demo.superadmin");
+            var superadminUser = await usersService.GetEntityByUserNameOrEmail("demo.superadmin");
 
-            if (superAdminUser == null)
+            if (superadminUser == null)
             {
                 var user = await usersService.AddEntity(new User
                 {
@@ -98,10 +88,10 @@ namespace BPWA.DAL.Database
                     Email = "demo.superadmin@BPWA.com"
                 }, "demo");
 
-                await usersService.AddToRole(user, AppRoles.SuperAdmin);
+                await usersService.AddToRole(user, "Superadmin");
             }
 
-            #endregion
+            #endregion Superadmin
         }
 
         public static async Task SeedGeolocations(IServiceProvider serviceProvider)

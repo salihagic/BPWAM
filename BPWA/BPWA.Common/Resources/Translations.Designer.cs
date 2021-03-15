@@ -142,6 +142,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add ticket.
+        /// </summary>
+        public static string Add_ticket {
+            get {
+                return ResourceManager.GetString("Add_ticket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure.
         /// </summary>
         public static string Are_you_sure {
@@ -421,11 +430,29 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit ticket.
+        /// </summary>
+        public static string Edit_ticket {
+            get {
+                return ResourceManager.GetString("Edit_ticket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to First.
         /// </summary>
         public static string First {
             get {
                 return ResourceManager.GetString("First", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to General.
+        /// </summary>
+        public static string General {
+            get {
+                return ResourceManager.GetString("General", resourceCulture);
             }
         }
         
@@ -831,6 +858,24 @@ namespace BPWA.Common.Resources {
         public static string Symbol {
             get {
                 return ResourceManager.GetString("Symbol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tickets.
+        /// </summary>
+        public static string Tickets {
+            get {
+                return ResourceManager.GetString("Tickets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tickets management.
+        /// </summary>
+        public static string TicketsManagement {
+            get {
+                return ResourceManager.GetString("TicketsManagement", resourceCulture);
             }
         }
         

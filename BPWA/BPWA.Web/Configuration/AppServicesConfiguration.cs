@@ -13,7 +13,7 @@ namespace BPWA.Web.Configuration
             services.AddScoped<ICountriesWebService, CountriesWebService>();
             services.AddScoped<ICurrenciesWebService, CurrenciesWebService>();
             services.AddScoped<ILanguagesWebService, LanguagesWebService>();
-
+            services.AddScoped<ITicketsWebService, TicketsWebService>();
 
             #region Identity
 
@@ -24,12 +24,11 @@ namespace BPWA.Web.Configuration
             services.AddScoped<IRolesWebService, RolesWebService>();
             services.AddScoped<IRolesService, RolesService>();
 
-            services.AddScoped<IAppClaimsService, AppClaimsService>();
-
             #endregion Identity
 
             #region Other
 
+            services.AddScoped<IDropdownHelperService, DropdownHelperService>();
             services.AddScoped<IViewHelperService, ViewHelperService>();
 
             #endregion Other

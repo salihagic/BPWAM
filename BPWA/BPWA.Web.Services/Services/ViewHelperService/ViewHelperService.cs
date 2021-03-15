@@ -25,11 +25,16 @@ namespace BPWA.Web.Services.Services
             ShouldShowCountriesSection(),
             ShouldShowCurrenciesSection(),
             ShouldShowLanguagesSection(),
-        }.Any(x => x);
+        }.Any(x => x);     
         public bool ShouldShowCitiesSection() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CitiesManagement && x.Type == AppClaimsHelper.Authorization.Type);
         public bool ShouldShowCountriesSection() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CountriesManagement && x.Type == AppClaimsHelper.Authorization.Type);
         public bool ShouldShowCurrenciesSection() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CurrenciesManagement && x.Type == AppClaimsHelper.Authorization.Type);
         public bool ShouldShowLanguagesSection() => User.Claims.Any(x => x.Value == AppClaims.Authorization.LanguagesManagement && x.Type == AppClaimsHelper.Authorization.Type);
+
+        public bool ShouldShowGeneralSystemSettingsSection() => new List<bool>{
+            ShouldShowTicketsSection(),
+        }.Any(x => x);
+        public bool ShouldShowTicketsSection() => User.Claims.Any(x => x.Value == AppClaims.Authorization.TicketsManagement && x.Type == AppClaimsHelper.Authorization.Type);
 
         #endregion System settings section
 
