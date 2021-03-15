@@ -11,7 +11,7 @@
     function Select2AppClaims(options) {
         Select2({
             data: @Html.Raw(appClaimsJson),
-            placeholder: 'Select app claim',
+            placeholder: '@Translations.Select_app_claim',
             ...options
         });
     }
@@ -19,7 +19,7 @@
     function Select2TicketTypes(options) {
         Select2({
             data: @Html.Raw(ticketTypesJson),
-            placeholder: 'Select ticket types',
+            placeholder: '@Translations.Select_ticket_type',
             ...options
         });
     }
@@ -27,7 +27,7 @@
     function Select2TicketStatuses(options) {
         Select2({
             data: @Html.Raw(ticketStatusesJson),
-            placeholder: 'Select ticket statuses',
+            placeholder: '@Translations.Select_ticket_status',
             ...options
         });
     }
@@ -42,7 +42,7 @@
                     text: x.name
                 };
             },
-            placeholder: 'Select country',
+            placeholder: '@Translations.Select_country',
             ...options
         });
     }
@@ -57,7 +57,7 @@
                     text: x.name
                 };
             },
-            placeholder: 'Select currency',
+            placeholder: '@Translations.Select_currency',
             ...options
         });
     }
@@ -72,7 +72,7 @@
                     text: x.name
                 };
             },
-            placeholder: 'Select language',
+            placeholder: '@Translations.Select_language',
             ...options
         });
     }

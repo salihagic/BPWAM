@@ -160,6 +160,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auth settings.
+        /// </summary>
+        public static string Auth_settings {
+            get {
+                return ResourceManager.GetString("Auth_settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bug.
         /// </summary>
         public static string Bug {
@@ -282,6 +291,15 @@ namespace BPWA.Common.Resources {
         public static string CurrenciesManagement {
             get {
                 return ResourceManager.GetString("CurrenciesManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dashboard.
+        /// </summary>
+        public static string Dashboard {
+            get {
+                return ResourceManager.GetString("Dashboard", resourceCulture);
             }
         }
         
@@ -498,6 +516,15 @@ namespace BPWA.Common.Resources {
         public static string General {
             get {
                 return ResourceManager.GetString("General", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Geolocations.
+        /// </summary>
+        public static string Geolocations {
+            get {
+                return ResourceManager.GetString("Geolocations", resourceCulture);
             }
         }
         
@@ -898,6 +925,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select app claim.
+        /// </summary>
+        public static string Select_app_claim {
+            get {
+                return ResourceManager.GetString("Select_app_claim", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select country.
         /// </summary>
         public static string Select_country {
@@ -907,11 +943,47 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select currency.
+        /// </summary>
+        public static string Select_currency {
+            get {
+                return ResourceManager.GetString("Select_currency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select language.
+        /// </summary>
+        public static string Select_language {
+            get {
+                return ResourceManager.GetString("Select_language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select page size.
         /// </summary>
         public static string Select_page_size {
             get {
                 return ResourceManager.GetString("Select_page_size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select ticket status.
+        /// </summary>
+        public static string Select_ticket_status {
+            get {
+                return ResourceManager.GetString("Select_ticket_status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select ticket type.
+        /// </summary>
+        public static string Select_ticket_type {
+            get {
+                return ResourceManager.GetString("Select_ticket_type", resourceCulture);
             }
         }
         
@@ -930,6 +1002,15 @@ namespace BPWA.Common.Resources {
         public static string Symbol {
             get {
                 return ResourceManager.GetString("Symbol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System settings.
+        /// </summary>
+        public static string System_settings {
+            get {
+                return ResourceManager.GetString("System_settings", resourceCulture);
             }
         }
         
