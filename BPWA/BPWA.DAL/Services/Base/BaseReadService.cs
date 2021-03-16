@@ -13,21 +13,21 @@ using System;
 
 namespace BPWA.DAL.Services
 {
-    public class BaseService<TEntity, TSearchModel, TDTO>
-        : BaseService<TEntity, TSearchModel, TDTO, int>,
-          IBaseService<TEntity, TSearchModel, TDTO, int>
+    public class BaseReadService<TEntity, TSearchModel, TDTO>
+        : BaseReadService<TEntity, TSearchModel, TDTO, int>,
+          IBaseReadService<TEntity, TSearchModel, TDTO, int>
         where TEntity : BaseEntity, new()
         where TSearchModel : BaseSearchModel, new()
         where TDTO : BaseDTO
     {
-        public BaseService(
+        public BaseReadService(
             DatabaseContext databaseContext,
             IMapper mapper
             ) : base(databaseContext, mapper) { }
     }    
     
-    public class BaseService<TEntity, TSearchModel, TDTO, TId> :
-        IBaseService<TEntity, TSearchModel, TDTO, TId>
+    public class BaseReadService<TEntity, TSearchModel, TDTO, TId> :
+        IBaseReadService<TEntity, TSearchModel, TDTO, TId>
         where TEntity : BaseEntity<TId>, new()
         where TSearchModel : BaseSearchModel, new()
         where TDTO : BaseDTO<TId>
@@ -36,7 +36,7 @@ namespace BPWA.DAL.Services
         protected IQueryable<TEntity> Query { get; set; }
         protected IMapper Mapper { get; set; }
 
-        public BaseService(
+        public BaseReadService(
             DatabaseContext databaseContext,
             IMapper mapper
             )
@@ -44,40 +44,6 @@ namespace BPWA.DAL.Services
             DatabaseContext = databaseContext;
             Mapper = mapper;
             Query = databaseContext.Set<TEntity>().AsQueryable();
-        }
-
-        virtual public async Task<Result<TDTO>> Add(TEntity entity)
-        {
-            var result = await AddEntity(entity);
-
-            if (!result.IsSuccess)
-                return Result.Failed<TDTO>(result.GetErrorMessages());
-
-            try
-            {
-                var mapped = Mapper.Map<TDTO>(result.Item);
-
-                return Result.Success(mapped);
-            }
-            catch (Exception e)
-            {
-                return Result.Failed<TDTO>("Failed to map Entity to DTO");
-            }
-        }
-
-        virtual public async Task<Result<TEntity>> AddEntity(TEntity entity)
-        {
-            try
-            {
-                await DatabaseContext.Set<TEntity>().AddAsync(entity);
-                await DatabaseContext.SaveChangesAsync();
-
-                return Result.Success(entity); 
-            }
-            catch (Exception e)
-            {
-                return Result.Failed<TEntity>("Failed to add entity");
-            }
         }
 
         virtual public IQueryable<TEntity> BuildQueryConditions(IQueryable<TEntity> Query, TSearchModel searchModel = null)
@@ -193,71 +159,6 @@ namespace BPWA.DAL.Services
             {
                 return Result.Failed<TEntity>("Failed to load entity");
             }
-        }
-
-        virtual public async Task<Result<TDTO>> Update(TEntity entity)
-        {
-            var result = await UpdateEntity(entity);
-
-            if (!result.IsSuccess)
-                return Result.Failed<TDTO>(result.GetErrorMessages());
-
-            try
-            {
-                var mapped = Mapper.Map<TDTO>(result.Item);
-
-                return Result.Success(mapped);
-            }
-            catch (Exception e)
-            {
-                return Result.Failed<TDTO>("Failed to map Entity to DTO");
-            }
-        }
-
-        virtual public async Task<Result<TEntity>> UpdateEntity(TEntity entity)
-        {
-            try
-            {
-                DatabaseContext.Set<TEntity>().Update(entity);
-                await DatabaseContext.SaveChangesAsync();
-
-                return Result.Success(entity);
-            }
-            catch (Exception e)
-            {
-                return Result.Failed<TEntity>("Failed to update entity");
-            }
-        }
-
-        virtual public async Task<Result> Delete(TEntity entity, bool softDelete = true)
-        {
-            try
-            {
-                if (softDelete)
-                {
-                    entity.IsDeleted = true;
-                    await Update(entity);
-                }
-                else
-                {
-                    DatabaseContext.Set<TEntity>().Remove(entity);
-                }
-
-                await DatabaseContext.SaveChangesAsync();
-
-                return Result.Success();
-            }
-            catch (Exception e)
-            {
-                return Result.Failed("Failed to delete entity");
-            }
-        }
-
-        virtual public async Task<Result> Delete(TId id, bool softDelete = true)
-        {
-            var item = await DatabaseContext.Set<TEntity>().FirstOrDefaultAsync(x => x.Id.Equals(id));
-
-            return await Delete(item, softDelete);
         }
     }
 }

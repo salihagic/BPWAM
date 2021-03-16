@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace BPWA.DAL.Services
 {
-    public class LanguagesService : BaseService<Language, LanguageSearchModel, LanguageDTO>, ILanguagesService
+    public class LanguagesService : BaseCRUDService<Language, LanguageSearchModel, LanguageDTO>, ILanguagesService
     {
         public LanguagesService(
             DatabaseContext databaseContext,

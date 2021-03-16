@@ -6,7 +6,7 @@ using BPWA.Web.Services.Services;
 namespace BPWA.DAL.Services
 {
     public interface ITicketsWebService :
-        IBaseWebService<Ticket, TicketSearchModel, TicketDTO, TicketAddModel, TicketUpdateModel>,
+        IBaseCRUDWebService<Ticket, TicketSearchModel, TicketDTO, TicketAddModel, TicketUpdateModel>,
         ITicketsService
     {
     }

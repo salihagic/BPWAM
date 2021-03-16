@@ -6,7 +6,7 @@ using BPWA.Web.Services.Services;
 namespace BPWA.DAL.Services
 {
     public interface ILanguagesWebService :
-        IBaseWebService<Language, LanguageSearchModel, LanguageDTO, LanguageAddModel, LanguageUpdateModel>,
+        IBaseCRUDWebService<Language, LanguageSearchModel, LanguageDTO, LanguageAddModel, LanguageUpdateModel>,
         ILanguagesService
     {
     }

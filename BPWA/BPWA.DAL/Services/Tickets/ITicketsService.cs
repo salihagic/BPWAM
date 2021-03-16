@@ -3,7 +3,7 @@ using BPWA.DAL.Models;
 
 namespace BPWA.DAL.Services
 {
-    public interface ITicketsService : IBaseService<Ticket, TicketSearchModel, TicketDTO>
+    public interface ITicketsService : IBaseCRUDService<Ticket, TicketSearchModel, TicketDTO>
     {
     }
 }

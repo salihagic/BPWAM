@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace BPWA.DAL.Services
 {
-    public class TicketsService : BaseService<Ticket, TicketSearchModel, TicketDTO>, ITicketsService
+    public class TicketsService : BaseCRUDService<Ticket, TicketSearchModel, TicketDTO>, ITicketsService
     {
         public TicketsService(
             DatabaseContext databaseContext,

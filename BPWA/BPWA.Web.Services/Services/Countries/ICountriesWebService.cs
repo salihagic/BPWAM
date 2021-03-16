@@ -9,7 +9,7 @@ using TFM.DAL.Models;
 namespace BPWA.DAL.Services
 {
     public interface ICountriesWebService :
-        IBaseWebService<Country, CountrySearchModel, CountryDTO, CountryAddModel, CountryUpdateModel>,
+        IBaseCRUDWebService<Country, CountrySearchModel, CountryDTO, CountryAddModel, CountryUpdateModel>,
         ICountriesService
     {
     }

@@ -6,7 +6,7 @@ using BPWA.Web.Services.Services;
 namespace BPWA.DAL.Services
 {
     public interface ICitiesWebService :
-        IBaseWebService<City, CitySearchModel, CityDTO, CityAddModel, CityUpdateModel>,
+        IBaseCRUDWebService<City, CitySearchModel, CityDTO, CityAddModel, CityUpdateModel>,
         ICitiesService
     {
     }

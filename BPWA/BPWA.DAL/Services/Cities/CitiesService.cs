@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace BPWA.DAL.Services
 {
-    public class CitiesService : BaseService<City, CitySearchModel, CityDTO>, ICitiesService
+    public class CitiesService : BaseCRUDService<City, CitySearchModel, CityDTO>, ICitiesService
     {
         public CitiesService(
             DatabaseContext databaseContext,

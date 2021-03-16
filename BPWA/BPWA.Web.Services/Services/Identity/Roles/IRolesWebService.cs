@@ -6,7 +6,7 @@ using BPWA.Web.Services.Services;
 namespace BPWA.DAL.Services
 {
     public interface IRolesWebService :
-        IBaseWebService<Role, RoleSearchModel, RoleDTO, RoleAddModel, RoleUpdateModel, string>,
+        IBaseCRUDWebService<Role, RoleSearchModel, RoleDTO, RoleAddModel, RoleUpdateModel, string>,
         IRolesService
     {
     }

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace BPWA.DAL.Services
 {
-    public class CountriesService : BaseService<Country, CountrySearchModel, CountryDTO>, ICountriesService
+    public class CountriesService : BaseCRUDService<Country, CountrySearchModel, CountryDTO>, ICountriesService
     {
         public CountriesService(
             DatabaseContext databaseContext,

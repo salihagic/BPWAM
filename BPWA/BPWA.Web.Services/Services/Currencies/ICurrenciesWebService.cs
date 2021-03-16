@@ -6,7 +6,7 @@ using BPWA.Web.Services.Services;
 namespace BPWA.DAL.Services
 {
     public interface ICurrenciesWebService :
-        IBaseWebService<Currency, CurrencySearchModel, CurrencyDTO, CurrencyAddModel, CurrencyUpdateModel>,
+        IBaseCRUDWebService<Currency, CurrencySearchModel, CurrencyDTO, CurrencyAddModel, CurrencyUpdateModel>,
         ICurrenciesService
     {
     }

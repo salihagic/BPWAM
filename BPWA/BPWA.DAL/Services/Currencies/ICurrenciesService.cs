@@ -3,7 +3,7 @@ using BPWA.DAL.Models;
 
 namespace BPWA.DAL.Services
 {
-    public interface ICurrenciesService : IBaseService<Currency, CurrencySearchModel, CurrencyDTO>
+    public interface ICurrenciesService : IBaseCRUDService<Currency, CurrencySearchModel, CurrencyDTO>
     {
     }
 }

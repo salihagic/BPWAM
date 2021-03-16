@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace BPWA.DAL.Services
 {
-    public class CurrenciesService : BaseService<Currency, CurrencySearchModel, CurrencyDTO>, ICurrenciesService
+    public class CurrenciesService : BaseCRUDService<Currency, CurrencySearchModel, CurrencyDTO>, ICurrenciesService
     {
         public CurrenciesService(
             DatabaseContext databaseContext,
