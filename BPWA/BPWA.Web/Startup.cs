@@ -35,8 +35,6 @@ namespace BPWA
                     .ConfigureDataAnnotationsLocalization()
                     .AddRazorRuntimeCompilation()
                     .ConfigureToastNotifications();
-
-            DatabaseSeeder.Seed(services.BuildServiceProvider());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

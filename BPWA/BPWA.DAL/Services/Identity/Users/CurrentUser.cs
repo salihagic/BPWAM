@@ -2,7 +2,7 @@
 
 namespace BPWA.DAL.Services
 {
-    public interface ICurrentUser
+    public interface CurrentUser
     {
         string GetId();
         string GetUserName();

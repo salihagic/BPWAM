@@ -1,4 +1,5 @@
-﻿using BPWA.Common.Extensions;
+﻿using BPWA.Common.Configuration;
+using BPWA.Common.Extensions;
 using BPWA.Common.Security;
 using BPWA.Core.Entities;
 using BPWA.DAL.Services;
@@ -18,22 +19,22 @@ namespace BPWA.DAL.Database
         public static async Task Seed(IServiceProvider serviceProvider)
         {
             var databaseContext = serviceProvider.GetService<DatabaseContext>();
+            var databaseSettings = serviceProvider.GetService<DatabaseSettings>();
 
-            if (databaseContext == null)
-                return;
-
-            //await databaseContext.Database.EnsureDeletedAsync();
-            //await databaseContext.Database.EnsureCreatedAsync();
-
-            try
+            if (databaseSettings.RecreateDatabase)
+            {
+                await databaseContext.Database.EnsureDeletedAsync();
+                await databaseContext.Database.EnsureCreatedAsync();
+            }
+            if (databaseSettings.AutoMigrate)
+            {
+                await databaseContext.Database.MigrateAsync();
+            }
+            if (databaseSettings.Seed)
             {
                 await SeedRoles(serviceProvider);
                 await SeedUsers(serviceProvider);
                 await SeedGeolocations(serviceProvider);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
             }
         }
 

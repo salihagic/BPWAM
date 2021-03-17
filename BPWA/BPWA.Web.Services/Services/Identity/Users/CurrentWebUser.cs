@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace BPWA.Web.Services.Services
 {
-    public class CurrentWebUser : ICurrentUser
+    public class CurrentWebUser : CurrentUser
     {
         public string GetId() => User.FindFirstValue(ClaimTypes.NameIdentifier);
         public string GetUserName() => User.FindFirstValue(ClaimTypes.Name);
