@@ -480,4 +480,7 @@
   <data name="System_settings" xml:space="preserve">
     <value>System settings</value>
   </data>
+  <data name="BPWA" xml:space="preserve">
+    <value>BPWA</value>
+  </data>
 </root>

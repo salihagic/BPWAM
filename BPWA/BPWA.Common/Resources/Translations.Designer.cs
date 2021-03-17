@@ -169,6 +169,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to BPWA.
+        /// </summary>
+        public static string BPWA {
+            get {
+                return ResourceManager.GetString("BPWA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bug.
         /// </summary>
         public static string Bug {

@@ -1,6 +1,4 @@
-﻿using BPWA.Common.Security;
-using BPWA.DAL.Services;
-using Microsoft.AspNetCore.Authorization;
+﻿using BPWA.Common.Resources;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,19 +8,12 @@ namespace BPWA.Controllers
 {
     public class HomeController : BaseController
     {
-        private readonly ILoggedUserService _loggedUserService;
-
-        public HomeController(ILoggedUserService loggedUserService)
+        public IActionResult Index()
         {
+            ViewBag.Title = Translations.BPWA;
 
-            _loggedUserService = loggedUserService;
+            return View();
         }
-
-        public IActionResult Index() => View();
-
-        public IActionResult Error() => View();
-
-        public IActionResult _Error() => View();
 
         public IActionResult ChangeLanguage(string culture, string returnUrl)
         {

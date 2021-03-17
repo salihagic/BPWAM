@@ -1,21 +1,9 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@{ 
+    Layout = null;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+<div style="text-align: end; width: 100%; margin-right: 10em;">
+        <h1>
+            <a href="/Authentication/Login">Login</a>
+        </h1>
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
-
-<script language="javascript">
-        $(document).ready(function () {
-            $.ajax({
-                url: '@Url.Action("UpdateTimezone", "Account")',
-                type: 'POST',
-                data: {
-                    'timezoneUtcOffsetInMinutes': (moment().utcOffset() || 0)
-                }
-            });
-        });
-</script>

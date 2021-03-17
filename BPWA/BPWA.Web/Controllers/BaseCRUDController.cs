@@ -43,6 +43,17 @@ namespace BPWA.Controllers
 
         #endregion
 
+        #region Messages 
+
+        protected string Message_add_success;
+        protected string Message_add_error;
+        protected string Message_edit_success;
+        protected string Message_edit_error;
+        protected string Message_delete_success;
+        protected string Message_delete_error;
+
+        #endregion Messages
+
         #region Constructor
 
         public BaseCRUDController(
@@ -60,8 +71,6 @@ namespace BPWA.Controllers
             Message_edit_error = Translations.Edit_error;
             Message_delete_success = Translations.Delete_success;
             Message_delete_error = Translations.Delete_error;
-
-            ShouldResetNavigationStack = true;
         }
 
         #endregion

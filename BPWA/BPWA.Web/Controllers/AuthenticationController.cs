@@ -34,7 +34,7 @@ namespace BPWA.Controllers
             {
                 var user = await _usersWebService.SignIn(model.UserName, model.Password);
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Dashboard");
             }
             catch (ValidationException e)
             {
