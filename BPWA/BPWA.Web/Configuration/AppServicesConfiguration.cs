@@ -19,7 +19,7 @@ namespace BPWA.Web.Configuration
 
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IUsersWebService, UsersWebService>();
-            services.AddScoped<ILoggedUserService, LoggedUserWebService>();
+            services.AddScoped<ICurrentUser, CurrentWebUser>();
             
             services.AddScoped<IRolesWebService, RolesWebService>();
             services.AddScoped<IRolesService, RolesService>();

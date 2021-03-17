@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace BPWA.Web.Services.Services
 {
-    public class LoggedUserWebService : ILoggedUserService
+    public class CurrentWebUser : ICurrentUser
     {
         public string GetId() => User.FindFirstValue(ClaimTypes.NameIdentifier);
         public string GetUserName() => User.FindFirstValue(ClaimTypes.Name);
@@ -20,7 +20,7 @@ namespace BPWA.Web.Services.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private ClaimsPrincipal User => _httpContextAccessor.HttpContext.User;
 
-        public LoggedUserWebService(IHttpContextAccessor httpContextAccessor)
+        public CurrentWebUser(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }

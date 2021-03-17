@@ -19,14 +19,14 @@ namespace BPWA.DAL.Services
         protected readonly DatabaseContext _databaseContext;
         protected readonly UserManager<User> _userManager;
         protected readonly SignInManager<User> _signInManager;
-        protected readonly ILoggedUserService _loggedUserService;
+        protected readonly ICurrentUser _loggedUserService;
 
         public UsersService(
             DatabaseContext databaseContext,
             IMapper mapper,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            ILoggedUserService loggedUserService
+            ICurrentUser loggedUserService
             )
         {
             _mapper = mapper;

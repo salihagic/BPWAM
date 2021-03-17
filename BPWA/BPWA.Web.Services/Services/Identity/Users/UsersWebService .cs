@@ -14,7 +14,7 @@ namespace BPWA.Web.Services.Services
             DatabaseContext databaseContext,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            ILoggedUserService loggedUserService
+            ICurrentUser loggedUserService
             ) : base(
                 databaseContext,
                 mapper,
