@@ -20,11 +20,11 @@ namespace BPWA.Controllers
             >
     {
         public TicketsController(
-            ITicketsWebService ticketsWebService,
+            ITicketsWebService service,
             IToastNotification toast,
             IMapper mapper
             ) :
-            base(ticketsWebService, toast, mapper)
+            base(service, toast, mapper)
         { }
     }
 }

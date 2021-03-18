@@ -16,25 +16,27 @@ namespace BPWA.Web.Services.Services
         }.Any(x => x);
 
         public bool ShouldShowAuthSection() => new List<bool>{
-            ShouldShowRolesSection(),
-        }.Any();
-        public bool ShouldShowRolesSection() => User.Claims.Any(x => x.Value == AppClaims.Authorization.RolesManagement && x.Type == AppClaimsHelper.Authorization.Type);
+            ShouldShowCompaniesItem(),
+            ShouldShowRolesItem(),
+        }.Any(x => x);
+        public bool ShouldShowCompaniesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CompaniesManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShouldShowRolesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.RolesManagement && x.Type == AppClaimsHelper.Authorization.Type);
 
         public bool ShouldShowGeolocationsSection() => new List<bool>{
-            ShouldShowCitiesSection(),
-            ShouldShowCountriesSection(),
-            ShouldShowCurrenciesSection(),
-            ShouldShowLanguagesSection(),
+            ShouldShowCitiesItem(),
+            ShouldShowCountriesItem(),
+            ShouldShowCurrenciesItem(),
+            ShouldShowLanguagesItem(),
         }.Any(x => x);     
-        public bool ShouldShowCitiesSection() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CitiesManagement && x.Type == AppClaimsHelper.Authorization.Type);
-        public bool ShouldShowCountriesSection() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CountriesManagement && x.Type == AppClaimsHelper.Authorization.Type);
-        public bool ShouldShowCurrenciesSection() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CurrenciesManagement && x.Type == AppClaimsHelper.Authorization.Type);
-        public bool ShouldShowLanguagesSection() => User.Claims.Any(x => x.Value == AppClaims.Authorization.LanguagesManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShouldShowCitiesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CitiesManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShouldShowCountriesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CountriesManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShouldShowCurrenciesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CurrenciesManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShouldShowLanguagesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.LanguagesManagement && x.Type == AppClaimsHelper.Authorization.Type);
 
         public bool ShouldShowGeneralSystemSettingsSection() => new List<bool>{
-            ShouldShowTicketsSection(),
+            ShouldShowTicketsItem(),
         }.Any(x => x);
-        public bool ShouldShowTicketsSection() => User.Claims.Any(x => x.Value == AppClaims.Authorization.TicketsManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShouldShowTicketsItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.TicketsManagement && x.Type == AppClaimsHelper.Authorization.Type);
 
         #endregion System settings section
 

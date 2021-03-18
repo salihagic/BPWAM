@@ -10,6 +10,7 @@ namespace BPWA.Web.Configuration
         public static IServiceCollection ConfigureAppServices(this IServiceCollection services)
         {
             services.AddScoped<ICitiesWebService, CitiesWebService>();
+            services.AddScoped<ICompaniesWebService, CompaniesWebService>();
             services.AddScoped<ICountriesWebService, CountriesWebService>();
             services.AddScoped<ICurrenciesWebService, CurrenciesWebService>();
             services.AddScoped<ILanguagesWebService, LanguagesWebService>();

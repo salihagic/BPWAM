@@ -8,6 +8,7 @@ namespace BPWA.Common.Security
         public static class Authorization
         {
             public const string CitiesManagement = nameof(CitiesManagement);
+            public const string CompaniesManagement = nameof(CompaniesManagement);
             public const string CountriesManagement = nameof(CountriesManagement);
             public const string CurrenciesManagement = nameof(CurrenciesManagement);
             public const string LanguagesManagement = nameof(LanguagesManagement);

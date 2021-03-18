@@ -9,18 +9,18 @@ using NToastNotify;
 
 namespace BPWA.Controllers
 {
-    [Authorize(Policy = AppClaims.Authorization.CitiesManagement)]
-    public class CitiesController :
+    [Authorize(Policy = AppClaims.Authorization.CompaniesManagement)]
+    public class CompaniesController :
         BaseCRUDController<
-            City,
-            CitySearchModel,
-            CityDTO,
-            CityAddModel,
-            CityUpdateModel
+            Company,
+            CompanySearchModel,
+            CompanyDTO,
+            CompanyAddModel,
+            CompanyUpdateModel
             >
     {
-        public CitiesController(
-            ICitiesWebService service,
+        public CompaniesController(
+            ICompaniesWebService service,
             IToastNotification toast,
             IMapper mapper
             ) :

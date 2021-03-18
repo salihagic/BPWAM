@@ -25,7 +25,7 @@
                         <span class="kt-menu__link-text">@Translations.Auth_settings</span>
                     </span>
                 </li>
-                @if (viewHelperService.ShouldShowRolesSection())
+                @if (viewHelperService.ShouldShowRolesItem())
                 {
                     <li class="kt-menu__item " aria-haspopup="true">
                         <a asp-controller="Roles" asp-action="Index" class="kt-menu__link ">
@@ -33,6 +33,17 @@
                                 <span></span>
                             </i>
                             <span class="kt-menu__link-text">@Translations.Roles</span>
+                        </a>
+                    </li>
+                }
+                @if (viewHelperService.ShouldShowCompaniesItem())
+                {
+                    <li class="kt-menu__item " aria-haspopup="true">
+                        <a asp-controller="Companies" asp-action="Index" class="kt-menu__link ">
+                            <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
+                                <span></span>
+                            </i>
+                            <span class="kt-menu__link-text">@Translations.Companies</span>
                         </a>
                     </li>
                 }
@@ -57,7 +68,7 @@
                         <span class="kt-menu__link-text">@Translations.Geolocations</span>
                     </span>
                 </li>
-                @if (viewHelperService.ShouldShowCountriesSection())
+                @if (viewHelperService.ShouldShowCountriesItem())
                 {
                     <li class="kt-menu__item " aria-haspopup="true">
                         <a asp-controller="Countries" asp-action="Index" class="kt-menu__link">
@@ -68,7 +79,7 @@
                         </a>
                     </li>
                 }
-                @if (viewHelperService.ShouldShowCitiesSection())
+                @if (viewHelperService.ShouldShowCitiesItem())
                 {
                     <li class="kt-menu__item " aria-haspopup="true">
                         <a asp-controller="Cities" asp-action="Index" class="kt-menu__link ">
@@ -79,7 +90,7 @@
                         </a>
                     </li>
                 }
-                @if (viewHelperService.ShouldShowCurrenciesSection())
+                @if (viewHelperService.ShouldShowCurrenciesItem())
                 {
                     <li class="kt-menu__item " aria-haspopup="true">
                         <a asp-controller="Currencies" asp-action="Index" class="kt-menu__link ">
@@ -90,7 +101,7 @@
                         </a>
                     </li>
                 }
-                @if (viewHelperService.ShouldShowLanguagesSection())
+                @if (viewHelperService.ShouldShowLanguagesItem())
                 {
                     <li class="kt-menu__item" aria-haspopup="true">
                         <a asp-controller="Languages" asp-action="Index" class="kt-menu__link ">
@@ -108,7 +119,7 @@
 
 @if (viewHelperService.ShouldShowGeneralSystemSettingsSection())
 {
-    @if (viewHelperService.ShouldShowTicketsSection())
+    @if (viewHelperService.ShouldShowTicketsItem())
     {
         <li class="kt-menu__item " aria-haspopup="true">
             <a asp-controller="Tickets" asp-action="Index" class="kt-menu__link">

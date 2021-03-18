@@ -21,11 +21,11 @@ namespace BPWA.Controllers
             >
     {
         public RolesController(
-            IRolesWebService rolesWebService,
+            IRolesWebService service,
             IToastNotification toast,
             IMapper mapper
             ) :
-            base(rolesWebService, toast, mapper)
+            base(service, toast, mapper)
         { }
     }
 }

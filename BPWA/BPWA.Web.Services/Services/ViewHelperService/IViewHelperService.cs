@@ -5,15 +5,16 @@
         bool ShouldShowSystemSettingsSection();
 
         bool ShouldShowAuthSection();
-        bool ShouldShowRolesSection();
+        bool ShouldShowCompaniesItem();
+        bool ShouldShowRolesItem();
 
         bool ShouldShowGeolocationsSection();
-        bool ShouldShowCountriesSection();
-        bool ShouldShowCitiesSection();
-        bool ShouldShowCurrenciesSection();
-        bool ShouldShowLanguagesSection();
+        bool ShouldShowCountriesItem();
+        bool ShouldShowCitiesItem();
+        bool ShouldShowCurrenciesItem();
+        bool ShouldShowLanguagesItem();
 
         bool ShouldShowGeneralSystemSettingsSection();
-        bool ShouldShowTicketsSection();
+        bool ShouldShowTicketsItem();
     }
 }

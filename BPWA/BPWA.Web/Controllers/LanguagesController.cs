@@ -20,11 +20,11 @@ namespace BPWA.Controllers
             >
     {
         public LanguagesController(
-            ILanguagesWebService languagesWebService,
+            ILanguagesWebService service,
             IToastNotification toast,
             IMapper mapper
             ) :
-            base(languagesWebService, toast, mapper)
+            base(service, toast, mapper)
         { }
     }
 }

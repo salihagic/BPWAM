@@ -20,11 +20,11 @@ namespace BPWA.Controllers
             >
     {
         public CountriesController(
-            ICountriesWebService countriesWebService,
+            ICountriesWebService service,
             IToastNotification toast,
             IMapper mapper
             ) :
-            base(countriesWebService, toast, mapper)
+            base(service, toast, mapper)
         { }
     }
 }

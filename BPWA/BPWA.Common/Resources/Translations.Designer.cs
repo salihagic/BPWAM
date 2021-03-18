@@ -88,6 +88,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add company.
+        /// </summary>
+        public static string Add_company {
+            get {
+                return ResourceManager.GetString("Add_company", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add country.
         /// </summary>
         public static string Add_country {
@@ -246,6 +255,24 @@ namespace BPWA.Common.Resources {
         public static string Code {
             get {
                 return ResourceManager.GetString("Code", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Companies.
+        /// </summary>
+        public static string Companies {
+            get {
+                return ResourceManager.GetString("Companies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Companies management.
+        /// </summary>
+        public static string CompaniesManagement {
+            get {
+                return ResourceManager.GetString("CompaniesManagement", resourceCulture);
             }
         }
         
@@ -426,6 +453,15 @@ namespace BPWA.Common.Resources {
         public static string Edit_city {
             get {
                 return ResourceManager.GetString("Edit_city", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit company.
+        /// </summary>
+        public static string Edit_company {
+            get {
+                return ResourceManager.GetString("Edit_company", resourceCulture);
             }
         }
         

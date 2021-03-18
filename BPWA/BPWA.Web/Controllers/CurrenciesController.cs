@@ -20,11 +20,11 @@ namespace BPWA.Controllers
             >
     {
         public CurrenciesController(
-            ICurrenciesWebService currenciesWebService,
+            ICurrenciesWebService service,
             IToastNotification toast,
             IMapper mapper
             ) :
-            base(currenciesWebService, toast, mapper)
+            base(service, toast, mapper)
         { }
     }
 }

@@ -483,4 +483,16 @@
   <data name="BPWA" xml:space="preserve">
     <value>BPWA</value>
   </data>
+  <data name="Add_company" xml:space="preserve">
+    <value>Add company</value>
+  </data>
+  <data name="Companies" xml:space="preserve">
+    <value>Companies</value>
+  </data>
+  <data name="Edit_company" xml:space="preserve">
+    <value>Edit company</value>
+  </data>
+  <data name="CompaniesManagement" xml:space="preserve">
+    <value>Companies management</value>
+  </data>
 </root>
