@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BPWA.Controllers
 {
-    public class AccountController : BaseController
+    public class AccountController : Controller
     {
         private readonly IUsersWebService _usersWebService;
 

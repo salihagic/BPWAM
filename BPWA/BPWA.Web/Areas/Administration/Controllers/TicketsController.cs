@@ -13,7 +13,7 @@ using NToastNotify;
 namespace BPWA.Administration.Controllers
 {
     [Area(Areas.Administration)]
-    [Authorize(Policy = AppClaims.Authorization.TicketsManagement)]
+    [Authorize(Policy = AppClaims.Authorization.Administration.TicketsManagement)]
     public class TicketsController :
         BaseCRUDController<
             Ticket,

@@ -12,10 +12,15 @@ namespace BPWA.Web.Configuration
                 foreach (var claim in AppClaimsHelper.Authorization.All)
                     options.AddPolicy(claim, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type, 
                                       claim));
-               
-                options.AddPolicy(AppClaims.Authorization.BusinessUnitsUsersManagement, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type,
-                                  AppClaims.Authorization.CompaniesUsersManagement,
-                                  AppClaims.Authorization.BusinessUnitsUsersManagement));
+
+                options.AddPolicy(AppClaims.Authorization.Company.CompanyRolesManagement, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type,
+                                  AppClaims.Authorization.Administration.RolesManagement,
+                                  AppClaims.Authorization.Company.CompanyRolesManagement));
+
+                options.AddPolicy(AppClaims.Authorization.BusinessUnit.BusinessUnitRolesManagement, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type,
+                                  AppClaims.Authorization.Administration.RolesManagement,
+                                  AppClaims.Authorization.Company.CompanyRolesManagement,
+                                  AppClaims.Authorization.BusinessUnit.BusinessUnitRolesManagement));
             });
 
             return services;

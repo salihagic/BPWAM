@@ -196,6 +196,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Business unit roles management.
+        /// </summary>
+        public static string BusinessUnitRolesManagement {
+            get {
+                return ResourceManager.GetString("BusinessUnitRolesManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose an option.
         /// </summary>
         public static string Choose_an_option {
@@ -273,6 +282,15 @@ namespace BPWA.Common.Resources {
         public static string CompaniesManagement {
             get {
                 return ResourceManager.GetString("CompaniesManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Company roles management.
+        /// </summary>
+        public static string CompanyRolesManagement {
+            get {
+                return ResourceManager.GetString("CompanyRolesManagement", resourceCulture);
             }
         }
         
@@ -1182,6 +1200,15 @@ namespace BPWA.Common.Resources {
         public static string User_not_in_role {
             get {
                 return ResourceManager.GetString("User_not_in_role", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Users management.
+        /// </summary>
+        public static string UsersManagement {
+            get {
+                return ResourceManager.GetString("UsersManagement", resourceCulture);
             }
         }
         

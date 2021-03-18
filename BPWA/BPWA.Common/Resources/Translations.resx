@@ -498,4 +498,13 @@
   <data name="Home" xml:space="preserve">
     <value>Home</value>
   </data>
+  <data name="BusinessUnitRolesManagement" xml:space="preserve">
+    <value>Business unit roles management</value>
+  </data>
+  <data name="CompanyRolesManagement" xml:space="preserve">
+    <value>Company roles management</value>
+  </data>
+  <data name="UsersManagement" xml:space="preserve">
+    <value>Users management</value>
+  </data>
 </root>

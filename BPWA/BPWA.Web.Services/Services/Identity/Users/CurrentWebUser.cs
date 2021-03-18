@@ -15,6 +15,7 @@ namespace BPWA.Web.Services.Services
         public string GetLastName() => User.FindFirstValue(ClaimTypes.Surname);
         public string GetFullName() => $"{GetFirstName()} {GetLastName()}"; 
         public string GetTimezoneId() => User.FindFirstValue(AppClaims.Meta.TimezoneId);
+        public bool HasClaim(string claim) => User.Claims.Any(x => x.Type == AppClaimsHelper.Authorization.Type && x.Value == claim);
         public List<string> GetConfiguration() => User.FindAll(x => x.Type == AppClaimsHelper.Configuration.Type).Select(x => x.Value).ToList();
 
         private readonly IHttpContextAccessor _httpContextAccessor;

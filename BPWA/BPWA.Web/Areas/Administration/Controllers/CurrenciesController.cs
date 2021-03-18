@@ -13,7 +13,7 @@ using NToastNotify;
 namespace BPWA.Administration.Controllers
 {
     [Area(Areas.Administration)]
-    [Authorize(Policy = AppClaims.Authorization.CurrenciesManagement)]
+    [Authorize(Policy = AppClaims.Authorization.Administration.CurrenciesManagement)]
     public class CurrenciesController :
         BaseCRUDController<
             Currency,

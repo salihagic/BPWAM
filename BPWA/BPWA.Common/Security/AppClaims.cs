@@ -7,30 +7,27 @@ namespace BPWA.Common.Security
     {
         public static class Authorization
         {
-            #region Administration
+            public static class Administration
+            {
+                public const string CitiesManagement = nameof(CitiesManagement);
+                public const string CompaniesManagement = nameof(CompaniesManagement);
+                public const string CountriesManagement = nameof(CountriesManagement);
+                public const string CurrenciesManagement = nameof(CurrenciesManagement);
+                public const string LanguagesManagement = nameof(LanguagesManagement);
+                public const string RolesManagement = nameof(RolesManagement);
+                public const string UsersManagement = nameof(UsersManagement);
+                public const string TicketsManagement = nameof(TicketsManagement);
+            }
 
-            public const string CitiesManagement = nameof(CitiesManagement);
-            public const string CompaniesManagement = nameof(CompaniesManagement);
-            public const string CountriesManagement = nameof(CountriesManagement);
-            public const string CurrenciesManagement = nameof(CurrenciesManagement);
-            public const string LanguagesManagement = nameof(LanguagesManagement);
-            public const string RolesManagement = nameof(RolesManagement);
-            public const string UsersManagement = nameof(UsersManagement);
-            public const string TicketsManagement = nameof(TicketsManagement);
+            public static class Company
+            {
+                public const string CompanyRolesManagement = nameof(CompanyRolesManagement);
+            }
 
-            #endregion
-
-            #region Companies
-
-            public const string CompaniesUsersManagement = nameof(CompaniesUsersManagement);
-
-            #endregion
-
-            #region Business units
-
-            public const string BusinessUnitsUsersManagement = nameof(BusinessUnitsUsersManagement);
-
-            #endregion
+            public static class BusinessUnit
+            {
+                public const string BusinessUnitRolesManagement = nameof(BusinessUnitRolesManagement);
+            }
         }
 
         public static class Configuration
@@ -49,8 +46,34 @@ namespace BPWA.Common.Security
     {
         public static class Authorization
         {
-            public static string Type => nameof(AppClaims.Authorization);
-            public static List<string> All => typeof(AppClaims.Authorization).GetFields().Select(x => x.Name).ToList();
+            public static string Type => nameof(Authorization);
+            public static List<string> All {
+                get
+                {
+                    var all = new List<string>();
+
+                    all.AddRange(Administration.All);
+                    all.AddRange(Company.All);
+                    all.AddRange(BusinessUnit.All);
+
+                    return all;
+                }
+            }
+
+            public static class Administration
+            {
+                public static List<string> All => typeof(AppClaims.Authorization.Administration).GetFields().Select(x => x.Name).ToList();
+            }            
+            
+            public static class Company
+            {
+                public static List<string> All => typeof(AppClaims.Authorization.Company).GetFields().Select(x => x.Name).ToList();
+            } 
+
+            public static class BusinessUnit
+            {
+                public static List<string> All => typeof(AppClaims.Authorization.BusinessUnit).GetFields().Select(x => x.Name).ToList();
+            }
         }
 
         public static class Configuration

@@ -33,13 +33,13 @@ namespace BPWA.Web.Services.Services
 
         #region Items
 
-        public bool ShowCitiesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CitiesManagement && x.Type == AppClaimsHelper.Authorization.Type);
-        public bool ShowCompaniesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CompaniesManagement && x.Type == AppClaimsHelper.Authorization.Type);
-        public bool ShowCountriesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CountriesManagement && x.Type == AppClaimsHelper.Authorization.Type);
-        public bool ShowCurrenciesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CurrenciesManagement && x.Type == AppClaimsHelper.Authorization.Type);
-        public bool ShowLanguagesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.LanguagesManagement && x.Type == AppClaimsHelper.Authorization.Type);
-        public bool ShowRolesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.RolesManagement && x.Type == AppClaimsHelper.Authorization.Type);
-        public bool ShowTicketsItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.TicketsManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShowCitiesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.Administration.CitiesManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShowCompaniesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.Administration.CompaniesManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShowCountriesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.Administration.CountriesManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShowCurrenciesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.Administration.CurrenciesManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShowLanguagesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.Administration.LanguagesManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShowRolesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.Administration.RolesManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShowTicketsItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.Administration.TicketsManagement && x.Type == AppClaimsHelper.Authorization.Type);
 
         #endregion Items
 

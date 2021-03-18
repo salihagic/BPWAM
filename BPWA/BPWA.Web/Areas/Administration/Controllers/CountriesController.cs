@@ -13,7 +13,7 @@ using NToastNotify;
 namespace BPWA.Administration.Controllers
 {
     [Area(Areas.Administration)]
-    [Authorize(Policy = AppClaims.Authorization.CountriesManagement)]
+    [Authorize(Policy = AppClaims.Authorization.Administration.CountriesManagement)]
     public class CountriesController :
         BaseCRUDController<
             Country,

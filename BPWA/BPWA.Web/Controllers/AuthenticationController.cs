@@ -4,15 +4,13 @@ using BPWA.Web.Helpers;
 using BPWA.Web.Helpers.Routing;
 using BPWA.Web.Services.Models;
 using BPWA.Web.Services.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 
 namespace BPWA.Controllers
 {
-    [AllowAnonymous]
-    public class AuthenticationController : BaseController
+    public class AuthenticationController : Controller
     {
         private readonly IUsersWebService _usersWebService;
 
@@ -35,7 +33,7 @@ namespace BPWA.Controllers
             {
                 var user = await _usersWebService.SignIn(model.UserName, model.Password);
 
-                return !string.IsNullOrEmpty(returnUrl) ? LocalRedirect(returnUrl) : RedirectToAction("Index", "Home", new { Area = Areas.Administration } );
+                return !string.IsNullOrEmpty(returnUrl) ? LocalRedirect(returnUrl) : RedirectToAction("Index", "Home", new { Area = Areas.Administration });
             }
             catch (ValidationException e)
             {

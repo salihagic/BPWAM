@@ -9,6 +9,7 @@ namespace BPWA.DAL.Services
         string GetFirstName();
         string GetLastName();
         string GetFullName();
+        bool HasClaim(string claim);
         List<string> GetConfiguration();
     }
 }

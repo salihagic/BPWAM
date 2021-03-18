@@ -10,14 +10,36 @@ namespace BPWA.DAL.Services
 {
     public class DropdownHelperService : IDropdownHelperService
     {
+        private CurrentUser _currentUser;
+
+        public DropdownHelperService(CurrentUser currentUser)
+        {
+            _currentUser = currentUser;
+        }
+
         virtual public List<SelectListItem> GetAppClaims()
         {
-            return AppClaimsHelper.Authorization.All
-                .Select(x => new SelectListItem
-                {
-                    Value = x,
-                    Text = TranslationsHelper.Translate(x)
-                }).ToList();
+            var claims = new List<string>();
+
+            if (_currentUser.HasClaim(AppClaims.Authorization.Administration.RolesManagement))
+            {
+                claims.AddRange(AppClaimsHelper.Authorization.All);
+            }
+            else if (_currentUser.HasClaim(AppClaims.Authorization.Company.CompanyRolesManagement))
+            {
+                claims.AddRange(AppClaimsHelper.Authorization.Company.All);
+                claims.AddRange(AppClaimsHelper.Authorization.BusinessUnit.All);
+            } 
+            else if (_currentUser.HasClaim(AppClaims.Authorization.BusinessUnit.BusinessUnitRolesManagement))
+            {
+                claims.AddRange(AppClaimsHelper.Authorization.BusinessUnit.All);
+            }
+
+            return claims.Select(x => new SelectListItem
+                         {
+                             Value = x,
+                             Text = TranslationsHelper.Translate(x)
+                         }).ToList();
         }
 
         public List<SelectListItem> GetTicketStatuses()
