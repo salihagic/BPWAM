@@ -10,6 +10,7 @@ namespace BPWA.DAL.Database
 {
     public class DatabaseContext : IdentityDbContext<User, Role, string, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
     {
+        public DbSet<BusinessUnit> BusinessUnits { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<Country> Countries { get; set; }
