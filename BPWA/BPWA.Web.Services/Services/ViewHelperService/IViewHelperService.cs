@@ -2,10 +2,11 @@
 {
     public interface IViewHelperService
     {
+        bool ShouldShowCompaniesItem();
+
         bool ShouldShowSystemSettingsSection();
 
         bool ShouldShowAuthSection();
-        bool ShouldShowCompaniesItem();
         bool ShouldShowRolesItem();
 
         bool ShouldShowGeolocationsSection();
@@ -14,7 +15,6 @@
         bool ShouldShowCurrenciesItem();
         bool ShouldShowLanguagesItem();
 
-        bool ShouldShowGeneralSystemSettingsSection();
         bool ShouldShowTicketsItem();
     }
 }

@@ -1,4 +1,5 @@
-﻿@{ Layout = null;}
+﻿@inject IViewHelperService viewHelperService
+@{ Layout = null;}
 
 <button class="kt-aside-close " id="kt_aside_close_btn"><i class="la la-close"></i></button>
 <div class="kt-aside  kt-aside--fixed  kt-grid__item kt-grid kt-grid--desktop kt-grid--hor-desktop" id="kt_aside">
@@ -14,6 +15,22 @@
                         <span class="kt-menu__link-text">@Translations.Dashboard</span>
                     </a>
                 </li>
+
+                @if (viewHelperService.ShouldShowCompaniesItem())
+                {
+                    <li class="kt-menu__item " aria-haspopup="true">
+                        <a asp-controller="Companies" asp-action="Index" class="kt-menu__link">
+                            <i class="kt-menu__link-icon flaticon-grid-menu"></i>
+                            <span class="kt-menu__link-text">@Translations.Companies</span>
+                        </a>
+                    </li>
+                    <li class="kt-menu__item " aria-haspopup="true">
+                        <a asp-controller="Tickets" asp-action="Index" class="kt-menu__link">
+                            <i class="kt-menu__link-icon flaticon-grid-menu-v2"></i>
+                            <span class="kt-menu__link-text">Business units</span>
+                        </a>
+                    </li>
+                }
 
                 <partial name="_SystemSettings.cshtml" />
 

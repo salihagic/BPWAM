@@ -33,9 +33,6 @@ namespace BPWA.Web.Services.Services
         public bool ShouldShowCurrenciesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CurrenciesManagement && x.Type == AppClaimsHelper.Authorization.Type);
         public bool ShouldShowLanguagesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.LanguagesManagement && x.Type == AppClaimsHelper.Authorization.Type);
 
-        public bool ShouldShowGeneralSystemSettingsSection() => new List<bool>{
-            ShouldShowTicketsItem(),
-        }.Any(x => x);
         public bool ShouldShowTicketsItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.TicketsManagement && x.Type == AppClaimsHelper.Authorization.Type);
 
         #endregion System settings section
