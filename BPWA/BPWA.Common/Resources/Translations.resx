@@ -495,4 +495,7 @@
   <data name="CompaniesManagement" xml:space="preserve">
     <value>Companies management</value>
   </data>
+  <data name="Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
 </root>

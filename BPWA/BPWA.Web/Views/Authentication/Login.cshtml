@@ -1,6 +1,7 @@
 ﻿@model LoginModel
 @{
     Layout = null;
+    var returnUrl = @Context.Request.Query["returnurl"];
 }
 
 <!DOCTYPE html>
@@ -109,7 +110,7 @@
                             {
                                 <div asp-validation-summary="All"></div>
                             }
-                            <form asp-controller="Authentication" asp-action="Login" method="POST" class="kt-form">
+                            <form asp-controller="Authentication" asp-action="Login" asp-route-returnurl="@returnUrl" method="POST" class="kt-form">
                                 <div class="input-group">
                                     <input asp-for="UserName" placeholder="@Translations.User_name_or_email" class="form-control" autocomplete="off">
                                 </div>

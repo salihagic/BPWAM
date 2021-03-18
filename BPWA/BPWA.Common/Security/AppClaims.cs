@@ -7,16 +7,28 @@ namespace BPWA.Common.Security
     {
         public static class Authorization
         {
+            #region Administration
+
             public const string CitiesManagement = nameof(CitiesManagement);
             public const string CompaniesManagement = nameof(CompaniesManagement);
             public const string CountriesManagement = nameof(CountriesManagement);
             public const string CurrenciesManagement = nameof(CurrenciesManagement);
             public const string LanguagesManagement = nameof(LanguagesManagement);
+            public const string RolesManagement = nameof(RolesManagement);
+            public const string UsersManagement = nameof(UsersManagement);
             public const string TicketsManagement = nameof(TicketsManagement);
 
-            #region Identity
+            #endregion
 
-            public const string RolesManagement = nameof(RolesManagement);
+            #region Companies
+
+            public const string CompaniesUsersManagement = nameof(CompaniesUsersManagement);
+
+            #endregion
+
+            #region Business units
+
+            public const string BusinessUnitsUsersManagement = nameof(BusinessUnitsUsersManagement);
 
             #endregion
         }

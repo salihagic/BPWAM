@@ -2,19 +2,28 @@
 {
     public interface IViewHelperService
     {
-        bool ShouldShowCompaniesItem();
+        #region Administration
 
-        bool ShouldShowSystemSettingsSection();
+        #region Sections
 
-        bool ShouldShowAuthSection();
-        bool ShouldShowRolesItem();
+        bool ShowSystemSettingsSection();
+        bool ShowAuthSection();
+        bool ShowGeolocationsSection();
+        
+        #endregion Sections
 
-        bool ShouldShowGeolocationsSection();
-        bool ShouldShowCountriesItem();
-        bool ShouldShowCitiesItem();
-        bool ShouldShowCurrenciesItem();
-        bool ShouldShowLanguagesItem();
+        #region Items
 
-        bool ShouldShowTicketsItem();
+        bool ShowCitiesItem();
+        bool ShowCompaniesItem();
+        bool ShowCountriesItem();
+        bool ShowCurrenciesItem();
+        bool ShowLanguagesItem();
+        bool ShowRolesItem();
+        bool ShowTicketsItem();
+
+        #endregion Items
+
+        #endregion Administration
     }
 }

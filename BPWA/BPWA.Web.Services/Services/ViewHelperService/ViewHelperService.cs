@@ -8,34 +8,42 @@ namespace BPWA.Web.Services.Services
 {
     public class ViewHelperService : IViewHelperService
     {
-        #region System settings section
+        #region Administration
 
-        public bool ShouldShowSystemSettingsSection() => new List<bool>{
-            ShouldShowAuthSection(),
-            ShouldShowGeolocationsSection(),
+        #region Sections
+
+        public bool ShowSystemSettingsSection() => new List<bool>{
+            ShowAuthSection(),
+            ShowGeolocationsSection(),
         }.Any(x => x);
 
-        public bool ShouldShowAuthSection() => new List<bool>{
-            ShouldShowCompaniesItem(),
-            ShouldShowRolesItem(),
+        public bool ShowAuthSection() => new List<bool>{
+            ShowCompaniesItem(),
+            ShowRolesItem(),
         }.Any(x => x);
-        public bool ShouldShowCompaniesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CompaniesManagement && x.Type == AppClaimsHelper.Authorization.Type);
-        public bool ShouldShowRolesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.RolesManagement && x.Type == AppClaimsHelper.Authorization.Type);
 
-        public bool ShouldShowGeolocationsSection() => new List<bool>{
-            ShouldShowCitiesItem(),
-            ShouldShowCountriesItem(),
-            ShouldShowCurrenciesItem(),
-            ShouldShowLanguagesItem(),
-        }.Any(x => x);     
-        public bool ShouldShowCitiesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CitiesManagement && x.Type == AppClaimsHelper.Authorization.Type);
-        public bool ShouldShowCountriesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CountriesManagement && x.Type == AppClaimsHelper.Authorization.Type);
-        public bool ShouldShowCurrenciesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CurrenciesManagement && x.Type == AppClaimsHelper.Authorization.Type);
-        public bool ShouldShowLanguagesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.LanguagesManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShowGeolocationsSection() => new List<bool>{
+            ShowCitiesItem(),
+            ShowCountriesItem(),
+            ShowCurrenciesItem(),
+            ShowLanguagesItem(),
+        }.Any(x => x);
 
-        public bool ShouldShowTicketsItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.TicketsManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        #endregion Sections
 
-        #endregion System settings section
+        #region Items
+
+        public bool ShowCitiesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CitiesManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShowCompaniesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CompaniesManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShowCountriesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CountriesManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShowCurrenciesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.CurrenciesManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShowLanguagesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.LanguagesManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShowRolesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.RolesManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShowTicketsItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.TicketsManagement && x.Type == AppClaimsHelper.Authorization.Type);
+
+        #endregion Items
+
+        #endregion Administration
 
         private readonly IHttpContextAccessor _httpContextAccessor;
         private ClaimsPrincipal User => _httpContextAccessor.HttpContext.User;

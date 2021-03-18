@@ -35,7 +35,7 @@ namespace BPWA.Web.Configuration
 
             services.ConfigureApplicationCookie(x =>
             {
-                x.ExpireTimeSpan = TimeSpan.FromDays(1);
+                x.ExpireTimeSpan = TimeSpan.FromDays(5);
                 x.SlidingExpiration = true;
             });
 

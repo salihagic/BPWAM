@@ -21,4 +21,9 @@
     <ProjectReference Include="..\BPWA.Web.Services\BPWA.Web.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Companies\" />
+    <Folder Include="Areas\BusinessUnits\" />
+  </ItemGroup>
+
 </Project>
