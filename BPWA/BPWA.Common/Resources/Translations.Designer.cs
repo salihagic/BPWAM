@@ -160,6 +160,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        public static string All {
+            get {
+                return ResourceManager.GetString("All", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure.
         /// </summary>
         public static string Are_you_sure {
@@ -201,6 +210,24 @@ namespace BPWA.Common.Resources {
         public static string BusinessUnitRolesManagement {
             get {
                 return ResourceManager.GetString("BusinessUnitRolesManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bussiness units.
+        /// </summary>
+        public static string BusinessUnits {
+            get {
+                return ResourceManager.GetString("BusinessUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change.
+        /// </summary>
+        public static string Change {
+            get {
+                return ResourceManager.GetString("Change", resourceCulture);
             }
         }
         
@@ -426,6 +453,24 @@ namespace BPWA.Common.Resources {
         public static string Displaying {
             get {
                 return ResourceManager.GetString("Displaying", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to change currently selected business unit.
+        /// </summary>
+        public static string Do_you_want_to_change_currently_selected_business_unit {
+            get {
+                return ResourceManager.GetString("Do_you_want_to_change_currently_selected_business_unit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to change currently selected company.
+        /// </summary>
+        public static string Do_you_want_to_change_currently_selected_company {
+            get {
+                return ResourceManager.GetString("Do_you_want_to_change_currently_selected_company", resourceCulture);
             }
         }
         
@@ -1069,6 +1114,24 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Successfully changed current business unit.
+        /// </summary>
+        public static string Successfully_changed_current_business_unit {
+            get {
+                return ResourceManager.GetString("Successfully_changed_current_business_unit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully changed current company.
+        /// </summary>
+        public static string Successfully_changed_current_company {
+            get {
+                return ResourceManager.GetString("Successfully_changed_current_company", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Symbol.
         /// </summary>
         public static string Symbol {
@@ -1083,6 +1146,24 @@ namespace BPWA.Common.Resources {
         public static string System_settings {
             get {
                 return ResourceManager.GetString("System_settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There was an error while trying to change current business unit.
+        /// </summary>
+        public static string There_was_an_error_while_trying_to_change_current_business_unit {
+            get {
+                return ResourceManager.GetString("There_was_an_error_while_trying_to_change_current_business_unit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There was an error while trying to change current company.
+        /// </summary>
+        public static string There_was_an_error_while_trying_to_change_current_company {
+            get {
+                return ResourceManager.GetString("There_was_an_error_while_trying_to_change_current_company", resourceCulture);
             }
         }
         
@@ -1191,6 +1272,15 @@ namespace BPWA.Common.Resources {
         public static string User_name_or_email_invalid {
             get {
                 return ResourceManager.GetString("User_name_or_email_invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User not found.
+        /// </summary>
+        public static string User_not_found {
+            get {
+                return ResourceManager.GetString("User_not_found", resourceCulture);
             }
         }
         

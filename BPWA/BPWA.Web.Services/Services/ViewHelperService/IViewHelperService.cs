@@ -14,6 +14,7 @@
 
         #region Items
 
+        bool ShowToggleCompanyDropdown();
         bool ShowCitiesItem();
         bool ShowCompaniesItem();
         bool ShowCountriesItem();

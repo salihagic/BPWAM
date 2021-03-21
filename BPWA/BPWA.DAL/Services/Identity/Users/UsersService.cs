@@ -15,11 +15,11 @@ namespace BPWA.DAL.Services
 {
     public class UsersService : IUsersService
     {
-        protected readonly IMapper _mapper;
-        protected readonly DatabaseContext _databaseContext;
-        protected readonly UserManager<User> _userManager;
-        protected readonly SignInManager<User> _signInManager;
-        protected readonly CurrentUser _loggedUserService;
+        protected readonly IMapper Mapper;
+        protected readonly DatabaseContext DatabaseContext;
+        protected readonly UserManager<User> UserManager;
+        protected readonly SignInManager<User> SignInManager;
+        protected readonly CurrentUser CurrentUser;
 
         public UsersService(
             DatabaseContext databaseContext,
@@ -29,11 +29,11 @@ namespace BPWA.DAL.Services
             CurrentUser loggedUserService
             )
         {
-            _mapper = mapper;
-            _databaseContext = databaseContext;
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _loggedUserService = loggedUserService;
+            Mapper = mapper;
+            DatabaseContext = databaseContext;
+            UserManager = userManager;
+            SignInManager = signInManager;
+            CurrentUser = loggedUserService;
         }
 
         public Task<UserDTO> Add(User entity)
@@ -43,7 +43,7 @@ namespace BPWA.DAL.Services
 
         public async Task<User> AddEntity(User entity, string password)
         {
-            var result = await _userManager.CreateAsync(entity, password);
+            var result = await UserManager.CreateAsync(entity, password);
 
             if (!result.Succeeded)
                 throw new Exception(result.Errors.First().Description);
@@ -58,12 +58,12 @@ namespace BPWA.DAL.Services
 
         public async Task<UserDTO> AddToRole(User entity, string roleName)
         {
-            var result = await _userManager.AddToRoleAsync(entity, roleName);
+            var result = await UserManager.AddToRoleAsync(entity, roleName);
 
             if (!result.Succeeded)
                 throw new Exception(result.Errors.First().Description);
 
-            return _mapper.Map<UserDTO>(entity);
+            return Mapper.Map<UserDTO>(entity);
         }
 
         public Task Delete(User entity, bool softDelete = true)
@@ -93,12 +93,12 @@ namespace BPWA.DAL.Services
 
         public async Task<User> GetEntityById(string id)
         {
-            return await _databaseContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+            return await DatabaseContext.Users.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<User> GetEntityByUserNameOrEmail(string userName)
         {
-            return (await _userManager.FindByNameAsync(userName)) ?? (await _userManager.FindByEmailAsync(userName));
+            return (await UserManager.FindByNameAsync(userName)) ?? (await UserManager.FindByEmailAsync(userName));
         }
 
         public async Task<UserDTO> SignIn(string userName, string password)
@@ -108,7 +108,7 @@ namespace BPWA.DAL.Services
             if (user == null)
                 throw new ValidationException(Translations.User_name_or_email_invalid);
 
-            var result = await _signInManager.PasswordSignInAsync(user, password, true, false);
+            var result = await SignInManager.PasswordSignInAsync(user, password, true, false);
 
             if (!result.Succeeded)
             {
@@ -122,25 +122,25 @@ namespace BPWA.DAL.Services
                     throw new ValidationException(Translations.User_name_or_email_invalid);
             }
 
-            return _mapper.Map<UserDTO>(user);
+            return Mapper.Map<UserDTO>(user);
         }
 
         public async Task<UserDTO> Update(User entity)
         {
-            return _mapper.Map<UserDTO>(await UpdateEntity(entity));
+            return Mapper.Map<UserDTO>(await UpdateEntity(entity));
         }
 
         public async Task<User> UpdateEntity(User entity)
         {
-            _databaseContext.Users.Update(entity);
-            await _databaseContext.SaveChangesAsync();
+            DatabaseContext.Users.Update(entity);
+            await DatabaseContext.SaveChangesAsync();
 
             return entity;
         }
 
         public async Task UpdateTimezoneForLoggedUser(int timezoneUtcOffsetInMinutes)
         {
-            var loggedUserId = _loggedUserService.GetId();
+            var loggedUserId = CurrentUser.Id();
 
             if (loggedUserId != null)
             {

@@ -1,4 +1,5 @@
-﻿@{ Layout = null;}
+﻿@inject CurrentUser currentUser 
+@{ Layout = null;}
 
 <!-- begin::Sticky Toolbar -->
 <ul class="kt-sticky-toolbar" style="margin-top: 30px;">
@@ -14,8 +15,24 @@
         data-toggle="kt-tooltip"
         title="Report a bug or suggest a feature"
         data-placement="right">
-        <a href="@Url.Action("Add", "Tickets")" class="datatable_add_button">
+        <a href="@Url.Action("Add", "Tickets")" class="open_modal_button">
             <i class="flaticon2-digital-marketing"></i>
+        </a>
+    </li>
+    <li class="kt-sticky-toolbar__item kt-sticky-toolbar__item--warning"
+        data-toggle="kt-tooltip"
+        title="Change current company: @(currentUser.CompanyName() ?? Translations.All)"
+        data-placement="right">
+        <a href="@Url.Action("Toggle", "CurrentCompany")" class="open_modal_button">
+            <i class="flaticon-grid-menu"></i>
+        </a>
+    </li>
+    <li class="kt-sticky-toolbar__item kt-sticky-toolbar__item--warning"
+        data-toggle="kt-tooltip"
+        title="Change current business unit: @(currentUser.BusinessUnitName() ?? Translations.All)"
+        data-placement="right">
+        <a href="@Url.Action("Toggle", "CurrentBusinessUnit", new { Area = Areas.Companies })" class="open_modal_button">
+            <i class="flaticon-grid-menu-v2"></i>
         </a>
     </li>
 </ul>

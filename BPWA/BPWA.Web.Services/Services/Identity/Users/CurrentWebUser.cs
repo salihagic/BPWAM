@@ -9,14 +9,34 @@ namespace BPWA.Web.Services.Services
 {
     public class CurrentWebUser : CurrentUser
     {
-        public string GetId() => User.FindFirstValue(ClaimTypes.NameIdentifier);
-        public string GetUserName() => User.FindFirstValue(ClaimTypes.Name);
-        public string GetFirstName() => User.FindFirstValue(ClaimTypes.GivenName);
-        public string GetLastName() => User.FindFirstValue(ClaimTypes.Surname);
-        public string GetFullName() => $"{GetFirstName()} {GetLastName()}"; 
-        public string GetTimezoneId() => User.FindFirstValue(AppClaims.Meta.TimezoneId);
-        public bool HasClaim(string claim) => User.Claims.Any(x => x.Type == AppClaimsHelper.Authorization.Type && x.Value == claim);
-        public List<string> GetConfiguration() => User.FindAll(x => x.Type == AppClaimsHelper.Configuration.Type).Select(x => x.Value).ToList();
+        public string Id() => User.FindFirstValue(ClaimTypes.NameIdentifier);
+        public string UserName() => User.FindFirstValue(ClaimTypes.Name);
+        public string FirstName() => User.FindFirstValue(ClaimTypes.GivenName);
+        public string LastName() => User.FindFirstValue(ClaimTypes.Surname);
+        public string FullName() => $"{FirstName()} {LastName()}";
+        public string TimezoneId() => User.FindFirstValue(AppClaims.Meta.TimezoneId);
+        public int? CompanyId() 
+        {
+            var companyIdClaim = User.FindFirstValue(AppClaims.Meta.CompanyId);
+
+            if (string.IsNullOrEmpty(companyIdClaim))
+                return null;
+
+            return int.Parse(companyIdClaim);
+        }
+        public string CompanyName() => User.FindFirstValue(AppClaims.Meta.CompanyName);
+        public int? BusinessUnitId()
+        {
+            var companyIdClaim = User.FindFirstValue(AppClaims.Meta.BusinessUnitId);
+
+            if (string.IsNullOrEmpty(companyIdClaim))
+                return null;
+
+            return int.Parse(companyIdClaim);
+        }
+        public string BusinessUnitName() => User.FindFirstValue(AppClaims.Meta.BusinessUnitName);
+        public bool HasAuthorizationClaim(string claim) => User.Claims.Any(x => x.Type == AppClaimsHelper.Authorization.Type && x.Value == claim);
+        public List<string> Configuration() => User.FindAll(x => x.Type == AppClaimsHelper.Configuration.Type).Select(x => x.Value).ToList();
 
         private readonly IHttpContextAccessor _httpContextAccessor;
         private ClaimsPrincipal User => _httpContextAccessor.HttpContext.User;

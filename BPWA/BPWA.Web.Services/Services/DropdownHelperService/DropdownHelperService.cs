@@ -21,16 +21,16 @@ namespace BPWA.DAL.Services
         {
             var claims = new List<string>();
 
-            if (_currentUser.HasClaim(AppClaims.Authorization.Administration.RolesManagement))
+            if (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.RolesManagement))
             {
                 claims.AddRange(AppClaimsHelper.Authorization.All);
             }
-            else if (_currentUser.HasClaim(AppClaims.Authorization.Company.CompanyRolesManagement))
+            else if (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.CompanyRolesManagement))
             {
                 claims.AddRange(AppClaimsHelper.Authorization.Company.All);
                 claims.AddRange(AppClaimsHelper.Authorization.BusinessUnit.All);
             } 
-            else if (_currentUser.HasClaim(AppClaims.Authorization.BusinessUnit.BusinessUnitRolesManagement))
+            else if (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.BusinessUnit.BusinessUnitRolesManagement))
             {
                 claims.AddRange(AppClaimsHelper.Authorization.BusinessUnit.All);
             }

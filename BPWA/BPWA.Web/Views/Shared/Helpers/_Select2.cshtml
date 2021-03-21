@@ -32,6 +32,21 @@
         });
     }
 
+    function Select2AjaxCompanies(options) {
+        Select2Ajax({
+            element: options.element,
+            url: '@Url.Action("Dropdown", "Companies")',
+            map: (x) => {
+                return {
+                    id: x.id,
+                    text: x.name
+                };
+            },
+            placeholder: 'Company',
+            ...options
+        });
+    }
+
     function Select2AjaxCountries(options) {
         Select2Ajax({
             element: options.element,

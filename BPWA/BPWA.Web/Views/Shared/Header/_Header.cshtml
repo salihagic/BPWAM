@@ -1,10 +1,17 @@
 ﻿@inject CurrentUser currentUser
 @{
     Layout = null;
-    var loggedUserFullName = currentUser.GetFullName();
+    var loggedUserFullName = currentUser.FullName();
     var loggedUserInitials = string.Join("", loggedUserFullName.Split(" ").Select(x => x.FirstOrDefault()));
     var currentCulture = TranslationOptions.SupportedLanguages.FirstOrDefault(x => x.CultureInfo.Name == System.Threading.Thread.CurrentThread.CurrentCulture.Name);
 }
+
+<style>
+    .kt-header__topbar {
+        display: flex;
+        align-items: center;
+    }
+</style>
 
 <!-- begin:: Header -->
 <div id="kt_header" class="kt-header kt-grid__item  kt-header--fixed ">

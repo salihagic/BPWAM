@@ -17,11 +17,13 @@ namespace BPWA.Common.Security
                 public const string RolesManagement = nameof(RolesManagement);
                 public const string UsersManagement = nameof(UsersManagement);
                 public const string TicketsManagement = nameof(TicketsManagement);
+                public const string ToggleCompany = nameof(ToggleCompany);
             }
 
             public static class Company
             {
                 public const string CompanyRolesManagement = nameof(CompanyRolesManagement);
+                public const string ToggleBusinessUnit = nameof(ToggleBusinessUnit);
             }
 
             public static class BusinessUnit
@@ -39,6 +41,10 @@ namespace BPWA.Common.Security
         public static class Meta
         {
             public static string TimezoneId = nameof(TimezoneId);
+            public static string CompanyId = nameof(CompanyId);
+            public static string CompanyName = nameof(CompanyName);
+            public static string BusinessUnitId = nameof(BusinessUnitId);
+            public static string BusinessUnitName = nameof(BusinessUnitName);
         }
     }
 

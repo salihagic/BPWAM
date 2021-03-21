@@ -33,6 +33,7 @@ namespace BPWA.Web.Services.Services
 
         #region Items
 
+        public bool ShowToggleCompanyDropdown() => User.Claims.Any(x => x.Value == AppClaims.Authorization.Administration.ToggleCompany && x.Type == AppClaimsHelper.Authorization.Type);
         public bool ShowCitiesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.Administration.CitiesManagement && x.Type == AppClaimsHelper.Authorization.Type);
         public bool ShowCompaniesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.Administration.CompaniesManagement && x.Type == AppClaimsHelper.Authorization.Type);
         public bool ShowCountriesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.Administration.CountriesManagement && x.Type == AppClaimsHelper.Authorization.Type);

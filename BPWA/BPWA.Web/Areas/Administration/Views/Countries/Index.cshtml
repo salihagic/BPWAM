@@ -1,13 +1,5 @@
 ﻿@model CountrySearchModel
 
-<style>
-
-/*    .form-group{
-        padding: 0 0.9rem 0 0 !important;
-    }*/
-
-</style>
-
 <div class="kt-portlet kt-portlet--mobile col-lg-12">
     <form method="POST" class="datatable_search_form">
         
@@ -41,7 +33,7 @@
                         <button type="button" class="btn btn-default btn-icon-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="la la-download"></i> @Translations.Print
                         </button>
-                        <a href="@Url.Action("Add", "Countries")" class="datatable_add_button btn btn-brand btn-elevate btn-icon-sm" type="button">
+                        <a href="@Url.Action("Add", "Countries")" class="open_modal_button btn btn-brand btn-elevate btn-icon-sm" type="button">
                             <i class="la la-plus"></i>
                             @Translations.New_record
                         </a>

@@ -1,6 +1,8 @@
 ﻿using BPWA.Common.Security;
 using BPWA.Core.Entities;
+using BPWA.DAL.Database;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -10,11 +12,16 @@ namespace BPWA.Web.Services.Services
 {
     public class AppClaimsPrincipalFactory : UserClaimsPrincipalFactory<User, Role>
     {
+        private DatabaseContext _databaseContext;
+
         public AppClaimsPrincipalFactory(
             UserManager<User> userManager,
             RoleManager<Role> roleManager,
-            IOptions<IdentityOptions> optionsAccessor) : base(userManager, roleManager, optionsAccessor)
+            IOptions<IdentityOptions> optionsAccessor,
+            DatabaseContext databaseContext
+            ) : base(userManager, roleManager, optionsAccessor) 
         {
+            _databaseContext = databaseContext;
         }
 
         public async override Task<ClaimsPrincipal> CreateAsync(User user)
@@ -28,6 +35,20 @@ namespace BPWA.Web.Services.Services
                 claims.Add(new Claim(ClaimTypes.Surname, user.LastName));
             if (user.TimezoneId != null)
                 claims.Add(new Claim(AppClaims.Meta.TimezoneId, user.TimezoneId));
+            if (user.CompanyId != null) 
+            {
+                var company = await _databaseContext.Companies.FirstOrDefaultAsync(x => x.Id == user.CompanyId);
+
+                claims.Add(new Claim(AppClaims.Meta.CompanyId, user.CompanyId.ToString()));
+                claims.Add(new Claim(AppClaims.Meta.CompanyName, company.Name));
+            }
+            if (user.BusinessUnitId != null)
+            {
+                var businessUnit = await _databaseContext.BusinessUnits.FirstOrDefaultAsync(x => x.Id == user.BusinessUnitId);
+
+                claims.Add(new Claim(AppClaims.Meta.BusinessUnitId, user.BusinessUnitId.ToString()));
+                claims.Add(new Claim(AppClaims.Meta.BusinessUnitName, businessUnit.Name));
+            }
 
             (principal.Identity as ClaimsIdentity).AddClaims(claims);
 
