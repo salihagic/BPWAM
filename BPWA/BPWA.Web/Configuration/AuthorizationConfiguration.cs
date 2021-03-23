@@ -16,11 +16,12 @@ namespace BPWA.Web.Configuration
                 options.AddPolicy(AppClaims.Authorization.Company.CompanyRolesManagement, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type,
                                   AppClaims.Authorization.Administration.RolesManagement,
                                   AppClaims.Authorization.Company.CompanyRolesManagement));
-                
                 options.AddPolicy(AppClaims.Authorization.Company.ToggleBusinessUnit, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type,
                                   AppClaims.Authorization.Administration.ToggleCompany,
                                   AppClaims.Authorization.Company.ToggleBusinessUnit));
-
+                options.AddPolicy(AppClaims.Authorization.Company.BusinessUnitsManagement, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type,
+                                  AppClaims.Authorization.Administration.CompaniesManagement,
+                                  AppClaims.Authorization.Company.BusinessUnitsManagement));
                 options.AddPolicy(AppClaims.Authorization.BusinessUnit.BusinessUnitRolesManagement, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type,
                                   AppClaims.Authorization.Administration.RolesManagement,
                                   AppClaims.Authorization.Company.CompanyRolesManagement,

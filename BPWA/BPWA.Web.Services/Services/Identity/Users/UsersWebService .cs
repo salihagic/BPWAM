@@ -46,7 +46,7 @@ namespace BPWA.Web.Services.Services
             return Result.Success();
         }
 
-        public async Task<Result> ToggleCurrentCompany(ToggleCurrentCompanyModel model)
+        public async Task<Result> ToggleCompany(ToggleCompanyModel model)
         {
             var currentUser = await GetEntityById(CurrentUser.Id());
 
@@ -71,7 +71,7 @@ namespace BPWA.Web.Services.Services
             return Result.Success();
         }
 
-        public async Task<Result> ToggleCurrentBusinessUnit(ToggleCurrentBusinessUnitModel model)
+        public async Task<Result> ToggleBusinessUnit(ToggleBusinessUnitModel model)
         {
             var currentUser = await GetEntityById(CurrentUser.Id());
 

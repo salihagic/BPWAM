@@ -42,7 +42,22 @@
                     text: x.name
                 };
             },
-            placeholder: 'Company',
+            placeholder: '@Translations.Select_company',
+            ...options
+        });
+    }
+    
+    function Select2AjaxBusinessUnits(options) {
+        Select2Ajax({
+            element: options.element,
+            url: '@Url.Action("Dropdown", "BusinessUnits")',
+            map: (x) => {
+                return {
+                    id: x.id,
+                    text: x.name
+                };
+            },
+            placeholder: '@Translations.Select_business_unit',
             ...options
         });
     }

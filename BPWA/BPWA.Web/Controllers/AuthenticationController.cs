@@ -1,7 +1,6 @@
 ﻿using BPWA.Common.Exceptions;
 using BPWA.Common.Resources;
 using BPWA.Web.Helpers;
-using BPWA.Web.Helpers.Routing;
 using BPWA.Web.Services.Models;
 using BPWA.Web.Services.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +32,7 @@ namespace BPWA.Controllers
             {
                 var user = await _usersWebService.SignIn(model.UserName, model.Password);
 
-                return !string.IsNullOrEmpty(returnUrl) ? LocalRedirect(returnUrl) : RedirectToAction("Index", "Home", new { Area = Areas.Administration });
+                return !string.IsNullOrEmpty(returnUrl) ? LocalRedirect(returnUrl) : RedirectToAction("Index", "Dashboard");
             }
             catch (ValidationException e)
             {

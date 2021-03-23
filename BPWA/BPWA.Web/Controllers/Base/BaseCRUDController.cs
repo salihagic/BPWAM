@@ -8,6 +8,7 @@ using BPWA.Web.Services.Services;
 using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TFM.DAL.Models;
 
@@ -129,7 +130,7 @@ namespace BPWA.Controllers
 
                 if (!result.IsSuccess)
                 {
-                    Toast.AddErrorToastMessage(Message_add_error);
+                    Toast.AddErrorToastMessage(result.GetErrorMessages().FirstOrDefault());
                     return await Failed();
                 }
 
@@ -216,7 +217,7 @@ namespace BPWA.Controllers
 
                 if (!result.IsSuccess)
                 {
-                    Toast.AddErrorToastMessage(Message_edit_error);
+                    Toast.AddErrorToastMessage(result.GetErrorMessages().FirstOrDefault());
                     return await Failed();
                 }
 

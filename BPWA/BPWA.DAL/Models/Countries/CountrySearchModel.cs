@@ -17,6 +17,6 @@ namespace BPWA.DAL.Models
             string.IsNullOrEmpty(Name),
             CurrencyIds.IsNotEmpty(),
             LanguageIds.IsNotEmpty(),
-        }.Any();
+        }.Any(x => x);
     }
 }

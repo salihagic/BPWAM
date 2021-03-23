@@ -537,4 +537,28 @@
   <data name="There_was_an_error_while_trying_to_change_current_business_unit" xml:space="preserve">
     <value>There was an error while trying to change current business unit</value>
   </data>
+  <data name="Select_company" xml:space="preserve">
+    <value>Select company</value>
+  </data>
+  <data name="Or" xml:space="preserve">
+    <value>Or</value>
+  </data>
+  <data name="Select_all" xml:space="preserve">
+    <value>Select all</value>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>Company</value>
+  </data>
+  <data name="No_company_is_selected" xml:space="preserve">
+    <value>No company is selected</value>
+  </data>
+  <data name="Add_business_unit" xml:space="preserve">
+    <value>Add business unit</value>
+  </data>
+  <data name="Edit_business_unit" xml:space="preserve">
+    <value>Edit business unit</value>
+  </data>
+  <data name="Select_business_unit" xml:space="preserve">
+    <value>Select business unit</value>
+  </data>
 </root>

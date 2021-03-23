@@ -12,6 +12,6 @@ namespace BPWA.DAL.Models
         {
             string.IsNullOrEmpty(Name),
             CountryId.HasValue,
-        }.Any();
+        }.Any(x => x);
     }
 }

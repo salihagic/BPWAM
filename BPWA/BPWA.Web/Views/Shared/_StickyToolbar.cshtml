@@ -23,7 +23,7 @@
         data-toggle="kt-tooltip"
         title="Change current company: @(currentUser.CompanyName() ?? Translations.All)"
         data-placement="right">
-        <a href="@Url.Action("Toggle", "CurrentCompany")" class="open_modal_button">
+        <a href="@Url.Action("ToggleCompany", "Account")" class="open_modal_button">
             <i class="flaticon-grid-menu"></i>
         </a>
     </li>
@@ -31,7 +31,7 @@
         data-toggle="kt-tooltip"
         title="Change current business unit: @(currentUser.BusinessUnitName() ?? Translations.All)"
         data-placement="right">
-        <a href="@Url.Action("Toggle", "CurrentBusinessUnit", new { Area = Areas.Companies })" class="open_modal_button">
+        <a href="@Url.Action("ToggleBusinessUnit", "Account")" class="open_modal_button">
             <i class="flaticon-grid-menu-v2"></i>
         </a>
     </li>

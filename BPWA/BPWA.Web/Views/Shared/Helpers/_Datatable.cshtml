@@ -3,8 +3,11 @@
 <script>
 
     $(document).on('click', '.datatable_search_form_reset_button', function(e) {
-        $(this).closest('form')[0].reset();
-        $('.select2').change();
+        console.log('CLEARING');
+        var form = $(this).closest('form')[0];
+        form.reset();
+        $(form).find('.select2').val('');
+        $(form).find('.select2').trigger('change');
     });
 
     $(document).on('click', '.open_modal_button', function (e) {

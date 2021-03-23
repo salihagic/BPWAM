@@ -1,4 +1,5 @@
 ﻿using BPWA.Common.Security;
+using BPWA.DAL.Services;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,24 +34,34 @@ namespace BPWA.Web.Services.Services
 
         #region Items
 
-        public bool ShowToggleCompanyDropdown() => User.Claims.Any(x => x.Value == AppClaims.Authorization.Administration.ToggleCompany && x.Type == AppClaimsHelper.Authorization.Type);
-        public bool ShowCitiesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.Administration.CitiesManagement && x.Type == AppClaimsHelper.Authorization.Type);
-        public bool ShowCompaniesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.Administration.CompaniesManagement && x.Type == AppClaimsHelper.Authorization.Type);
-        public bool ShowCountriesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.Administration.CountriesManagement && x.Type == AppClaimsHelper.Authorization.Type);
-        public bool ShowCurrenciesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.Administration.CurrenciesManagement && x.Type == AppClaimsHelper.Authorization.Type);
-        public bool ShowLanguagesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.Administration.LanguagesManagement && x.Type == AppClaimsHelper.Authorization.Type);
-        public bool ShowRolesItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.Administration.RolesManagement && x.Type == AppClaimsHelper.Authorization.Type);
-        public bool ShowTicketsItem() => User.Claims.Any(x => x.Value == AppClaims.Authorization.Administration.TicketsManagement && x.Type == AppClaimsHelper.Authorization.Type);
+        public bool ShowToggleCompanyDropdown() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.ToggleCompany);
+        public bool ShowCitiesItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.CitiesManagement);
+        public bool ShowCompaniesItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.CompaniesManagement);
+        public bool ShowCountriesItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.CountriesManagement);
+        public bool ShowCurrenciesItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.CurrenciesManagement);
+        public bool ShowLanguagesItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.LanguagesManagement);
+        public bool ShowRolesItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.RolesManagement);
+        public bool ShowTicketsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.TicketsManagement);
 
         #endregion Items
 
         #endregion Administration
 
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private ClaimsPrincipal User => _httpContextAccessor.HttpContext.User;
-        public ViewHelperService(IHttpContextAccessor httpContextAccessor)
+        #region Companies
+
+        #region Items
+
+        public bool ShowBusinessUnitsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.BusinessUnitsManagement);
+
+        #endregion Items
+
+        #endregion Companies
+
+        private CurrentUser _currentUser;
+
+        public ViewHelperService(CurrentUser currentUser)
         {
-            _httpContextAccessor = httpContextAccessor;
+            _currentUser = currentUser;
         }
     }
 }

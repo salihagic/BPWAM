@@ -18,6 +18,6 @@ namespace BPWA.DAL.Models
             string.IsNullOrEmpty(Description),
             TicketTypes.IsNotEmpty(),
             TicketStatuses.IsNotEmpty(),
-        }.Any();
+        }.Any(x => x);
     }
 }

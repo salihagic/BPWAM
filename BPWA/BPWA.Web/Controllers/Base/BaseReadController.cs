@@ -16,7 +16,6 @@ using System.Threading.Tasks;
 
 namespace BPWA.Controllers
 {
-    [Authorize]
     public class BaseReadController<TEntity, TSearchModel, TDTO> :
         BaseReadController<TEntity, TSearchModel, TDTO, int>
         where TEntity : IBaseEntity<int>, new()

@@ -1,6 +1,6 @@
 using BPWA.DAL.Database;
 using BPWA.Web.Configuration;
-using BPWA.Web.Helpers.Routing;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -66,12 +66,6 @@ namespace BPWA
 
             app.UseEndpoints(endpoints =>
             {
-                AreasHelper.All.ForEach(area =>
-                {
-                    endpoints.MapControllerRoute(
-                        name: area,
-                        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-                });
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

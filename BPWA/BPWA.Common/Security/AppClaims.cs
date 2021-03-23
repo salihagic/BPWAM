@@ -23,6 +23,7 @@ namespace BPWA.Common.Security
             public static class Company
             {
                 public const string CompanyRolesManagement = nameof(CompanyRolesManagement);
+                public const string BusinessUnitsManagement = nameof(BusinessUnitsManagement);
                 public const string ToggleBusinessUnit = nameof(ToggleBusinessUnit);
             }
 

@@ -22,9 +22,9 @@ namespace BPWA.DAL.Services
                        .Include(x => x.Country);
         }
 
-        public override IQueryable<City> BuildQueryConditions(IQueryable<City> query, CitySearchModel searchModel = null)
+        public override IQueryable<City> BuildIncludes(IQueryable<City> query)
         {
-            return base.BuildQueryConditions(query, searchModel)
+            return base.BuildIncludes(query)
                        .Include(x => x.Country);
         }
     }

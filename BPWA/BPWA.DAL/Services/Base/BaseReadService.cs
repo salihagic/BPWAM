@@ -106,6 +106,7 @@ namespace BPWA.DAL.Services
             try
             {
                 Query = BuildQueryConditions(Query, searchModel);
+                Query = BuildIncludes(Query);
                 Query = BuildQueryOrdering(Query, searchModel);
 
                 if (searchModel?.Pagination != null)

@@ -10,6 +10,6 @@ namespace BPWA.DAL.Models
         public override bool IsDirty => new List<bool>
         {
             string.IsNullOrEmpty(Name),
-        }.Any();
+        }.Any(x => x);
     }
 }

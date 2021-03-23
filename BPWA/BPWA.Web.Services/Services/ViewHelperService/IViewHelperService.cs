@@ -26,5 +26,15 @@
         #endregion Items
 
         #endregion Administration
+
+        #region Companies
+
+        #region Items
+
+        bool ShowBusinessUnitsItem();
+
+        #endregion Items
+
+        #endregion Companies
     }
 }

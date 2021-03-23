@@ -79,6 +79,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add business unit.
+        /// </summary>
+        public static string Add_business_unit {
+            get {
+                return ResourceManager.GetString("Add_business_unit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add city.
         /// </summary>
         public static string Add_city {
@@ -313,6 +322,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Company.
+        /// </summary>
+        public static string Company {
+            get {
+                return ResourceManager.GetString("Company", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Company roles management.
         /// </summary>
         public static string CompanyRolesManagement {
@@ -507,6 +525,15 @@ namespace BPWA.Common.Resources {
         public static string Edit {
             get {
                 return ResourceManager.GetString("Edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit business unit.
+        /// </summary>
+        public static string Edit_business_unit {
+            get {
+                return ResourceManager.GetString("Edit_business_unit", resourceCulture);
             }
         }
         
@@ -808,6 +835,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No company is selected.
+        /// </summary>
+        public static string No_company_is_selected {
+            get {
+                return ResourceManager.GetString("No_company_is_selected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No records found.
         /// </summary>
         public static string No_records_found {
@@ -831,6 +867,15 @@ namespace BPWA.Common.Resources {
         public static string Open {
             get {
                 return ResourceManager.GetString("Open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Or.
+        /// </summary>
+        public static string Or {
+            get {
+                return ResourceManager.GetString("Or", resourceCulture);
             }
         }
         
@@ -1042,11 +1087,38 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select all.
+        /// </summary>
+        public static string Select_all {
+            get {
+                return ResourceManager.GetString("Select_all", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select app claim.
         /// </summary>
         public static string Select_app_claim {
             get {
                 return ResourceManager.GetString("Select_app_claim", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select business unit.
+        /// </summary>
+        public static string Select_business_unit {
+            get {
+                return ResourceManager.GetString("Select_business_unit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select company.
+        /// </summary>
+        public static string Select_company {
+            get {
+                return ResourceManager.GetString("Select_company", resourceCulture);
             }
         }
         
