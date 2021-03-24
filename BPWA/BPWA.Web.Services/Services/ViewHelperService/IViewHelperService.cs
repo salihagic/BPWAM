@@ -13,7 +13,7 @@
 
         #region Items
 
-        bool ShowToggleCompanyDropdown();
+        bool ShowToggleCompanyItem();
         bool ShowCitiesItem();
         bool ShowCompaniesItem();
         bool ShowCountriesItem();

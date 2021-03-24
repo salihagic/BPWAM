@@ -14,12 +14,12 @@ namespace BPWA.Core.Entities
         public string LastName { get; set; }
         public string TimezoneId { get; set; }
         public int? CityId { get; set; }
-        public int? CompanyId { get; set; }
-        public int? BusinessUnitId { get; set; }
+        public int? CurrentCompanyId { get; set; }
+        public int? CurrentBusinessUnitId { get; set; }
 
         public City City { get; set; }
-        public Company Company { get; set; }
-        public BusinessUnit BusinessUnit { get; set; }
+        public Company CurrentCompany { get; set; }
+        public BusinessUnit CurrentBusinessUnit { get; set; }
         public List<UserRole> UserRoles { get; set; }
         public List<UserClaim> UserClaims { get; set; }
         public List<UserLogin> UserLogins { get; set; }

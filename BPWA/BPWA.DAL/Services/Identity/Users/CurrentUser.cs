@@ -10,10 +10,12 @@ namespace BPWA.DAL.Services
         string LastName();
         string FullName();
         string TimezoneId();
-        int? CompanyId();
-        string CompanyName();
-        int? BusinessUnitId();
-        string BusinessUnitName();
+        List<int> CompanyIds();
+        int? CurrentCompanyId();
+        string CurrentCompanyName();
+        List<int> BusinessUnitIds();
+        int? CurrentBusinessUnitId();
+        string CurrentBusinessUnitName();
         bool HasAuthorizationClaim(string claim);
         List<string> Configuration();
     }

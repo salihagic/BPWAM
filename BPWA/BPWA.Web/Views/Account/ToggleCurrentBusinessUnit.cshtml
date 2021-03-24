@@ -11,13 +11,13 @@
 </style>
 
 <form asp-controller="Account"
-      asp-action="ToggleCompany"
+      asp-action="ToggleCurrentBusinessUnit"
       method="POST"
-      class="current_company_form kt-form kt-form--fit">
+      class="current_business_unit_form kt-form kt-form--fit">
 
     <div class="modal-header">
         <h5 class="modal-title">
-            @Translations.Companies
+            @Translations.BusinessUnits
         </h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
     </div>
@@ -26,14 +26,14 @@
 
         <div class="col-md-12 row">
             <div class="col-md-12 subtitle">
-                <h5>@Translations.Do_you_want_to_change_currently_selected_company</h5>
+                <h5>@Translations.Do_you_want_to_change_currently_selected_business_unit</h5>
             </div>
             <div class="col-md-12 form-group">
-                <select name="CompanyId" id="modal_companyId" class="form-control select2">
-                    @if (currentUser.CompanyId().HasValue)
+                <select name="BusinessUnitId" id="modal_business_unitId" class="form-control select2">
+                    @if (currentUser.CurrentBusinessUnitId().HasValue)
                     {
-                        <option value="@currentUser.CompanyId()" selected="selected">
-                            @currentUser.CompanyName()
+                        <option value="@currentUser.CurrentBusinessUnitId()" selected="selected">
+                            @currentUser.CurrentBusinessUnitName()
                         </option>
                         <option value="">@Translations.All</option>
                     }
@@ -62,17 +62,17 @@
 
 <script>
 
-    Select2AjaxCompanies({
-        element: '#modal_companyId',
+    Select2AjaxBusinessUnits({
+        element: '#modal_business_unitId',
         placeholder: '@Translations.All'
     });
 
-    var form = $('.current_company_form')[0];
+    var form = $('.current_business_unit_form')[0];
     $(form).attr('action', `${$(form).attr('action')}?returnUrl=${window.location.pathname}`);
 
     $('.select_all').on('click', function (e) {
-        $('#modal_companyId').val('');
-        var form = $('.current_company_form')[0];
+        $('#modal_business_unitId').val('');
+        var form = $('.current_business_unit_form')[0];
         form.submit();
     });
 

@@ -47,7 +47,7 @@ namespace BPWA.Web.Services.Services
             return Result.Success();
         }
 
-        public async Task<Result> ToggleCompany(ToggleCompanyModel model)
+        public async Task<Result> ToggleCurrentCompany(ToggleCurrentCompanyModel model)
         {
             var currentUser = await GetEntityById(CurrentUser.Id());
 
@@ -56,9 +56,9 @@ namespace BPWA.Web.Services.Services
 
             try
             {
-                currentUser.CompanyId = model.CompanyId;
+                currentUser.CurrentCompanyId = model.CompanyId;
                 if (!model.CompanyId.HasValue)
-                    currentUser.BusinessUnitId = null;
+                    currentUser.CurrentBusinessUnitId = null;
 
                 await DatabaseContext.SaveChangesAsync();
             }
@@ -75,7 +75,7 @@ namespace BPWA.Web.Services.Services
             return Result.Success();
         }
 
-        public async Task<Result> ToggleBusinessUnit(ToggleBusinessUnitModel model)
+        public async Task<Result> ToggleCurrentBusinessUnit(ToggleCurrentBusinessUnitModel model)
         {
             var currentUser = await GetEntityById(CurrentUser.Id());
 
@@ -84,12 +84,12 @@ namespace BPWA.Web.Services.Services
 
             try
             {
-                currentUser.BusinessUnitId = model.BusinessUnitId;
+                currentUser.CurrentBusinessUnitId = model.BusinessUnitId;
 
                 if (model.BusinessUnitId.HasValue)
                 {
                     var companyId = DatabaseContext.BusinessUnits.FirstOrDefault(x => x.Id == model.BusinessUnitId)?.CompanyId;
-                    currentUser.CompanyId = companyId;
+                    currentUser.CurrentCompanyId = companyId;
                 }
 
                 await DatabaseContext.SaveChangesAsync();

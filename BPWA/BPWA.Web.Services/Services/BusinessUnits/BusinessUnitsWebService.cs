@@ -27,7 +27,7 @@ namespace BPWA.DAL.Services
         public override IQueryable<BusinessUnit> BuildQueryConditions(IQueryable<BusinessUnit> query, BusinessUnitSearchModel searchModel = null)
         {
             return base.BuildQueryConditions(query, searchModel)
-                       .WhereIf(_currentUser.CompanyId().HasValue, x => x.CompanyId == _currentUser.CompanyId());                       
+                       .WhereIf(_currentUser.CurrentCompanyId().HasValue, x => x.CompanyId == _currentUser.CurrentCompanyId());                       
         }
 
         public override IQueryable<BusinessUnit> BuildIncludes(IQueryable<BusinessUnit> query)
@@ -44,7 +44,7 @@ namespace BPWA.DAL.Services
 
         public override async Task<Result<BusinessUnitDTO>> Add(BusinessUnit entity)
         {
-            var currentCompany = _currentUser.CompanyId();
+            var currentCompany = _currentUser.CurrentCompanyId();
 
             if (!currentCompany.HasValue)
                 return Result.Failed<BusinessUnitDTO>(Translations.No_company_is_selected);
@@ -56,7 +56,7 @@ namespace BPWA.DAL.Services
 
         public override Task<Result<BusinessUnitDTO>> Update(BusinessUnit entity)
         {
-            entity.CompanyId = _currentUser.CompanyId() ?? entity.CompanyId;
+            entity.CompanyId = _currentUser.CurrentCompanyId() ?? entity.CompanyId;
 
             return base.Update(entity);
         }

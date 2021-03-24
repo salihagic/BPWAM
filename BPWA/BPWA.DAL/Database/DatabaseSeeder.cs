@@ -35,6 +35,54 @@ namespace BPWA.DAL.Database
                 await SeedRoles(serviceProvider);
                 await SeedUsers(serviceProvider);
                 await SeedGeolocations(serviceProvider);
+                await SeedCompaniesAndBusinessUnits(serviceProvider);
+            }
+        }
+
+        private static async Task SeedCompaniesAndBusinessUnits(IServiceProvider serviceProvider)
+        {
+            var databaseContext = serviceProvider.GetService<DatabaseContext>();
+
+            try
+            {
+                if (!databaseContext.Companies.Any())
+                {
+                    databaseContext.Companies.Add(new Company 
+                    {
+                        Name = "Company X",
+                        BusinessUnits = new List<BusinessUnit>
+                        {
+                            new BusinessUnit { Name = "Business Unit X1" },
+                            new BusinessUnit { Name = "Business Unit X2" },
+                            new BusinessUnit { Name = "Business Unit X3" },
+                        }
+                    });
+                    databaseContext.Companies.Add(new Company
+                    {
+                        Name = "Company Y",
+                        BusinessUnits = new List<BusinessUnit>
+                        {
+                            new BusinessUnit { Name = "Business Unit Y1" },
+                            new BusinessUnit { Name = "Business Unit Y2" },
+                            new BusinessUnit { Name = "Business Unit Y3" },
+                        }
+                    });
+                    databaseContext.Companies.Add(new Company
+                    {
+                        Name = "Company Z",
+                        BusinessUnits = new List<BusinessUnit>
+                        {
+                            new BusinessUnit { Name = "Business Unit Z1" },
+                            new BusinessUnit { Name = "Business Unit Z2" },
+                            new BusinessUnit { Name = "Business Unit Z3" },
+                        }
+                    });
+                    await databaseContext.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
         }
 
@@ -54,20 +102,16 @@ namespace BPWA.DAL.Database
                 };
 
                 await rolesService.Add(superadminRole);
+
+                superadminRole.RoleClaims.Add(new RoleClaim
+                {
+                    RoleId = superadminRole.Id,
+                    ClaimType = AppClaimsHelper.Authorization.Type,
+                    ClaimValue = AppClaims.Authorization.GodMode
+                });
+
+                await rolesService.UpdateEntity(superadminRole);
             }
-
-            var newRoleClaims = AppClaimsHelper.Authorization.All.Select(x => new RoleClaim
-            {
-                RoleId = superadminRole.Id,
-                ClaimType = AppClaimsHelper.Authorization.Type,
-                ClaimValue = x
-            })
-            .Where(x => !superadminRole.RoleClaims.Any(y => y.ClaimValue == x.ClaimValue))
-            .ToList();
-
-            superadminRole.RoleClaims.AddRange(newRoleClaims);
-
-            await rolesService.UpdateEntity(superadminRole);
         }
 
         private static async Task SeedUsers(IServiceProvider serviceProvider)
@@ -145,8 +189,8 @@ namespace BPWA.DAL.Database
                                                   Name = x.Key.Name,
                                               }).ToList();
 
-                    databaseContext.Currencies.AddRange(currencies);
-                    databaseContext.SaveChanges();
+                    await databaseContext.Currencies.AddRangeAsync(currencies);
+                    await databaseContext.SaveChangesAsync();
 
                     countries.ForEach(x =>
                     {
@@ -161,8 +205,8 @@ namespace BPWA.DAL.Database
                         }
                     });
 
-                    databaseContext.Countries.AddRange(countries);
-                    databaseContext.SaveChanges();
+                    await databaseContext.Countries.AddRangeAsync(countries);
+                    await databaseContext.SaveChangesAsync();
                 }
 
                 if (!databaseContext.Languages.Any())
@@ -175,8 +219,8 @@ namespace BPWA.DAL.Database
                         Name = x.name
                     }).OrderBy(x => x.Name).ThenBy(x => x.Code);
 
-                    databaseContext.Languages.AddRange(languages);
-                    databaseContext.SaveChanges();
+                    await databaseContext.Languages.AddRangeAsync(languages);
+                    await databaseContext.SaveChangesAsync();
                 }
             }
             catch (Exception e)

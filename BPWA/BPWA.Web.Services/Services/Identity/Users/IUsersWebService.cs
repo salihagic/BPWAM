@@ -8,7 +8,7 @@ namespace BPWA.Web.Services.Services
     public interface IUsersWebService : IUsersService
     {
         Task SignOut();
-        Task<Result> ToggleCompany(ToggleCompanyModel model);
-        Task<Result> ToggleBusinessUnit(ToggleBusinessUnitModel model);
+        Task<Result> ToggleCurrentCompany(ToggleCurrentCompanyModel model);
+        Task<Result> ToggleCurrentBusinessUnit(ToggleCurrentBusinessUnitModel model);
     }
 }

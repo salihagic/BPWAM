@@ -1,6 +1,6 @@
 ﻿namespace BPWA.Web.Services.Models
 {
-    public class ToggleBusinessUnitModel
+    public class ToggleCurrentBusinessUnitModel
     {
         public int? BusinessUnitId { get; set; }
     }

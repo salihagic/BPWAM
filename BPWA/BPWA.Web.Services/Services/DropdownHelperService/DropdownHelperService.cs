@@ -21,7 +21,7 @@ namespace BPWA.DAL.Services
         {
             var claims = new List<string>();
 
-            if (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.RolesManagement))
+            if (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.RolesManagement) || _currentUser.HasAuthorizationClaim(AppClaims.Authorization.GodMode))
             {
                 claims.AddRange(AppClaimsHelper.Authorization.All);
             }
@@ -36,10 +36,10 @@ namespace BPWA.DAL.Services
             }
 
             return claims.Select(x => new SelectListItem
-                         {
-                             Value = x,
-                             Text = TranslationsHelper.Translate(x)
-                         }).ToList();
+            {
+                Value = x,
+                Text = TranslationsHelper.Translate(x)
+            }).ToList();
         }
 
         public List<SelectListItem> GetTicketStatuses()

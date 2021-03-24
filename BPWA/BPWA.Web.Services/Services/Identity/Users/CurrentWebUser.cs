@@ -15,26 +15,28 @@ namespace BPWA.Web.Services.Services
         public string LastName() => User.FindFirstValue(ClaimTypes.Surname);
         public string FullName() => $"{FirstName()} {LastName()}";
         public string TimezoneId() => User.FindFirstValue(AppClaims.Meta.TimezoneId);
-        public int? CompanyId() 
+        public List<int> CompanyIds() => User.FindAll(AppClaims.Authorization.CompanyIds).Select(x => int.Parse(x.Value)).ToList();
+        public int? CurrentCompanyId() 
         {
-            var companyIdClaim = User.FindFirstValue(AppClaims.Meta.CompanyId);
+            var companyIdClaim = User.FindFirstValue(AppClaims.Meta.CurrentCompanyId);
 
             if (string.IsNullOrEmpty(companyIdClaim))
                 return null;
 
             return int.Parse(companyIdClaim);
         }
-        public string CompanyName() => User.FindFirstValue(AppClaims.Meta.CompanyName);
-        public int? BusinessUnitId()
+        public string CurrentCompanyName() => User.FindFirstValue(AppClaims.Meta.CurrentCompanyName);
+        public List<int> BusinessUnitIds() => User.FindAll(AppClaims.Authorization.BusinessUnitIds).Select(x => int.Parse(x.Value)).ToList();
+        public int? CurrentBusinessUnitId()
         {
-            var companyIdClaim = User.FindFirstValue(AppClaims.Meta.BusinessUnitId);
+            var companyIdClaim = User.FindFirstValue(AppClaims.Meta.CurrentBusinessUnitId);
 
             if (string.IsNullOrEmpty(companyIdClaim))
                 return null;
 
             return int.Parse(companyIdClaim);
         }
-        public string BusinessUnitName() => User.FindFirstValue(AppClaims.Meta.BusinessUnitName);
+        public string CurrentBusinessUnitName() => User.FindFirstValue(AppClaims.Meta.CurrentBusinessUnitName);
         public bool HasAuthorizationClaim(string claim) => User.Claims.Any(x => x.Type == AppClaimsHelper.Authorization.Type && x.Value == claim);
         public List<string> Configuration() => User.FindAll(x => x.Type == AppClaimsHelper.Configuration.Type).Select(x => x.Value).ToList();
 

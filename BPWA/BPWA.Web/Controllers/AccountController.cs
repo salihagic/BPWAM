@@ -29,14 +29,14 @@ namespace BPWA.Controllers
             await _usersWebService.UpdateTimezoneForLoggedUser(timezoneUtcOffsetInMinutes);
         }
 
-        #region Toggle company
+        #region Toggle current company
 
-        public async Task<IActionResult> ToggleCompany() => View();
+        public async Task<IActionResult> ToggleCurrentCompany() => View();
 
         [HttpPost]
-        public async Task<IActionResult> ToggleCompany(ToggleCompanyModel model, string returnUrl = "")
+        public async Task<IActionResult> ToggleCurrentCompany(ToggleCurrentCompanyModel model, string returnUrl = "")
         {
-            var result = await _usersWebService.ToggleCompany(model);
+            var result = await _usersWebService.ToggleCurrentCompany(model);
 
             if (result.IsSuccess)
                 _toast.AddSuccessToastMessage(Translations.Successfully_changed_current_company);
@@ -46,16 +46,16 @@ namespace BPWA.Controllers
             return !string.IsNullOrEmpty(returnUrl) ? LocalRedirect(returnUrl) : RedirectToAction("Index", "Dashboard");
         }
 
-        #endregion Toggle company
+        #endregion Toggle current company
 
-        #region Toggle Business unit
+        #region Toggle current business unit
 
-        public async Task<IActionResult> ToggleBusinessUnit() => View();
+        public async Task<IActionResult> ToggleCurrentBusinessUnit() => View();
 
         [HttpPost]
-        public async Task<IActionResult> ToggleBusinessUnit(ToggleBusinessUnitModel model, string returnUrl = "")
+        public async Task<IActionResult> ToggleCurrentBusinessUnit(ToggleCurrentBusinessUnitModel model, string returnUrl = "")
         {
-            var result = await _usersWebService.ToggleBusinessUnit(model);
+            var result = await _usersWebService.ToggleCurrentBusinessUnit(model);
 
             if (result.IsSuccess)
                 _toast.AddSuccessToastMessage(Translations.Successfully_changed_current_business_unit);
@@ -65,6 +65,6 @@ namespace BPWA.Controllers
             return !string.IsNullOrEmpty(returnUrl) ? LocalRedirect(returnUrl) : RedirectToAction("Index", "Dashboard");
         }
 
-        #endregion Toggle Business unit
+        #endregion Toggle current business unit
     }
 }
