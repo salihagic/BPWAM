@@ -1,9 +1,7 @@
 ﻿using BPWA.Common.Security;
 using BPWA.DAL.Services;
-using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 
 namespace BPWA.Web.Services.Services
 {
@@ -13,7 +11,7 @@ namespace BPWA.Web.Services.Services
 
         #region Sections
 
-        public bool ShowSystemSettingsSection() => new List<bool>{
+        public bool ShowAdministrationSection() => new List<bool>{
             ShowAuthSection(),
             ShowGeolocationsSection(),
         }.Any(x => x);
@@ -47,7 +45,15 @@ namespace BPWA.Web.Services.Services
 
         #endregion Administration
 
-        #region Companies
+        #region Company
+
+        #region Sections
+
+        public bool ShowCompanySection() => new List<bool>{
+            ShowBusinessUnitsItem(),
+        }.Any(x => x);
+
+        #endregion Sections
 
         #region Items
 
@@ -55,7 +61,7 @@ namespace BPWA.Web.Services.Services
 
         #endregion Items
 
-        #endregion Companies
+        #endregion Company
 
         private CurrentUser _currentUser;
 

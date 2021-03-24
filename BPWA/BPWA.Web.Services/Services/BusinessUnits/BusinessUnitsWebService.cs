@@ -27,8 +27,7 @@ namespace BPWA.DAL.Services
         public override IQueryable<BusinessUnit> BuildQueryConditions(IQueryable<BusinessUnit> query, BusinessUnitSearchModel searchModel = null)
         {
             return base.BuildQueryConditions(query, searchModel)
-                       .WhereIf(_currentUser.CompanyId().HasValue, x => x.CompanyId == _currentUser.CompanyId())
-                       .WhereIf(_currentUser.BusinessUnitId().HasValue, x => x.Id == _currentUser.BusinessUnitId());
+                       .WhereIf(_currentUser.CompanyId().HasValue, x => x.CompanyId == _currentUser.CompanyId());                       
         }
 
         public override IQueryable<BusinessUnit> BuildIncludes(IQueryable<BusinessUnit> query)

@@ -1,11 +1,21 @@
 ﻿@inject IViewHelperService viewHelperService
 @{ Layout = null;}
 
-@if (viewHelperService.ShowSystemSettingsSection())
+@if (viewHelperService.ShowAdministrationSection())
 {
     <li class="kt-menu__section ">
-        <h4 class="kt-menu__section-text">@Translations.System_settings</h4>
+        <h4 class="kt-menu__section-text">@Translations.Administration</h4>
         <i class="kt-menu__section-icon flaticon-more-v2"></i>
+    </li>
+}
+
+@if (viewHelperService.ShowCompaniesItem())
+{
+    <li class="kt-menu__item " aria-haspopup="true">
+        <a asp-controller="Companies" asp-action="Index" class="kt-menu__link">
+            <i class="kt-menu__link-icon flaticon-grid-menu"></i>
+            <span class="kt-menu__link-text">@Translations.Companies</span>
+        </a>
     </li>
 }
 
@@ -28,8 +38,8 @@
                 @if (viewHelperService.ShowRolesItem())
                 {
                     <li class="kt-menu__item " aria-haspopup="true">
-                        <a asp-controller="Roles" 
-                           asp-action="Index" 
+                        <a asp-controller="Roles"
+                           asp-action="Index"
                            class="kt-menu__link ">
                             <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
                                 <span></span>
@@ -62,8 +72,8 @@
                 @if (viewHelperService.ShowCountriesItem())
                 {
                     <li class="kt-menu__item " aria-haspopup="true">
-                        <a asp-controller="Countries" 
-                           asp-action="Index" 
+                        <a asp-controller="Countries"
+                           asp-action="Index"
                            class="kt-menu__link">
                             <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
                                 <span></span>
@@ -75,8 +85,8 @@
                 @if (viewHelperService.ShowCitiesItem())
                 {
                     <li class="kt-menu__item " aria-haspopup="true">
-                        <a asp-controller="Cities" 
-                           asp-action="Index" 
+                        <a asp-controller="Cities"
+                           asp-action="Index"
                            class="kt-menu__link ">
                             <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
                                 <span></span>
@@ -89,7 +99,7 @@
                 {
                     <li class="kt-menu__item " aria-haspopup="true">
                         <a asp-controller="Currencies"
-                           asp-action="Index" 
+                           asp-action="Index"
                            class="kt-menu__link ">
                             <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
                                 <span></span>
@@ -119,8 +129,8 @@
 @if (viewHelperService.ShowTicketsItem())
 {
     <li class="kt-menu__item " aria-haspopup="true">
-        <a asp-controller="Tickets" 
-           asp-action="Index" 
+        <a asp-controller="Tickets"
+           asp-action="Index"
            class="kt-menu__link">
             <i class="kt-menu__link-icon flaticon2-digital-marketing"></i>
             <span class="kt-menu__link-text">@Translations.Tickets</span>

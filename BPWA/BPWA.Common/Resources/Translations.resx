@@ -558,7 +558,19 @@
   <data name="Edit_business_unit" xml:space="preserve">
     <value>Edit business unit</value>
   </data>
+  <data name="Administration" xml:space="preserve">
+    <value>Administration</value>
+  </data>
+  <data name="BusinessUnitsManagement" xml:space="preserve">
+    <value>Business units management</value>
+  </data>
   <data name="Select_business_unit" xml:space="preserve">
     <value>Select business unit</value>
+  </data>
+  <data name="ToggleBusinessUnit" xml:space="preserve">
+    <value>Toggle business unit</value>
+  </data>
+  <data name="ToggleCompany" xml:space="preserve">
+    <value>Toggle company</value>
   </data>
 </root>

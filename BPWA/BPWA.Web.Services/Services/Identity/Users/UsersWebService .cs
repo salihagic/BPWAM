@@ -6,6 +6,7 @@ using BPWA.DAL.Services;
 using BPWA.Web.Services.Models;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TFM.DAL.Models;
 
@@ -56,6 +57,9 @@ namespace BPWA.Web.Services.Services
             try
             {
                 currentUser.CompanyId = model.CompanyId;
+                if (!model.CompanyId.HasValue)
+                    currentUser.BusinessUnitId = null;
+
                 await DatabaseContext.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -81,6 +85,13 @@ namespace BPWA.Web.Services.Services
             try
             {
                 currentUser.BusinessUnitId = model.BusinessUnitId;
+
+                if (model.BusinessUnitId.HasValue)
+                {
+                    var companyId = DatabaseContext.BusinessUnits.FirstOrDefault(x => x.Id == model.BusinessUnitId)?.CompanyId;
+                    currentUser.CompanyId = companyId;
+                }
+
                 await DatabaseContext.SaveChangesAsync();
             }
             catch (Exception ex)

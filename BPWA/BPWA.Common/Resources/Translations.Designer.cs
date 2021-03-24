@@ -169,6 +169,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Administration.
+        /// </summary>
+        public static string Administration {
+            get {
+                return ResourceManager.GetString("Administration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All.
         /// </summary>
         public static string All {
@@ -228,6 +237,15 @@ namespace BPWA.Common.Resources {
         public static string BusinessUnits {
             get {
                 return ResourceManager.GetString("BusinessUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Business units management.
+        /// </summary>
+        public static string BusinessUnitsManagement {
+            get {
+                return ResourceManager.GetString("BusinessUnitsManagement", resourceCulture);
             }
         }
         
@@ -1281,6 +1299,24 @@ namespace BPWA.Common.Resources {
         public static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toggle business unit.
+        /// </summary>
+        public static string ToggleBusinessUnit {
+            get {
+                return ResourceManager.GetString("ToggleBusinessUnit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toggle company.
+        /// </summary>
+        public static string ToggleCompany {
+            get {
+                return ResourceManager.GetString("ToggleCompany", resourceCulture);
             }
         }
         

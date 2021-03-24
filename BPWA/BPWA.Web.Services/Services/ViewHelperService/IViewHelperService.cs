@@ -5,8 +5,7 @@
         #region Administration
 
         #region Sections
-
-        bool ShowSystemSettingsSection();
+        bool ShowAdministrationSection();
         bool ShowAuthSection();
         bool ShowGeolocationsSection();
         
@@ -27,7 +26,13 @@
 
         #endregion Administration
 
-        #region Companies
+        #region Company
+
+        #region Sections
+
+        bool ShowCompanySection();
+
+        #endregion Sections
 
         #region Items
 
@@ -35,6 +40,6 @@
 
         #endregion Items
 
-        #endregion Companies
+        #endregion Company
     }
 }
