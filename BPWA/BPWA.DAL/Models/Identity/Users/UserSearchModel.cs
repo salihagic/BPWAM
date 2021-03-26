@@ -11,5 +11,7 @@ namespace BPWA.DAL.Models
         public string TimezoneId { get; set; }
         public List<int> CityIds { get; set; }
         public List<string> RoleIds { get; set; }
+        public List<int> CompanyIds { get; set; }
+        public List<int> BusinessUnitIds { get; set; }
     }
 }

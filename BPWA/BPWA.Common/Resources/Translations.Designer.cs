@@ -1267,6 +1267,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select roles.
+        /// </summary>
+        public static string Select_roles {
+            get {
+                return ResourceManager.GetString("Select_roles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select ticket status.
         /// </summary>
         public static string Select_ticket_status {

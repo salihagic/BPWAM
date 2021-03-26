@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
-using BPWA.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 

@@ -6,5 +6,7 @@
         {
             return string.IsNullOrEmpty(s) ? string.Empty : $"{s[0].ToString().ToLower()}{s.Substring(1)}";
         }
+
+        public static bool HasValue(this string s) => !string.IsNullOrEmpty(s) && !string.IsNullOrWhiteSpace(s);
     }
 }

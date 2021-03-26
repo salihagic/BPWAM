@@ -36,7 +36,6 @@
                 <input asp-for="LastName" class="form-control m-input" placeholder="@Translations.Name">
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
-
             <div class="col-md-12 form-group">
                 <label>@Translations.City</label>
                 <input asp-for="SelectedCity" type="hidden">
@@ -46,6 +45,36 @@
                     </option>
                 </select>
                 <span asp-validation-for="CityId" class="text-danger"></span>
+            </div>
+            <div class="col-md-12 form-group">
+                <label>@Translations.Roles</label>
+                <select asp-for="RoleIds" id="modal_@nameof(UserAddModel.RoleIds)" multiple="multiple" class="form-control select2">
+                    @foreach (var item in Model.RoleIdsSelectList)
+                    {
+                        <option value="@item.Value" selected="selected">@item.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="RoleIds" class="text-danger"></span>
+            </div>
+            <div class="col-md-12 form-group">
+                <label>@Translations.Companies</label>
+                <select asp-for="CompanyIds" id="modal_@nameof(UserAddModel.CompanyIds)" multiple="multiple" class="form-control select2">
+                    @foreach (var item in Model.CompanyIdsSelectList)
+                    {
+                        <option value="@item.Value" selected="selected">@item.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="CompanyIds" class="text-danger"></span>
+            </div>
+            <div class="col-md-12 form-group">
+                <label>@Translations.BusinessUnits</label>
+                <select asp-for="BusinessUnitIds" id="modal_@nameof(UserAddModel.BusinessUnitIds)" multiple="multiple" class="form-control select2">
+                    @foreach (var item in Model.BusinessUnitIdsSelectList)
+                    {
+                        <option value="@item.Value" selected="selected">@item.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="BusinessUnitIds" class="text-danger"></span>
             </div>
         </div>
 
@@ -64,6 +93,15 @@
     Select2AjaxCities({
         element: '#modal_@nameof(UserAddModel.CityId)',
         onChangeCopyTextTo: '#@nameof(UserAddModel.SelectedCity)',
+    });
+    Select2AjaxRoles({
+        element: '#modal_@nameof(UserAddModel.RoleIds)',
+    });
+    Select2AjaxCompanies({
+        element: '#modal_@nameof(UserAddModel.CompanyIds)',
+    });
+    Select2AjaxBusinessUnits({
+        element: '#modal_@nameof(UserAddModel.BusinessUnitIds)',
     });
 
 </script>

@@ -141,7 +141,9 @@ namespace BPWA.DAL.Services
                 .WhereIf(!string.IsNullOrEmpty(searchModel.FirstName), x => x.FirstName.ToLower().StartsWith(searchModel.FirstName.ToLower()))
                 .WhereIf(!string.IsNullOrEmpty(searchModel.LastName), x => x.LastName.ToLower().StartsWith(searchModel.LastName.ToLower()))
                 .WhereIf(searchModel.CityIds.IsNotEmpty(), x => searchModel.CityIds.Contains(x.CityId.GetValueOrDefault()))
-                .WhereIf(searchModel.RoleIds.IsNotEmpty(), x => searchModel.RoleIds.Any(y => x.UserRoles.Any(z => z.RoleId == y)));
+                .WhereIf(searchModel.RoleIds.IsNotEmpty(), x => searchModel.RoleIds.Any(y => x.UserRoles.Any(z => z.RoleId == y)))
+                .WhereIf(searchModel.CompanyIds.IsNotEmpty(), x => searchModel.CompanyIds.Any(y => x.CompanyUsers.Any(z => z.CompanyId == y)))
+                .WhereIf(searchModel.BusinessUnitIds.IsNotEmpty(), x => searchModel.BusinessUnitIds.Any(y => x.BusinessUnitUsers.Any(z => z.BusinessUnitId == y)));
         }
 
         virtual public IQueryable<User> BuildIncludesById(string id, IQueryable<User> query) => query;

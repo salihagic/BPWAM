@@ -13,5 +13,7 @@ namespace BPWA.DAL.Models
 
         public CityDTO City { get; set; }
         public List<UserRoleDTO> UserRoles { get; set; }
+        public List<CompanyUserDTO> CompanyUsers { get; set; }
+        public List<BusinessUnitUserDTO> BusinessUnitUsers { get; set; }
     }
 }

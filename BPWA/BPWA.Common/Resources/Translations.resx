@@ -609,4 +609,7 @@
   <data name="Edit_user" xml:space="preserve">
     <value>Edit user</value>
   </data>
+  <data name="Select_roles" xml:space="preserve">
+    <value>Select roles</value>
+  </data>
 </root>

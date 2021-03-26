@@ -24,5 +24,7 @@ namespace BPWA.Core.Entities
         public List<UserClaim> UserClaims { get; set; }
         public List<UserLogin> UserLogins { get; set; }
         public List<UserToken> UserTokens { get; set; }
+        public List<CompanyUser> CompanyUsers { get; set; }
+        public List<BusinessUnitUser> BusinessUnitUsers { get; set; }
     }
 }

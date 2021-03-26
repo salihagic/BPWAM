@@ -61,6 +61,21 @@
             ...options
         });
     }
+    
+    function Select2AjaxRoles(options) {
+        Select2Ajax({
+            element: options.element,
+            url: '@Url.Action("Dropdown", "Roles")',
+            map: (x) => {
+                return {
+                    id: x.id,
+                    text: x.name
+                };
+            },
+            placeholder: '@Translations.Select_roles',
+            ...options
+        });
+    }
 
     function Select2AjaxCountries(options) {
         Select2Ajax({

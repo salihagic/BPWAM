@@ -31,6 +31,51 @@
             <label>@Translations.City</label>
             <input asp-for="City.Name" class="form-control m-input" disabled>
         </div>
+        @if (Model.UserRoles.IsNotEmpty())
+        {
+            <div class="col-md-12 row">
+                <div class="col-md">
+                    <label>@Translations.Roles</label>
+                </div>
+                <div class="col-md-6"></div>
+                @foreach (var item in Model.UserRoles)
+                {
+                    <div class="col-md-6 form-group">
+                        <input value="@item.Role.Name" class="form-control m-input" disabled>
+                    </div>
+                }
+            </div>
+        }
+        @if (Model.CompanyUsers.IsNotEmpty())
+        {
+            <div class="col-md-12 row">
+                <div class="col-md">
+                    <label>@Translations.Companies</label>
+                </div>
+                <div class="col-md-6"></div>
+                @foreach (var item in Model.CompanyUsers)
+                {
+                    <div class="col-md-6 form-group">
+                        <input value="@item.Company.Name" class="form-control m-input" disabled>
+                    </div>
+                }
+            </div>
+        }       
+        @if (Model.BusinessUnitUsers.IsNotEmpty())
+        {
+            <div class="col-md-12 row">
+                <div class="col-md">
+                    <label>@Translations.BusinessUnits</label>
+                </div>
+                <div class="col-md-6"></div>
+                @foreach (var item in Model.BusinessUnitUsers)
+                {
+                    <div class="col-md-6 form-group">
+                        <input value="@item.BusinessUnit.Name" class="form-control m-input" disabled>
+                    </div>
+                }
+            </div>
+        }
     </div>
 
 </div>
