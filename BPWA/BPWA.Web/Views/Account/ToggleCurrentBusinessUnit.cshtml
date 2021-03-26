@@ -43,15 +43,6 @@
                     }
                 </select>
             </div>
-            @if (currentUser.HasGodMode())
-            {
-                <div class="col-md-12 subtitle">
-                    <h5>@Translations.Or.ToLower()</h5>
-                </div>
-                <div class="col-md-12 form-group">
-                    <button class="btn btn-primary select_all col-md-12" type="button">@Translations.Select_all</button>
-                </div>
-            }
         </div>
 
     </div>
@@ -59,6 +50,7 @@
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">@Translations.Close</button>
         <button class="btn btn-primary" type="submit">@Translations.Change</button>
+        <button class="btn btn-primary select_all" type="button">@Translations.Select_all</button>
     </div>
 
 </form>

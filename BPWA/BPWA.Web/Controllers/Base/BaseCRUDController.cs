@@ -174,7 +174,7 @@ namespace BPWA.Controllers
             return View(model);
         }
 
-        [HttpPut]
+        [HttpPost]
         public virtual async Task<IActionResult> Edit(TUpdateModel model)
         {
             ViewBag.Title = TranslationsHelper.Translate(CurrentAction);
@@ -200,7 +200,7 @@ namespace BPWA.Controllers
 
                 if (!entityResult.IsSuccess)
                 {
-                    var getEntityByIdResult = await BaseCRUDService.GetEntityById(model.Id);
+                    var getEntityByIdResult = await BaseCRUDService.GetEntityByIdWithoutIncludes(model.Id);
 
                     if (!getEntityByIdResult.IsSuccess)
                         return BadRequest(getEntityByIdResult);

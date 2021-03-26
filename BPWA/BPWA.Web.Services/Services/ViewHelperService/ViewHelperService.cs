@@ -32,15 +32,8 @@ namespace BPWA.Web.Services.Services
 
         #region Items
 
-        public bool ShowToggleCompanyItem()
-        {
-            var hasGodMode = _currentUser.HasAuthorizationClaim(AppClaims.Authorization.GodMode);
-
-            var hasMultipleCompanies = _currentUser.CompanyIds().Count > 1;
-
-            return hasGodMode || hasMultipleCompanies;
-        }
-
+        public bool ShowToggleCurrentCompanyItem() => _currentUser.CompanyIds().Count > 1 || _currentUser.HasGodMode();
+        public bool ShowToggleCurrentBusinessUnitItem() => _currentUser.BusinessUnitIds().Count > 1 || _currentUser.HasGodMode();
         public bool ShowCompaniesItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.CompaniesManagement) || _currentUser.HasAuthorizationClaim(AppClaims.Authorization.GodMode);
         public bool ShowUsersItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.RolesManagement) || _currentUser.HasAuthorizationClaim(AppClaims.Authorization.GodMode);
         public bool ShowRolesItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.RolesManagement) || _currentUser.HasAuthorizationClaim(AppClaims.Authorization.GodMode);

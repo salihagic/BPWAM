@@ -161,5 +161,21 @@ namespace BPWA.DAL.Services
                 return Result.Failed<TEntity>("Failed to load entity");
             }
         }
+
+        virtual public async Task<Result<TEntity>> GetEntityByIdWithoutIncludes(TId id)
+        {
+            try
+            {
+                var query = DatabaseContext.Set<TEntity>().Where(x => x.Id.Equals(id));
+
+                var item = await query.AsNoTracking().FirstOrDefaultAsync();
+
+                return Result.Success(item);
+            }
+            catch (Exception e)
+            {
+                return Result.Failed<TEntity>("Failed to load entity");
+            }
+        }
     }
 }

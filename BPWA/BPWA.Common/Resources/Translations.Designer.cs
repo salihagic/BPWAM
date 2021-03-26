@@ -169,6 +169,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add user.
+        /// </summary>
+        public static string Add_user {
+            get {
+                return ResourceManager.GetString("Add_user", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Administration.
         /// </summary>
         public static string Administration {
@@ -660,6 +669,15 @@ namespace BPWA.Common.Resources {
         public static string Edit_ticket {
             get {
                 return ResourceManager.GetString("Edit_ticket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit user.
+        /// </summary>
+        public static string Edit_user {
+            get {
+                return ResourceManager.GetString("Edit_user", resourceCulture);
             }
         }
         
@@ -1191,6 +1209,15 @@ namespace BPWA.Common.Resources {
         public static string Select_business_unit {
             get {
                 return ResourceManager.GetString("Select_business_unit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select city.
+        /// </summary>
+        public static string Select_city {
+            get {
+                return ResourceManager.GetString("Select_city", resourceCulture);
             }
         }
         

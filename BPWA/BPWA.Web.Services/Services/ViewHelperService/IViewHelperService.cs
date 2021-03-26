@@ -13,7 +13,8 @@
 
         #region Items
 
-        bool ShowToggleCompanyItem();
+        bool ShowToggleCurrentCompanyItem();
+        bool ShowToggleCurrentBusinessUnitItem();
         bool ShowCompaniesItem();
         bool ShowRolesItem();
         bool ShowUsersItem();

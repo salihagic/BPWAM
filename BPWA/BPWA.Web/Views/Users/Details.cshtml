@@ -1,4 +1,4 @@
-﻿@model CityDTO
+﻿@model UserDTO
 @{ Layout = null; }
 
 <div class="modal-header">
@@ -11,14 +11,25 @@
 <div class="modal-body">
 
     <div class="col-md-12 row">
-        <div class="col-md form-group">
-            <label>@Translations.Name</label>
-            <input asp-for="Name" class="form-control m-input" disabled>
+        <div class="col-md-6 form-group">
+            <label>@Translations.User_name</label>
+            <input asp-for="UserName" class="form-control m-input" disabled>
         </div>
-
-        <div class="col-md form-group">
-            <label>@Translations.Country</label>
-            <input asp-for="Country.Name" class="form-control m-input" disabled>
+        <div class="col-md-6 form-group">
+            <label>@Translations.Email</label>
+            <input asp-for="Email" class="form-control m-input" disabled>
+        </div>
+        <div class="col-md-6 form-group">
+            <label>@Translations.First_name</label>
+            <input asp-for="FirstName" class="form-control m-input" disabled>
+        </div>
+        <div class="col-md-6 form-group">
+            <label>@Translations.Last_name</label>
+            <input asp-for="LastName" class="form-control m-input" disabled>
+        </div>
+        <div class="col-md-12 form-group">
+            <label>@Translations.City</label>
+            <input asp-for="City.Name" class="form-control m-input" disabled>
         </div>
     </div>
 

@@ -22,5 +22,6 @@ namespace BPWA.DAL.Services
         Task<Result<List<TEntity>>> GetEntities(TSearchModel searchModel = null);
         Task<Result<TDTO>> GetById(TId id);
         Task<Result<TEntity>> GetEntityById(TId id);
+        Task<Result<TEntity>> GetEntityByIdWithoutIncludes(TId id);
     }
 }

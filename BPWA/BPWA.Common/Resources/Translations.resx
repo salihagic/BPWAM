@@ -600,4 +600,13 @@
   <data name="User_name" xml:space="preserve">
     <value>Username</value>
   </data>
+  <data name="Add_user" xml:space="preserve">
+    <value>Add user</value>
+  </data>
+  <data name="Select_city" xml:space="preserve">
+    <value>Select city</value>
+  </data>
+  <data name="Edit_user" xml:space="preserve">
+    <value>Edit user</value>
+  </data>
 </root>

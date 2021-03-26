@@ -120,6 +120,8 @@ namespace BPWA.Controllers
         [HttpPost]
         public virtual async Task<IActionResult> Dropdown(TSearchModel searchModel)
         {
+            searchModel ??= new TSearchModel();
+
             var result = await BaseReadService.Get(searchModel);
 
             if (!result.IsSuccess)

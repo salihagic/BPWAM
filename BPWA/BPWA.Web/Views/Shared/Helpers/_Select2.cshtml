@@ -77,6 +77,21 @@
         });
     }
 
+    function Select2AjaxCities(options) {
+        Select2Ajax({
+            element: options.element,
+            url: '@Url.Action("Dropdown", "Cities")',
+            map: (x) => {
+                return {
+                    id: x.id,
+                    text: x.name
+                };
+            },
+            placeholder: '@Translations.Select_city',
+            ...options
+        });
+    }
+
     function Select2AjaxCurrencies(options) {
         Select2Ajax({
             element: options.element,

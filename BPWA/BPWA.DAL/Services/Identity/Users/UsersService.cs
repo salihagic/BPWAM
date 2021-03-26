@@ -251,6 +251,22 @@ namespace BPWA.DAL.Services
             }
         }
 
+        virtual public async Task<Result<User>> GetEntityByIdWithoutIncludes(string id)
+        {
+            try
+            {
+                var query = DatabaseContext.Users.Where(x => x.Id.Equals(id));
+
+                var item = await query.AsNoTracking().FirstOrDefaultAsync();
+
+                return Result.Success(item);
+            }
+            catch (Exception e)
+            {
+                return Result.Failed<User>("Failed to load entity");
+            }
+        }
+
         virtual public async Task<Result<UserDTO>> Add(User entity)
         {
             var result = await AddEntity(entity);
@@ -274,6 +290,8 @@ namespace BPWA.DAL.Services
         {
             try
             {
+                entity.Id ??= Guid.NewGuid().ToString();
+
                 await DatabaseContext.Set<User>().AddAsync(entity);
                 await DatabaseContext.SaveChangesAsync();
 

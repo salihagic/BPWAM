@@ -199,6 +199,22 @@ namespace BPWA.DAL.Services
             }
         }
 
+        virtual public async Task<Result<Role>> GetEntityByIdWithoutIncludes(string id)
+        {
+            try
+            {
+                var query = DatabaseContext.Roles.Where(x => x.Id.Equals(id));
+
+                var item = await query.AsNoTracking().FirstOrDefaultAsync();
+
+                return Result.Success(item);
+            }
+            catch (Exception e)
+            {
+                return Result.Failed<Role>("Failed to load entity");
+            }
+        }
+
         virtual public async Task<Result<RoleDTO>> Update(Role entity)
         {
             var result = await UpdateEntity(entity);
