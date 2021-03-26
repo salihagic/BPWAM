@@ -17,6 +17,7 @@ namespace BPWA.DAL.Services
         int? CurrentBusinessUnitId();
         string CurrentBusinessUnitName();
         bool HasAuthorizationClaim(string claim);
+        bool HasGodMode();
         List<string> Configuration();
     }
 }

@@ -26,7 +26,7 @@ namespace BPWA.Controllers
         [HttpPost]
         public async Task UpdateTimezone(int timezoneUtcOffsetInMinutes)
         {
-            await _usersWebService.UpdateTimezoneForLoggedUser(timezoneUtcOffsetInMinutes);
+            await _usersWebService.UpdateTimezoneForCurrentUser(timezoneUtcOffsetInMinutes);
         }
 
         #region Toggle current company

@@ -223,6 +223,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Business unit must be selected.
+        /// </summary>
+        public static string Business_unit_must_be_selected {
+            get {
+                return ResourceManager.GetString("Business_unit_must_be_selected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Business unit roles management.
         /// </summary>
         public static string BusinessUnitRolesManagement {
@@ -286,6 +295,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to City.
+        /// </summary>
+        public static string City {
+            get {
+                return ResourceManager.GetString("City", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Clear filters.
         /// </summary>
         public static string Clear_filters {
@@ -345,6 +363,15 @@ namespace BPWA.Common.Resources {
         public static string Company {
             get {
                 return ResourceManager.GetString("Company", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Company must be selected.
+        /// </summary>
+        public static string Company_must_be_selected {
+            get {
+                return ResourceManager.GetString("Company_must_be_selected", resourceCulture);
             }
         }
         
@@ -637,11 +664,29 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Email.
+        /// </summary>
+        public static string Email {
+            get {
+                return ResourceManager.GetString("Email", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exception.
         /// </summary>
         public static string Exception {
             get {
                 return ResourceManager.GetString("Exception", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to update timezone.
+        /// </summary>
+        public static string Failed_to_update_timezone {
+            get {
+                return ResourceManager.GetString("Failed_to_update_timezone", resourceCulture);
             }
         }
         
@@ -660,6 +705,15 @@ namespace BPWA.Common.Resources {
         public static string First {
             get {
                 return ResourceManager.GetString("First", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First name.
+        /// </summary>
+        public static string First_name {
+            get {
+                return ResourceManager.GetString("First_name", resourceCulture);
             }
         }
         
@@ -777,6 +831,15 @@ namespace BPWA.Common.Resources {
         public static string Last {
             get {
                 return ResourceManager.GetString("Last", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last name.
+        /// </summary>
+        public static string Last_name {
+            get {
+                return ResourceManager.GetString("Last_name", resourceCulture);
             }
         }
         
@@ -1366,6 +1429,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Username.
+        /// </summary>
+        public static string User_name {
+            get {
+                return ResourceManager.GetString("User_name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Username or email.
         /// </summary>
         public static string User_name_or_email {
@@ -1398,6 +1470,15 @@ namespace BPWA.Common.Resources {
         public static string User_not_in_role {
             get {
                 return ResourceManager.GetString("User_not_in_role", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Users.
+        /// </summary>
+        public static string Users {
+            get {
+                return ResourceManager.GetString("Users", resourceCulture);
             }
         }
         

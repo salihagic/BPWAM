@@ -1,0 +1,102 @@
+﻿@model UserSearchModel
+
+<div class="kt-portlet kt-portlet--mobile col-lg-12">
+    <form method="POST" class="datatable_search_form">
+
+        <input asp-for="IsDeleted" type="hidden" />
+
+        <div class="kt-portlet__head kt-portlet__head--lg">
+            <div class="kt-portlet__head-label">
+                <span class="kt-portlet__head-icon">
+                    <i class="kt-font-brand kt-menu__link-icon flaticon-globe"></i>
+                </span>
+                <h3 class="kt-portlet__head-title">
+                    @Translations.Users
+                </h3>
+            </div>
+            <div class="kt-portlet__head-toolbar">
+                <div class="kt-portlet__head-wrapper">
+                    <div class="kt-portlet__head-actions">
+                        <button data-url="@Url.Action("Add", "Users")" class="open_modal_button btn btn-brand btn-elevate btn-icon-sm" type="button">
+                            <i class="la la-plus"></i>
+                            @Translations.New_record
+                        </button>
+                        <button class="btn btn-default datatable_search_form_reset_button">
+                            <span>@Translations.Clear_filters<i class="flaticon-cancel ml-2"></i></span>
+                        </button>
+                        <button class="btn btn-default" type="submit">
+                            <span>@Translations.Search<i class="la la-search ml-2"></i></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="kt-portlet__head kt-portlet__head--lg">
+            <div class="col-md-12 row mt-4">
+                <div class="col-md form-group">
+                    <input asp-for="UserName" placeholder="@Translations.User_name" class="form-control kt-input">
+                </div>
+                <div class="col-md form-group">
+                    <input asp-for="Email" placeholder="@Translations.Email" class="form-control kt-input">
+                </div>
+                <div class="col-md form-group">
+                    <input asp-for="FirstName" placeholder="@Translations.First_name" class="form-control kt-input">
+                </div>
+                <div class="col-md form-group">
+                    <input asp-for="LastName" placeholder="@Translations.Last_name" class="form-control kt-input">
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+    <div class="kt-portlet__body">
+
+        <table class="datatable"></table>
+
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function() {
+
+        DatatableAjax({
+            element: '.datatable',
+            url: '@Url.Action("IndexJson", "Users")',
+            searchFormElement: '.datatable_search_form',
+            columns: [
+                {
+                    field: '@nameof(UserDTO.FirstName).ToCamelCase()',
+                    title: '@Translations.Name',
+                    template: function (row) {
+                        return `${row.firstName} ${row.lastName}`;
+                    },
+                },
+                {
+                    field: '@nameof(UserDTO.UserName).ToCamelCase()',
+                    title: '@Translations.User_name',
+                },
+                {
+                    field: '@nameof(UserDTO.Email).ToCamelCase()',
+                    title: '@Translations.Email',
+                },
+                {
+                    field: '@nameof(UserDTO.City).ToCamelCase().@nameof(UserDTO.City.Name).ToCamelCase()',
+                    title: '@Translations.City',
+                },
+                {
+                    template: (row) => DatatableBasicActions({
+                        detailsUrl: `@Url.Action("Details", "Users")/${row.id}`,
+                        editUrl: `@Url.Action("Edit", "Users")/${row.id}`,
+                        deleteUrl: `@Url.Action("Delete", "Users")/${row.id}`
+                    }),
+                    ...DatatableActionsColumnOptions(),
+                }
+            ]
+        });
+    });
+
+</script>
+
+

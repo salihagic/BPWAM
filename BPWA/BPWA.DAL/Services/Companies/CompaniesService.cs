@@ -9,15 +9,22 @@ namespace BPWA.DAL.Services
 {
     public class CompaniesService : BaseCRUDService<Company, CompanySearchModel, CompanyDTO>, ICompaniesService
     {
+        protected CurrentUser CurrentUser { get; }
+
         public CompaniesService(
             DatabaseContext databaseContext,
-            IMapper mapper
-            ) : base(databaseContext, mapper) { }
+            IMapper mapper,
+            CurrentUser currentUser
+            ) : base(databaseContext, mapper)
+        {
+            CurrentUser = currentUser;
+        }
 
         public override IQueryable<Company> BuildQueryConditions(IQueryable<Company> query, CompanySearchModel searchModel = null)
         {
             return base.BuildQueryConditions(query, searchModel)
-                       .WhereIf(!string.IsNullOrEmpty(searchModel.Name), x => x.Name.ToLower().StartsWith(searchModel.Name.ToLower()));
+                       .WhereIf(!string.IsNullOrEmpty(searchModel.Name), x => x.Name.ToLower().StartsWith(searchModel.Name.ToLower()))
+                       .Where(x => CurrentUser.CompanyIds().Contains(x.Id) || CurrentUser.HasGodMode());
         }
     }
 }

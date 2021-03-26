@@ -573,4 +573,31 @@
   <data name="ToggleCompany" xml:space="preserve">
     <value>Toggle company</value>
   </data>
+  <data name="Business_unit_must_be_selected" xml:space="preserve">
+    <value>Business unit must be selected</value>
+  </data>
+  <data name="Company_must_be_selected" xml:space="preserve">
+    <value>Company must be selected</value>
+  </data>
+  <data name="Failed_to_update_timezone" xml:space="preserve">
+    <value>Failed to update timezone</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="First_name" xml:space="preserve">
+    <value>First name</value>
+  </data>
+  <data name="Last_name" xml:space="preserve">
+    <value>Last name</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="User_name" xml:space="preserve">
+    <value>Username</value>
+  </data>
 </root>

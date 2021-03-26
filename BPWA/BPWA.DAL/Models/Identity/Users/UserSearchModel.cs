@@ -2,16 +2,14 @@
 
 namespace BPWA.DAL.Models
 {
-    public class UserDTO : BaseDTO<string>
+    public class UserSearchModel : BaseSearchModel
     {
         public string UserName { get; set; }
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string TimezoneId { get; set; }
-        public int? CityId { get; set; }
-
-        public CityDTO City { get; set; }
-        public List<UserRoleDTO> UserRoles { get; set; }
+        public List<int> CityIds { get; set; }
+        public List<string> RoleIds { get; set; }
     }
 }

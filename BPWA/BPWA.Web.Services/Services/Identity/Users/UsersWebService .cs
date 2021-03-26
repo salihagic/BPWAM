@@ -5,6 +5,7 @@ using BPWA.DAL.Database;
 using BPWA.DAL.Services;
 using BPWA.Web.Services.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,35 +31,33 @@ namespace BPWA.Web.Services.Services
         {
         }
 
-        public async Task SignOut()
+        public override IQueryable<User> BuildIncludesById(string id, IQueryable<User> query)
         {
-            await SignInManager.SignOutAsync();
+            return base.BuildIncludesById(id, query)
+                       .Include(x => x.City);
         }
 
-        public async Task<Result> RefreshSignIn()
+        public override IQueryable<User> BuildIncludes(IQueryable<User> query)
         {
-            var currentUser = await GetEntityById(CurrentUser.Id());
-
-            if (currentUser == null)
-                return Result.Failed(Translations.User_not_found);
-
-            await SignInManager.RefreshSignInAsync(currentUser);
-
-            return Result.Success();
+            return base.BuildIncludes(query)
+                       .Include(x => x.City);
         }
 
         public async Task<Result> ToggleCurrentCompany(ToggleCurrentCompanyModel model)
         {
-            var currentUser = await GetEntityById(CurrentUser.Id());
+            var currentUserResult = await GetEntityById(CurrentUser.Id());
 
-            if (currentUser == null)
-                return Result.Failed(Translations.User_not_found);
+            if (!currentUserResult.IsSuccess)
+                return Result.Failed(currentUserResult.GetErrorMessages());
+
+            if(!CurrentUser.HasGodMode() && !model.CompanyId.HasValue)
+                return Result.Failed(Translations.Company_must_be_selected);
 
             try
             {
-                currentUser.CurrentCompanyId = model.CompanyId;
+                currentUserResult.Item.CurrentCompanyId = model.CompanyId;
                 if (!model.CompanyId.HasValue)
-                    currentUser.CurrentBusinessUnitId = null;
+                    currentUserResult.Item.CurrentBusinessUnitId = null;
 
                 await DatabaseContext.SaveChangesAsync();
             }
@@ -77,19 +76,22 @@ namespace BPWA.Web.Services.Services
 
         public async Task<Result> ToggleCurrentBusinessUnit(ToggleCurrentBusinessUnitModel model)
         {
-            var currentUser = await GetEntityById(CurrentUser.Id());
+            var currentUserResult = await GetEntityById(CurrentUser.Id());
 
-            if (currentUser == null)
-                return Result.Failed(Translations.User_not_found);
+            if (!currentUserResult.IsSuccess)
+                return Result.Failed(currentUserResult.GetErrorMessages());
+
+            if (!CurrentUser.HasGodMode() && !model.BusinessUnitId.HasValue)
+                return Result.Failed(Translations.Business_unit_must_be_selected);
 
             try
             {
-                currentUser.CurrentBusinessUnitId = model.BusinessUnitId;
+                currentUserResult.Item.CurrentBusinessUnitId = model.BusinessUnitId;
 
                 if (model.BusinessUnitId.HasValue)
                 {
                     var companyId = DatabaseContext.BusinessUnits.FirstOrDefault(x => x.Id == model.BusinessUnitId)?.CompanyId;
-                    currentUser.CurrentCompanyId = companyId;
+                    currentUserResult.Item.CurrentCompanyId = companyId;
                 }
 
                 await DatabaseContext.SaveChangesAsync();
@@ -105,6 +107,23 @@ namespace BPWA.Web.Services.Services
                 return Result.Failed(Translations.There_was_an_error_while_trying_to_change_current_business_unit);
 
             return Result.Success();
+        }
+
+        public async Task<Result> RefreshSignIn()
+        {
+            var currentUserResult = await GetEntityById(CurrentUser.Id());
+
+            if (!currentUserResult.IsSuccess)
+                return Result.Failed(currentUserResult.GetErrorMessages());
+
+            await SignInManager.RefreshSignInAsync(currentUserResult.Item);
+
+            return Result.Success();
+        }
+
+        public async Task SignOut()
+        {
+            await SignInManager.SignOutAsync();
         }
     }
 }

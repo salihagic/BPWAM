@@ -21,7 +21,12 @@ namespace BPWA.DAL.Services
         {
             var claims = new List<string>();
 
-            if (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.RolesManagement) || _currentUser.HasAuthorizationClaim(AppClaims.Authorization.GodMode))
+            if (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.GodMode))
+            {
+                claims.Add(AppClaims.Authorization.GodMode);
+                claims.AddRange(AppClaimsHelper.Authorization.All);
+            }
+            else if (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.RolesManagement))
             {
                 claims.AddRange(AppClaimsHelper.Authorization.All);
             }

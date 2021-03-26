@@ -5,15 +5,12 @@ namespace BPWA.DAL.Services
 {
     public class CompaniesWebService : CompaniesService, ICompaniesWebService
     {
-        private CurrentUser _currentUser;
-
         public CompaniesWebService(
             DatabaseContext databaseContext,
             IMapper mapper,
             CurrentUser currentUser
-            ) : base(databaseContext, mapper)
+            ) : base(databaseContext, mapper, currentUser)
         {
-            _currentUser = currentUser;
         }
     }
 }

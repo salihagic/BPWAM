@@ -14,12 +14,13 @@
         #region Items
 
         bool ShowToggleCompanyItem();
-        bool ShowCitiesItem();
         bool ShowCompaniesItem();
+        bool ShowRolesItem();
+        bool ShowUsersItem();
+        bool ShowCitiesItem();
         bool ShowCountriesItem();
         bool ShowCurrenciesItem();
         bool ShowLanguagesItem();
-        bool ShowRolesItem();
         bool ShowTicketsItem();
 
         #endregion Items

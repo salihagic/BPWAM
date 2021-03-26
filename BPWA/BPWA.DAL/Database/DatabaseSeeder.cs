@@ -32,10 +32,10 @@ namespace BPWA.DAL.Database
             }
             if (databaseSettings.Seed)
             {
+                await SeedCompaniesAndBusinessUnits(serviceProvider);
                 await SeedRoles(serviceProvider);
                 await SeedUsers(serviceProvider);
                 await SeedGeolocations(serviceProvider);
-                await SeedCompaniesAndBusinessUnits(serviceProvider);
             }
         }
 
@@ -117,6 +117,7 @@ namespace BPWA.DAL.Database
         private static async Task SeedUsers(IServiceProvider serviceProvider)
         {
             var usersService = serviceProvider.GetService<IUsersService>();
+            var databaseContext = serviceProvider.GetService<DatabaseContext>();
 
             #region Superadmin
 
@@ -133,7 +134,7 @@ namespace BPWA.DAL.Database
                     Email = "demo.superadmin@BPWA.com"
                 }, "demo");
 
-                await usersService.AddToRole(user, "Superadmin");
+                await usersService.AddToRole(user.Item, "Superadmin");
             }
 
             #endregion Superadmin

@@ -38,6 +38,7 @@ namespace BPWA.Web.Services.Services
         }
         public string CurrentBusinessUnitName() => User.FindFirstValue(AppClaims.Meta.CurrentBusinessUnitName);
         public bool HasAuthorizationClaim(string claim) => User.Claims.Any(x => x.Type == AppClaimsHelper.Authorization.Type && x.Value == claim);
+        public bool HasGodMode() => HasAuthorizationClaim(AppClaims.Authorization.GodMode);
         public List<string> Configuration() => User.FindAll(x => x.Type == AppClaimsHelper.Configuration.Type).Select(x => x.Value).ToList();
 
         private readonly IHttpContextAccessor _httpContextAccessor;
