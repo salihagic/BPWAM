@@ -45,7 +45,7 @@ namespace BPWA.Web.Services.Services
 
         public async Task<Result> ToggleCurrentCompany(ToggleCurrentCompanyModel model)
         {
-            if(!CurrentUser.HasGodMode() && !(CurrentUser.CompanyIds().Count > 1))
+            if (!CurrentUser.HasGodMode() && !(CurrentUser.CompanyIds().Count > 1))
                 return Result.Failed(Translations.There_was_an_error_while_trying_to_change_current_company);
 
             var currentUserResult = await GetEntityById(CurrentUser.Id());
@@ -56,9 +56,9 @@ namespace BPWA.Web.Services.Services
             try
             {
                 currentUserResult.Item.CurrentCompanyId = model.CompanyId;
-                if (!model.CompanyId.HasValue)
-                    currentUserResult.Item.CurrentBusinessUnitId = null;
+                currentUserResult.Item.CurrentBusinessUnitId = null;
 
+                await Update(currentUserResult.Item);
                 await DatabaseContext.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -94,6 +94,7 @@ namespace BPWA.Web.Services.Services
                     currentUserResult.Item.CurrentCompanyId = companyId;
                 }
 
+                await Update(currentUserResult.Item);
                 await DatabaseContext.SaveChangesAsync();
             }
             catch (Exception ex)
