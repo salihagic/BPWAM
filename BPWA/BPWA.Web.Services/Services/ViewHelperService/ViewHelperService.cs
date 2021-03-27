@@ -12,6 +12,7 @@ namespace BPWA.Web.Services.Services
         #region Sections
 
         public bool ShowAdministrationSection() => new List<bool>{
+            ShowCompaniesItem(),
             ShowAuthSection(),
             ShowGeolocationsSection(),
         }.Any(x => x);

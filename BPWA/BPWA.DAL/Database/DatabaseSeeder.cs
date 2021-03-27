@@ -11,15 +11,24 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 
 namespace BPWA.DAL.Database
 {
     public static class DatabaseSeeder
     {
+        static string superAdminRoleName = "SuperAdmin";
+        static string superAdminUserName = "super.admin";
+        static string companyAdminRoleName = "CompanyAdmin";
+        static string companyAdminUserName = "company.admin";
+        static string businessUnitAdminRoleName = "BusinessUnitAdmin";
+        static string businessUnitAdminUserName = "businessunit.admin";
+
         public static async Task Seed(IServiceProvider serviceProvider)
         {
             var databaseContext = serviceProvider.GetService<DatabaseContext>();
             var databaseSettings = serviceProvider.GetService<DatabaseSettings>();
+            var environment = serviceProvider.GetService<IHostingEnvironment>();
 
             if (databaseSettings.RecreateDatabase)
             {
@@ -32,9 +41,10 @@ namespace BPWA.DAL.Database
             }
             if (databaseSettings.Seed)
             {
-                await SeedCompaniesAndBusinessUnits(serviceProvider);
                 await SeedRoles(serviceProvider);
                 await SeedUsers(serviceProvider);
+                if (environment.IsDevelopment())
+                    await SeedCompaniesAndBusinessUnits(serviceProvider);
                 await SeedGeolocations(serviceProvider);
             }
         }
@@ -43,39 +53,87 @@ namespace BPWA.DAL.Database
         {
             var databaseContext = serviceProvider.GetService<DatabaseContext>();
 
+            var superAdminUser = await databaseContext.Users.FirstOrDefaultAsync(x => x.UserName == superAdminUserName);
+            var companyAdminUser = await databaseContext.Users.FirstOrDefaultAsync(x => x.UserName == companyAdminUserName);
+            var businessUnitAdminUser = await databaseContext.Users.FirstOrDefaultAsync(x => x.UserName == businessUnitAdminUserName);
+
             try
             {
                 if (!databaseContext.Companies.Any())
                 {
-                    databaseContext.Companies.Add(new Company 
+                    databaseContext.Companies.Add(new Company
                     {
                         Name = "Company X",
                         BusinessUnits = new List<BusinessUnit>
                         {
-                            new BusinessUnit { Name = "Business Unit X1" },
-                            new BusinessUnit { Name = "Business Unit X2" },
-                            new BusinessUnit { Name = "Business Unit X3" },
-                        }
+                            new BusinessUnit {
+                                Name = "Business Unit X1",
+                                Roles = GetBusinessUnitRoles(),
+                            },
+                            new BusinessUnit {
+                                Name = "Business Unit X2",
+                                Roles = GetBusinessUnitRoles(),
+                            },
+                            new BusinessUnit {
+                                Name = "Business Unit X3",
+                                Roles = GetBusinessUnitRoles(),
+                            },
+                        },
+                        CompanyUsers = new List<CompanyUser>
+                        {
+                            new CompanyUser { UserId = companyAdminUser.Id },
+                            new CompanyUser { UserId = businessUnitAdminUser.Id },
+                        },
+                        Roles = GetCompanyRoles()
                     });
                     databaseContext.Companies.Add(new Company
                     {
                         Name = "Company Y",
                         BusinessUnits = new List<BusinessUnit>
                         {
-                            new BusinessUnit { Name = "Business Unit Y1" },
-                            new BusinessUnit { Name = "Business Unit Y2" },
-                            new BusinessUnit { Name = "Business Unit Y3" },
-                        }
+                            new BusinessUnit {
+                                Name = "Business Unit Y1",
+                                BusinessUnitUsers = new List<BusinessUnitUser>
+                                {
+                                    new BusinessUnitUser { UserId = companyAdminUser.Id },
+                                    new BusinessUnitUser { UserId = businessUnitAdminUser.Id },
+                                },
+                                Roles = GetBusinessUnitRoles()
+                            },
+                            new BusinessUnit {
+                                Name = "Business Unit Y1",
+                                Roles = GetBusinessUnitRoles()
+                            },
+                            new BusinessUnit {
+                                Name = "Business Unit Y3",
+                                Roles = GetBusinessUnitRoles()
+                            },
+                        },
+                        Roles = GetCompanyRoles()
                     });
                     databaseContext.Companies.Add(new Company
                     {
                         Name = "Company Z",
                         BusinessUnits = new List<BusinessUnit>
                         {
-                            new BusinessUnit { Name = "Business Unit Z1" },
-                            new BusinessUnit { Name = "Business Unit Z2" },
-                            new BusinessUnit { Name = "Business Unit Z3" },
-                        }
+                            new BusinessUnit {
+                                Name = "Business Unit Z1",
+                                BusinessUnitUsers = new List<BusinessUnitUser>
+                                {
+                                    new BusinessUnitUser { UserId = companyAdminUser.Id },
+                                },
+                                Roles = GetBusinessUnitRoles()
+                            },
+                            new BusinessUnit {
+                                Name = "Business Unit Z2",
+                                Roles = GetBusinessUnitRoles()
+                            },
+                            new BusinessUnit {
+                                Name = "Business Unit Z3",
+                                Roles = GetBusinessUnitRoles()
+                            },
+                        },
+                        Roles = GetCompanyRoles()
                     });
                     await databaseContext.SaveChangesAsync();
                 }
@@ -90,14 +148,16 @@ namespace BPWA.DAL.Database
         {
             var rolesService = serviceProvider.GetService<IRolesService>();
 
-            var superadminRole = await rolesService.GetEntityWithClaimsByName("Superadmin");
+            #region Superadmin
+
+            var superadminRole = await rolesService.GetEntityWithClaimsByName(superAdminRoleName);
 
             if (superadminRole == null)
             {
                 superadminRole = new Role
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = "Superadmin",
+                    Name = superAdminRoleName,
                     RoleClaims = new List<RoleClaim>()
                 };
 
@@ -112,32 +172,113 @@ namespace BPWA.DAL.Database
 
                 await rolesService.UpdateEntity(superadminRole);
             }
+
+            #endregion Superadmin
+        }
+
+        private static List<Role> GetCompanyRoles()
+        {
+            return new List<Role>
+            {
+                new Role
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = companyAdminRoleName,
+                    RoleClaims = AppClaimsHelper.Authorization.Company.All.Select(x =>
+                    new RoleClaim
+                    {
+                        ClaimType = AppClaimsHelper.Authorization.Type,
+                        ClaimValue = x
+                    }).ToList()
+                }
+            };
+        }
+
+        private static List<Role> GetBusinessUnitRoles()
+        {
+            return new List<Role>
+            {
+                new Role
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = businessUnitAdminRoleName,
+                    RoleClaims = AppClaimsHelper.Authorization.Company.All.Select(x =>
+                    new RoleClaim
+                    {
+                        ClaimType = AppClaimsHelper.Authorization.Type,
+                        ClaimValue = x
+                    }).ToList()
+                }
+            };
         }
 
         private static async Task SeedUsers(IServiceProvider serviceProvider)
         {
-            var usersService = serviceProvider.GetService<IUsersService>();
             var databaseContext = serviceProvider.GetService<DatabaseContext>();
+            var usersService = serviceProvider.GetService<IUsersService>();
+            var environment = serviceProvider.GetService<IHostingEnvironment>();
 
-            #region Superadmin
+            #region Super admin
 
-            var superadminUser = await usersService.GetEntityByUserNameOrEmail("demo.superadmin");
+            var superAdminUser = await databaseContext.Users.FirstOrDefaultAsync(x => x.UserName == superAdminUserName);
 
-            if (superadminUser == null)
+            if (superAdminUser == null)
             {
                 var user = await usersService.AddEntity(new User
                 {
                     Id = Guid.NewGuid().ToString(),
-                    UserName = "demo.superadmin",
-                    FirstName = "Demo",
-                    LastName = "Superadmin",
-                    Email = "demo.superadmin@BPWA.com"
+                    UserName = superAdminUserName,
+                    FirstName = "Super",
+                    LastName = "Admin",
+                    Email = "super.admin@BPWA.com"
                 }, "demo");
 
-                await usersService.AddToRole(user.Item, "Superadmin");
+                await usersService.AddToRole(user.Item, superAdminRoleName);
             }
 
-            #endregion Superadmin
+            #endregion Super admin
+
+            #region Company admin
+
+            if (environment.IsDevelopment())
+            {
+                var companyAdminUser = await databaseContext.Users.FirstOrDefaultAsync(x => x.UserName == companyAdminUserName);
+
+                if (companyAdminUser == null)
+                {
+                    var user = await usersService.AddEntity(new User
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        UserName = companyAdminUserName,
+                        FirstName = "Company",
+                        LastName = "Admin",
+                        Email = "company.admin@BPWA.com",
+                    }, "demo");
+                }
+            }
+
+            #endregion Company admin
+
+            #region BusinessUnit admin
+
+            if (environment.IsDevelopment())
+            {
+                var businessUnitAdminUser = await databaseContext.Users.FirstOrDefaultAsync(x => x.UserName == businessUnitAdminUserName);
+
+                if (businessUnitAdminUser == null)
+                {
+                    var user = await usersService.AddEntity(new User
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        UserName = businessUnitAdminUserName,
+                        FirstName = "BusinessUnit",
+                        LastName = "Admin",
+                        Email = "businessUnit.admin@BPWA.com"
+                    }, "demo");
+                }
+            }
+
+            #endregion BusinessUnit admin
         }
 
         public static async Task SeedGeolocations(IServiceProvider serviceProvider)

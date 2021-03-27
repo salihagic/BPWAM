@@ -168,7 +168,7 @@ namespace BPWA.Web.Services.Services
             {
                 //Delete
                 var currentUserRolesToDelete = currentUserRoles.Where(x => !entity.UserRoles?.Any(y => y.RoleId == x.RoleId) ?? true).ToList();
-                currentUserRolesToDelete?.ForEach(x => x.IsDeleted = true);
+                DatabaseContext.UserRoles.RemoveRange(currentUserRolesToDelete);
 
                 await DatabaseContext.SaveChangesAsync();
 

@@ -74,6 +74,10 @@ namespace BPWA.DAL.Services
             try
             {
                 var user = (await UserManager.FindByNameAsync(userName)) ?? (await UserManager.FindByEmailAsync(userName));
+                
+                if(user == null)
+                    return Result.Failed<User>(Translations.User_name_or_email_invalid);
+
                 return Result.Success(user);
             }
             catch (Exception e)
