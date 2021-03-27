@@ -9,9 +9,9 @@ namespace BPWA.DAL.Mappings
         public CityProfile()
         {
             CreateMap<CityAddModel, City>();
-            CreateMap<CityUpdateModel, City>()
-                .ReverseMap()
-                .ForMember(dest => dest.SelectedCountry, opt => opt.MapFrom(src => src.Country.Name));
+            CreateMap<City, CityUpdateModel>()
+                .ForMember(dest => dest.SelectedCountry, opt => opt.MapFrom(src => src.Country.Name))
+                .ReverseMap();
         }
     }
 }

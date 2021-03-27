@@ -19,6 +19,7 @@ namespace BPWA.DAL.Mappings
                 .ForMember(dest => dest.CompanyIds, opt => opt.MapFrom(src => src.CompanyUsers.Select(x => x.CompanyId).ToList()))
                 .ForMember(dest => dest.BusinessUnitIds, opt => opt.MapFrom(src => src.BusinessUnitUsers.Select(x => x.BusinessUnitId).ToList()))
                 .ReverseMap()
+                .ForMember(dest => dest.City, opt => opt.Ignore())
                 .ForMember(dest => dest.UserRoles, opt => opt.MapFrom(src => src.RoleIds.Select(x => new UserRole { RoleId = x }).ToList()))
                 .ForMember(dest => dest.CompanyUsers, opt => opt.MapFrom(src => src.CompanyIds.Select(x => new CompanyUser { CompanyId = x }).ToList()))
                 .ForMember(dest => dest.BusinessUnitUsers, opt => opt.MapFrom(src => src.BusinessUnitIds.Select(x => new BusinessUnitUser { BusinessUnitId = x }).ToList()));
