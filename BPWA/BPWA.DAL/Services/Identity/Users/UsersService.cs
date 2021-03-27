@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BPWA.Common.Extensions;
 using BPWA.Common.Resources;
+using BPWA.Common.Services;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
 using BPWA.DAL.Models;
@@ -23,14 +24,17 @@ namespace BPWA.DAL.Services
         protected readonly UserManager<User> UserManager;
         protected readonly SignInManager<User> SignInManager;
         protected readonly CurrentUser CurrentUser;
-
+        protected readonly IPasswordGeneratorService PasswordGeneratorService;
+        protected readonly IEmailService EmailService;
 
         public UsersService(
             DatabaseContext databaseContext,
             IMapper mapper,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            CurrentUser loggedUserService
+            CurrentUser loggedUserService,
+            IPasswordGeneratorService passwordGeneratorService,
+            IEmailService emailService
             )
         {
             DatabaseContext = databaseContext;
@@ -39,6 +43,8 @@ namespace BPWA.DAL.Services
             UserManager = userManager;
             SignInManager = signInManager;
             CurrentUser = loggedUserService;
+            PasswordGeneratorService = passwordGeneratorService;
+            EmailService = emailService;
         }
 
         public async Task<Result<User>> AddEntity(User entity, string password)
@@ -294,10 +300,18 @@ namespace BPWA.DAL.Services
             {
                 entity.Id ??= Guid.NewGuid().ToString();
 
-                await DatabaseContext.Set<User>().AddAsync(entity);
-                await DatabaseContext.SaveChangesAsync();
+                var password = PasswordGeneratorService.Generate();
 
-                return Result.Success(entity);
+                var result = await AddEntity(entity, password);
+
+                if (result.IsSuccess)
+                {
+                    await EmailService.Send(entity.Email,
+                                      "Your account info",
+                                      $"UserName: {entity.UserName}\nPassword: ${password}");
+                }
+
+                return result;
             }
             catch (Exception e)
             {
@@ -324,11 +338,18 @@ namespace BPWA.DAL.Services
             }
         }
 
+        protected async Task<string> GenerateRandomPassword()
+        {
+            var password = "";
+
+            return password;
+        }
+
         virtual public async Task<Result<User>> UpdateEntity(User entity)
         {
             try
             {
-                DatabaseContext.Set<User>().Update(entity);
+                DatabaseContext.Users.Update(entity);
                 await DatabaseContext.SaveChangesAsync();
 
                 return Result.Success(entity);

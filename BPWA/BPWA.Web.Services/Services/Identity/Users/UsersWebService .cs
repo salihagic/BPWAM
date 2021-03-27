@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BPWA.Common.Extensions;
 using BPWA.Common.Resources;
+using BPWA.Common.Services;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
 using BPWA.DAL.Models;
@@ -24,13 +25,17 @@ namespace BPWA.Web.Services.Services
             DatabaseContext databaseContext,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            CurrentUser loggedUserService
+            CurrentUser loggedUserService,
+            IPasswordGeneratorService passwordGeneratorService,
+            IEmailService emailService
             ) : base(
                 databaseContext,
                 mapper,
                 userManager,
                 signInManager,
-                loggedUserService
+                loggedUserService,
+                passwordGeneratorService,
+                emailService
                 )
         {
         }

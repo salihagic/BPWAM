@@ -121,31 +121,31 @@
     <value>Sign in</value>
   </data>
   <data name="Concurrency_failure" xml:space="preserve">
-    <value>Concurrency_failure</value>
+    <value>Concurrency failure</value>
   </data>
   <data name="Default_error" xml:space="preserve">
     <value>Default_error</value>
   </data>
   <data name="Duplicate_email" xml:space="preserve">
-    <value>Duplicate_email</value>
+    <value>Duplicate email</value>
   </data>
   <data name="Duplicate_role_name" xml:space="preserve">
-    <value>Duplicate_role_name</value>
+    <value>Duplicate role name</value>
   </data>
   <data name="Duplicate_user_name" xml:space="preserve">
-    <value>Duplicate_user_name</value>
+    <value>Duplicate user name</value>
   </data>
   <data name="Invalid_email" xml:space="preserve">
-    <value>Invalid_email</value>
+    <value>Invalid email</value>
   </data>
   <data name="Invalid_role_name" xml:space="preserve">
-    <value>Invalid_role_name</value>
+    <value>Invalid role name</value>
   </data>
   <data name="Invalid_token" xml:space="preserve">
-    <value>Invalid_token</value>
+    <value>Invalid token</value>
   </data>
   <data name="Invalid_user_name" xml:space="preserve">
-    <value>Invalid_user_name</value>
+    <value>Invalid user name</value>
   </data>
   <data name="Login_already_associated" xml:space="preserve">
     <value>Login already associated</value>

@@ -3,6 +3,7 @@ using BPWA.Common.Extensions;
 using BPWA.Common.Resources;
 using BPWA.Core.Entities;
 using BPWA.DAL.Models;
+using BPWA.Web.Helpers.Filters;
 using BPWA.Web.Services.Models;
 using BPWA.Web.Services.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -93,7 +94,7 @@ namespace BPWA.Controllers
             return View(model);
         }
 
-        [HttpPost]
+        [HttpPost, Transaction]
         public virtual async Task<IActionResult> Add(TAddModel model)
         {
             ViewBag.Title = TranslationsHelper.Translate(CurrentAction);
@@ -174,7 +175,7 @@ namespace BPWA.Controllers
             return View(model);
         }
 
-        [HttpPost]
+        [HttpPost, Transaction]
         public virtual async Task<IActionResult> Edit(TUpdateModel model)
         {
             ViewBag.Title = TranslationsHelper.Translate(CurrentAction);
@@ -236,7 +237,7 @@ namespace BPWA.Controllers
 
         #region Delete
 
-        [HttpDelete]
+        [HttpDelete, Transaction]
         public virtual async Task<IActionResult> Delete(TId id)
         {
             var result = await BaseCRUDService.Delete(id);

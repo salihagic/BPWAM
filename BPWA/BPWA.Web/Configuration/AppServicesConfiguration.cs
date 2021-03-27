@@ -1,4 +1,5 @@
-﻿using BPWA.DAL.Services;
+﻿using BPWA.Common.Services;
+using BPWA.DAL.Services;
 using BPWA.Web.Services.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,10 +22,12 @@ namespace BPWA.Web.Configuration
 
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IUsersWebService, UsersWebService>();
-            services.AddScoped<CurrentUser, CurrentWebUser>();
             
             services.AddScoped<IRolesWebService, RolesWebService>();
             services.AddScoped<IRolesService, RolesService>();
+
+            services.AddScoped<CurrentUser, CurrentWebUser>();
+            services.AddScoped<IPasswordGeneratorService, PasswordGeneratorService>();
 
             #endregion Identity
 
@@ -32,6 +35,7 @@ namespace BPWA.Web.Configuration
 
             services.AddScoped<IDropdownHelperService, DropdownHelperService>();
             services.AddScoped<IViewHelperService, ViewHelperService>();
+            services.AddScoped<IEmailService, EmailService>();
 
             #endregion Other
 

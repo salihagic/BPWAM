@@ -394,7 +394,7 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Concurrency_failure.
+        ///   Looks up a localized string similar to Concurrency failure.
         /// </summary>
         public static string Concurrency_failure {
             get {
@@ -547,7 +547,7 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Duplicate_email.
+        ///   Looks up a localized string similar to Duplicate email.
         /// </summary>
         public static string Duplicate_email {
             get {
@@ -556,7 +556,7 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Duplicate_role_name.
+        ///   Looks up a localized string similar to Duplicate role name.
         /// </summary>
         public static string Duplicate_role_name {
             get {
@@ -565,7 +565,7 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Duplicate_user_name.
+        ///   Looks up a localized string similar to Duplicate user name.
         /// </summary>
         public static string Duplicate_user_name {
             get {
@@ -781,7 +781,7 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid_email.
+        ///   Looks up a localized string similar to Invalid email.
         /// </summary>
         public static string Invalid_email {
             get {
@@ -790,7 +790,7 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid_role_name.
+        ///   Looks up a localized string similar to Invalid role name.
         /// </summary>
         public static string Invalid_role_name {
             get {
@@ -799,7 +799,7 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid_token.
+        ///   Looks up a localized string similar to Invalid token.
         /// </summary>
         public static string Invalid_token {
             get {
@@ -808,7 +808,7 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid_user_name.
+        ///   Looks up a localized string similar to Invalid user name.
         /// </summary>
         public static string Invalid_user_name {
             get {
