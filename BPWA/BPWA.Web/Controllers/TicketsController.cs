@@ -3,10 +3,13 @@ using BPWA.Common.Security;
 using BPWA.Controllers;
 using BPWA.Core.Entities;
 using BPWA.DAL.Models;
+using BPWA.Web.Helpers.Filters;
 using BPWA.Web.Services.Models;
 using BPWA.Web.Services.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
+using System.Threading.Tasks;
 
 namespace BPWA.Administration.Controllers
 {
@@ -27,5 +30,11 @@ namespace BPWA.Administration.Controllers
             ) :
             base(service, toast, mapper)
         { }
+
+        [AllowAnonymous]
+        public override async Task<IActionResult> Add(bool fullPage = false) => await base.Add(fullPage);
+
+        [HttpPost, AllowAnonymous, Transaction]
+        public override async Task<IActionResult> Add(TicketAddModel model) => await base.Add(model);
     }
 }

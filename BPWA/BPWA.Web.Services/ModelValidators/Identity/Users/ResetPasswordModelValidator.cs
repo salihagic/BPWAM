@@ -10,11 +10,11 @@ namespace BPWA.Web.Services.ModelValidators
         public ResetPasswordModelValidator()
         {
             RuleFor(x => x.Password).NotNull().WithMessage(Translations.Required_field);
-            RuleFor(x => x.Password)
-                .Equal(x => x.PasswordConfirmed)
-                .When(x => x.Password.HasValue())
-                .WithMessage(Translations.Passwords_do_not_match);
             RuleFor(x => x.PasswordConfirmed).NotNull().WithMessage(Translations.Required_field);
+            RuleFor(x => x.PasswordConfirmed)
+                .Equal(x => x.Password)
+                .When(x => x.PasswordConfirmed.HasValue())
+                .WithMessage(Translations.Passwords_do_not_match);
         }
     }
 }

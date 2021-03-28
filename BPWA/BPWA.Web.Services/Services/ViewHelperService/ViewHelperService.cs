@@ -15,6 +15,7 @@ namespace BPWA.Web.Services.Services
             ShowCompaniesItem(),
             ShowAuthSection(),
             ShowGeolocationsSection(),
+            ShowTicketsItem(),
         }.Any(x => x);
 
         public bool ShowAuthSection() => new List<bool>{
