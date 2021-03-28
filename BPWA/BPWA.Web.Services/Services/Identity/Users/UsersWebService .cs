@@ -14,7 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TFM.DAL.Models;
+using BPWA.DAL.Models;
 
 namespace BPWA.Web.Services.Services
 {
@@ -25,7 +25,7 @@ namespace BPWA.Web.Services.Services
             DatabaseContext databaseContext,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            CurrentUser loggedUserService,
+            CurrentUser currentUser,
             IPasswordGeneratorService passwordGeneratorService,
             IEmailService emailService
             ) : base(
@@ -33,7 +33,7 @@ namespace BPWA.Web.Services.Services
                 mapper,
                 userManager,
                 signInManager,
-                loggedUserService,
+                currentUser,
                 passwordGeneratorService,
                 emailService
                 )
@@ -209,8 +209,9 @@ namespace BPWA.Web.Services.Services
 
         public async Task<Result> ToggleCurrentCompany(ToggleCurrentCompanyModel model)
         {
-            if (!CurrentUser.HasGodMode() && !(CurrentUser.CompanyIds().Count > 1))
-                return Result.Failed(Translations.There_was_an_error_while_trying_to_change_current_company);
+            //TODO: Check if the user can change to selected company
+            //if (!CurrentUser.HasGodMode() && !(CurrentUser.CompanyIds().Count > 1))
+            //    return Result.Failed(Translations.There_was_an_error_while_trying_to_change_current_company);
 
             var currentUserResult = await GetEntityById(CurrentUser.Id());
 
@@ -240,8 +241,9 @@ namespace BPWA.Web.Services.Services
 
         public async Task<Result> ToggleCurrentBusinessUnit(ToggleCurrentBusinessUnitModel model)
         {
-            if (!CurrentUser.HasGodMode() && !(CurrentUser.BusinessUnitIds().Count > 1))
-                return Result.Failed(Translations.There_was_an_error_while_trying_to_change_current_company);
+            //TODO: Check if the user can change to selected business unit
+            //if (!CurrentUser.HasGodMode() && !CurrentUser.HasCompanyGodMode() && !(CurrentUser.BusinessUnitIds().Count > 1))
+            //    return Result.Failed(Translations.There_was_an_error_while_trying_to_change_current_business_unit);
 
             var currentUserResult = await GetEntityById(CurrentUser.Id());
 
@@ -256,6 +258,23 @@ namespace BPWA.Web.Services.Services
                 {
                     var companyId = DatabaseContext.BusinessUnits.FirstOrDefault(x => x.Id == model.BusinessUnitId)?.CompanyId;
                     currentUserResult.Item.CurrentCompanyId = companyId;
+                }
+                else
+                {
+                    //Default to first company
+                    var isCompanyUserForCurrentCompany = await DatabaseContext.CompanyUsers
+                        .AnyAsync(x => x.UserId == CurrentUser.Id() && x.CompanyId == CurrentUser.CurrentCompanyId());
+
+                    if (!isCompanyUserForCurrentCompany && !CurrentUser.HasGodMode())
+                    {
+                        var firstCompany = await DatabaseContext.CompanyUsers
+                        .FirstOrDefaultAsync(x => x.UserId == CurrentUser.Id());
+
+                        if(firstCompany == null)
+                            return Result.Failed(Translations.There_was_an_error_while_trying_to_change_current_business_unit);
+
+                        currentUserResult.Item.CurrentCompanyId = firstCompany.CompanyId;
+                    }
                 }
 
                 await Update(currentUserResult.Item);

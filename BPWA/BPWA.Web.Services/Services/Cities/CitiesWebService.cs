@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
+using BPWA.DAL.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
-namespace BPWA.DAL.Services
+namespace BPWA.Web.Services.Services
 {
     public class CitiesWebService : CitiesService, ICitiesWebService
     {

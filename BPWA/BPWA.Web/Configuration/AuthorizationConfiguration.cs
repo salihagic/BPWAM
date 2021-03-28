@@ -9,9 +9,34 @@ namespace BPWA.Web.Configuration
         {
             services.AddAuthorization(options =>
             {
+                var administrationClaims = AppClaimsHelper.Authorization.Administration.All;
+                var companyClaims = AppClaimsHelper.Authorization.Company.All;
+                var businessUnitClaims = AppClaimsHelper.Authorization.BusinessUnit.All;
+
                 foreach (var claim in AppClaimsHelper.Authorization.All)
-                    options.AddPolicy(claim, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type,
-                                      claim, AppClaims.Authorization.GodMode));
+                {
+                    if (administrationClaims.Contains(claim))
+                    {
+                        options.AddPolicy(claim, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type, 
+                            claim, 
+                            AppClaims.Authorization.Administration.GodMode));
+                    }
+                    else if (companyClaims.Contains(claim))
+                    {
+                        options.AddPolicy(claim, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type,
+                            claim, 
+                            AppClaims.Authorization.Company.CompanyGodMode,
+                            AppClaims.Authorization.Administration.GodMode));
+                    }
+                    else if (businessUnitClaims.Contains(claim))
+                    {
+                        options.AddPolicy(claim, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type,
+                            claim,
+                            AppClaims.Authorization.BusinessUnit.BusinessUnitGodMode,
+                            AppClaims.Authorization.Company.CompanyGodMode,
+                            AppClaims.Authorization.Administration.GodMode));
+                    }
+                }
             });
 
             return services;

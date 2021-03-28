@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace TFM.DAL.Models
+namespace BPWA.DAL.Models
 {
     /// <summary>
     /// Extends base existing class with additional generic memeber

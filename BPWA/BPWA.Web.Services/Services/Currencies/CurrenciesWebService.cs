@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using BPWA.DAL.Database;
+using BPWA.DAL.Services;
 
-namespace BPWA.DAL.Services
+namespace BPWA.Web.Services.Services
 {
     public class CurrenciesWebService : CurrenciesService, ICurrenciesWebService
     {

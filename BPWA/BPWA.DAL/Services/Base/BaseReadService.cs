@@ -4,12 +4,11 @@ using BPWA.Core.Entities;
 using BPWA.DAL.Database;
 using BPWA.DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Linq.Dynamic.Core;
-using TFM.DAL.Models;
-using System;
+using System.Threading.Tasks;
 
 namespace BPWA.DAL.Services
 {
@@ -24,8 +23,8 @@ namespace BPWA.DAL.Services
             DatabaseContext databaseContext,
             IMapper mapper
             ) : base(databaseContext, mapper) { }
-    }    
-    
+    }
+
     public class BaseReadService<TEntity, TSearchModel, TDTO, TId> :
         IBaseReadService<TEntity, TSearchModel, TDTO, TId>
         where TEntity : BaseEntity<TId>, new()
@@ -119,7 +118,7 @@ namespace BPWA.DAL.Services
 
                 return Result.Success(items);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return Result.Failed<List<TEntity>>("Failed to load entities");
             }

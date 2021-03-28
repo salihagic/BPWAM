@@ -7,12 +7,12 @@ namespace BPWA.Common.Security
     {
         public static class Authorization
         {
-            public const string GodMode = nameof(GodMode);
             public const string CompanyIds = nameof(CompanyIds);
             public const string BusinessUnitIds = nameof(BusinessUnitIds);
 
             public class Administration
             {
+                public const string GodMode = nameof(GodMode);
                 public const string CompaniesManagement = nameof(CompaniesManagement);
                 public const string RolesManagement = nameof(RolesManagement);
                 public const string UsersManagement = nameof(UsersManagement);
@@ -25,12 +25,14 @@ namespace BPWA.Common.Security
 
             public static class Company
             {
+                public const string CompanyGodMode = nameof(CompanyGodMode);
                 public const string CompanyRolesManagement = nameof(CompanyRolesManagement);
                 public const string BusinessUnitsManagement = nameof(BusinessUnitsManagement);
             }
 
             public static class BusinessUnit
             {
+                public const string BusinessUnitGodMode = nameof(BusinessUnitGodMode);
                 public const string BusinessUnitRolesManagement = nameof(BusinessUnitRolesManagement);
             }
         }

@@ -18,5 +18,7 @@ namespace BPWA.Core.Entities
 
         public List<RoleClaim> RoleClaims { get; set; }
         public List<UserRole> UserRoles { get; set; }
+        public List<CompanyUserRole> CompanyUserRoles { get; set; }
+        public List<BusinessUnitUserRole> BusinessUnitUserRoles { get; set; }
     }
 }

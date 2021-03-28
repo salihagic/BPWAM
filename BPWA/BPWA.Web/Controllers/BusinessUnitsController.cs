@@ -5,6 +5,7 @@ using BPWA.Core.Entities;
 using BPWA.DAL.Models;
 using BPWA.DAL.Services;
 using BPWA.Web.Services.Models;
+using BPWA.Web.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using NToastNotify;
 

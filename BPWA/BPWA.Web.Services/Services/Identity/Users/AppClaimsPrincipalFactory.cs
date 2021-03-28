@@ -63,14 +63,14 @@ namespace BPWA.Web.Services.Services
                 claims.Add(new Claim(AppClaims.Meta.CurrentCompanyName, company.Name));
 
                 var companyRoles = _databaseContext.CompanyUserRoles
-                                                   .Where(x => x.CompanyUser.UserId == user.Id)
-                                                   .Select(x => x.Role.Name);
+                    .Where(x => x.CompanyUser.UserId == user.Id && x.CompanyUser.CompanyId == user.CurrentCompanyId)
+                    .Select(x => x.Role.Name);
                 if (companyRoles.IsNotEmpty())
                     claims.AddRange(companyRoles.Select(x => new Claim(ClaimTypes.Role, x)));
 
                 var companyRoleClaims = _databaseContext.CompanyUserRoles
-                                                   .Where(x => x.CompanyUser.UserId == user.Id)
-                                                   .SelectMany(x => x.Role.RoleClaims);
+                    .Where(x => x.CompanyUser.UserId == user.Id && x.CompanyUser.CompanyId == user.CurrentCompanyId)
+                    .SelectMany(x => x.Role.RoleClaims);
                 if (companyRoleClaims.IsNotEmpty())
                     claims.AddRange(companyRoleClaims.Select(x => new Claim(x.ClaimType, x.ClaimValue)));
             }
@@ -84,6 +84,18 @@ namespace BPWA.Web.Services.Services
 
                 claims.Add(new Claim(AppClaims.Meta.CurrentBusinessUnitId, user.CurrentBusinessUnitId.ToString()));
                 claims.Add(new Claim(AppClaims.Meta.CurrentBusinessUnitName, businessUnit.Name));
+
+                var businessUnitRoles = _databaseContext.BusinessUnitUserRoles
+                    .Where(x => x.BusinessUnitUser.UserId == user.Id && x.BusinessUnitUser.BusinessUnitId == user.CurrentBusinessUnitId)
+                    .Select(x => x.Role.Name);
+                if (businessUnitRoles.IsNotEmpty())
+                    claims.AddRange(businessUnitRoles.Select(x => new Claim(ClaimTypes.Role, x)));
+
+                var businessUnitRoleClaims = _databaseContext.BusinessUnitUserRoles
+                    .Where(x => x.BusinessUnitUser.UserId == user.Id && x.BusinessUnitUser.BusinessUnitId == user.CurrentBusinessUnitId)
+                    .SelectMany(x => x.Role.RoleClaims);
+                if (businessUnitRoleClaims.IsNotEmpty())
+                    claims.AddRange(businessUnitRoleClaims.Select(x => new Claim(x.ClaimType, x.ClaimValue)));
             }
         }
 

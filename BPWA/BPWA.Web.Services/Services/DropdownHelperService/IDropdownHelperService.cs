@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 
-namespace BPWA.DAL.Services
+namespace BPWA.Web.Services.Services
 {
     //This is only a service for dropdowns like enumerations and fixed length lists(no database calls here)
     public interface IDropdownHelperService

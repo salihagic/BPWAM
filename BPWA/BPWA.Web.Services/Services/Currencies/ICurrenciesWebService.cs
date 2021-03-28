@@ -1,9 +1,9 @@
 ﻿using BPWA.Core.Entities;
 using BPWA.DAL.Models;
+using BPWA.DAL.Services;
 using BPWA.Web.Services.Models;
-using BPWA.Web.Services.Services;
 
-namespace BPWA.DAL.Services
+namespace BPWA.Web.Services.Services
 {
     public interface ICurrenciesWebService :
         IBaseCRUDWebService<Currency, CurrencySearchModel, CurrencyDTO, CurrencyAddModel, CurrencyUpdateModel>,

@@ -3,13 +3,14 @@ using BPWA.Common.Extensions;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
 using BPWA.DAL.Models;
+using BPWA.DAL.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using TFM.DAL.Models;
+using BPWA.DAL.Models;
 
-namespace BPWA.DAL.Services
+namespace BPWA.Web.Services.Services
 {
     public class RolesWebService : RolesService, IRolesWebService
     {

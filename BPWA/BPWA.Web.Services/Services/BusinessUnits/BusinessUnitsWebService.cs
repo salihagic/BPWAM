@@ -1,15 +1,18 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using BPWA.Common.Extensions;
 using BPWA.Common.Resources;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
 using BPWA.DAL.Models;
+using BPWA.DAL.Services;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TFM.DAL.Models;
 
-namespace BPWA.DAL.Services
+namespace BPWA.Web.Services.Services
 {
     public class BusinessUnitsWebService : BusinessUnitsService, IBusinessUnitsWebService
     {
@@ -27,7 +30,7 @@ namespace BPWA.DAL.Services
         public override IQueryable<BusinessUnit> BuildQueryConditions(IQueryable<BusinessUnit> query, BusinessUnitSearchModel searchModel = null)
         {
             return base.BuildQueryConditions(query, searchModel)
-                       .WhereIf(_currentUser.CurrentCompanyId().HasValue, x => x.CompanyId == _currentUser.CurrentCompanyId());                       
+                       .WhereIf(_currentUser.CurrentCompanyId().HasValue, x => x.CompanyId == _currentUser.CurrentCompanyId());
         }
 
         public override IQueryable<BusinessUnit> BuildIncludes(IQueryable<BusinessUnit> query)
@@ -59,6 +62,26 @@ namespace BPWA.DAL.Services
             entity.CompanyId = _currentUser.CurrentCompanyId() ?? entity.CompanyId;
 
             return base.Update(entity);
+        }
+
+        public async Task<Result<List<BusinessUnitDTO>>> GetForCurrentUser()
+        {
+            try
+            {
+                var businessUnits = DatabaseContext.BusinessUnits
+                    .WhereIf(!_currentUser.HasGodMode(), x => 
+                    x.BusinessUnitUsers.Any(y => y.UserId == _currentUser.Id()) ||
+                    x.Company.CompanyUsers.Any(y => y.UserId == _currentUser.Id())
+                    );
+
+                var businessUnitDTOs = Mapper.Map<List<BusinessUnitDTO>>(businessUnits);
+
+                return Result.Success(businessUnitDTOs);
+            }
+            catch (Exception e)
+            {
+                return Result.Failed<List<BusinessUnitDTO>>("Failed to load business units");
+            }
         }
     }
 }

@@ -3,7 +3,7 @@ using BPWA.DAL.Models;
 using BPWA.DAL.Services;
 using BPWA.Web.Services.Models;
 using System.Threading.Tasks;
-using TFM.DAL.Models;
+using BPWA.DAL.Models;
 
 namespace BPWA.Web.Services.Services
 {

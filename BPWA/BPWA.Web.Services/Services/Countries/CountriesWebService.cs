@@ -3,6 +3,7 @@ using BPWA.Common.Extensions;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
 using BPWA.DAL.Models;
+using BPWA.DAL.Services;
 using BPWA.Web.Services.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,9 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TFM.DAL.Models;
+using BPWA.DAL.Models;
 
-namespace BPWA.DAL.Services
+namespace BPWA.Web.Services.Services
 {
     public class CountriesWebService : CountriesService, ICountriesWebService
     {
@@ -44,7 +45,7 @@ namespace BPWA.DAL.Services
                     .Where(x => model.CurrencyIds.Contains(x.Id))
                     .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToListAsync();
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     return Result.Failed<CountryAddModel>("Could not load currencies");
                 }

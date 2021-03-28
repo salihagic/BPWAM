@@ -1,7 +1,7 @@
 ﻿using BPWA.Core.Entities;
 using BPWA.DAL.Models;
 using System.Threading.Tasks;
-using TFM.DAL.Models;
+using BPWA.DAL.Models;
 
 namespace BPWA.DAL.Services
 {
