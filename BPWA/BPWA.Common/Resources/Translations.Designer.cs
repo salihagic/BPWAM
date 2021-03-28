@@ -277,6 +277,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change password.
+        /// </summary>
+        public static string Change_password {
+            get {
+                return ResourceManager.GetString("Change_password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose an option.
         /// </summary>
         public static string Choose_an_option {
@@ -700,6 +709,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to change password.
+        /// </summary>
+        public static string Failed_to_change_password {
+            get {
+                return ResourceManager.GetString("Failed_to_change_password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to update timezone.
         /// </summary>
         public static string Failed_to_update_timezone {
@@ -997,6 +1015,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Password confirmed.
+        /// </summary>
+        public static string Password_confirmed {
+            get {
+                return ResourceManager.GetString("Password_confirmed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password mismatch.
         /// </summary>
         public static string Password_mismatch {
@@ -1056,6 +1083,15 @@ namespace BPWA.Common.Resources {
         public static string Password_too_short {
             get {
                 return ResourceManager.GetString("Password_too_short", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Passwords do not match.
+        /// </summary>
+        public static string Passwords_do_not_match {
+            get {
+                return ResourceManager.GetString("Passwords_do_not_match", resourceCulture);
             }
         }
         
@@ -1317,6 +1353,15 @@ namespace BPWA.Common.Resources {
         public static string Successfully_changed_current_company {
             get {
                 return ResourceManager.GetString("Successfully_changed_current_company", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully changed password.
+        /// </summary>
+        public static string Successfully_changed_password {
+            get {
+                return ResourceManager.GetString("Successfully_changed_password", resourceCulture);
             }
         }
         

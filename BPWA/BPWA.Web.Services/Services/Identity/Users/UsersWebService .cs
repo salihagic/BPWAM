@@ -304,6 +304,26 @@ namespace BPWA.Web.Services.Services
 
             return Result.Success();
         }
+        
+        public async Task<Result> ResetPassword(ResetPasswordModel model)
+        {
+            var user = await UserManager.FindByIdAsync(model.UserId);
+
+            if (user == null)
+                return Result.Failed("Failed to load user");
+
+            await UserManager.RemovePasswordAsync(user);
+            var result = await UserManager.AddPasswordAsync(user, model.Password);
+
+            if (!result.Succeeded)
+                Result.Failed(result.Errors.Select(x => x.Description).ToList());
+
+            await EmailService.Send(user.Email,
+                                      "Your password changed",
+                                      $"UserName: {user.UserName}\nPassword: {model.Password}");
+
+            return Result.Success();
+        }
 
         public async Task SignOut()
         {

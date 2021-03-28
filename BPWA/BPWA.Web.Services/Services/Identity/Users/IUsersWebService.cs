@@ -3,7 +3,6 @@ using BPWA.DAL.Models;
 using BPWA.DAL.Services;
 using BPWA.Web.Services.Models;
 using System.Threading.Tasks;
-using BPWA.DAL.Models;
 
 namespace BPWA.Web.Services.Services
 {
@@ -11,8 +10,9 @@ namespace BPWA.Web.Services.Services
         IBaseCRUDWebService<User, UserSearchModel, UserDTO, UserAddModel, UserUpdateModel, string>,
         IUsersService
     {
-        Task SignOut();
         Task<Result> ToggleCurrentCompany(ToggleCurrentCompanyModel model);
         Task<Result> ToggleCurrentBusinessUnit(ToggleCurrentBusinessUnitModel model);
+        Task<Result> ResetPassword(ResetPasswordModel model);
+        Task SignOut();
     }
 }

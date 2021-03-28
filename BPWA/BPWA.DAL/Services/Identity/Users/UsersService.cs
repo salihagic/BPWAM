@@ -248,7 +248,7 @@ namespace BPWA.DAL.Services
         {
             try
             {
-                var query = DatabaseContext.Set<User>().Where(x => x.Id.Equals(id));
+                var query = DatabaseContext.Users.Where(x => x.Id.Equals(id));
 
                 query = BuildIncludesById(id, query);
 

@@ -3,7 +3,6 @@
 <script>
 
     $(document).on('click', '.datatable_search_form_reset_button', function(e) {
-        console.log('CLEARING');
         var form = $(this).closest('form')[0];
         form.reset();
         $(form).find('.select2').val('');
@@ -189,12 +188,12 @@
         return datatable;
     }
 
-    function DatatableActionsColumnOptions() {
+    function DatatableActionsColumnOptions(options) {
         return {
             field: 'Actions',
             title: '@Translations.Actions',
             sortable: false,
-            width: 110,
+            width: options?.width ?? 110,
             overflow: 'visible',
             autoHide: false,
             textAlign: 'center',

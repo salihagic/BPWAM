@@ -612,4 +612,19 @@
   <data name="Select_roles" xml:space="preserve">
     <value>Select roles</value>
   </data>
+  <data name="Change_password" xml:space="preserve">
+    <value>Change password</value>
+  </data>
+  <data name="Passwords_do_not_match" xml:space="preserve">
+    <value>Passwords do not match</value>
+  </data>
+  <data name="Password_confirmed" xml:space="preserve">
+    <value>Password confirmed</value>
+  </data>
+  <data name="Failed_to_change_password" xml:space="preserve">
+    <value>Failed to change password</value>
+  </data>
+  <data name="Successfully_changed_password" xml:space="preserve">
+    <value>Successfully changed password</value>
+  </data>
 </root>

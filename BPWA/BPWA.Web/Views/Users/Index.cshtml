@@ -86,12 +86,17 @@
                     title: '@Translations.City',
                 },
                 {
-                    template: (row) => DatatableBasicActions({
-                        detailsUrl: `@Url.Action("Details", "Users")/${row.id}`,
-                        editUrl: `@Url.Action("Edit", "Users")/${row.id}`,
-                        deleteUrl: `@Url.Action("Delete", "Users")/${row.id}`
+                    template: (row) => `\
+                        <a href="@Url.Action("ResetPassword", "Users")?userId=${row.id}" class="btn btn-sm btn-clean btn-icon btn-icon-sm datatable_details_button" title="@Translations.Change_password">\
+                            <i class="flaticon-lock"></i>\
+                        </a>\
+                        ${DatatableDetailsButton({ detailsUrl: `@Url.Action("Details", "Users")/${row.id}` })}
+                        ${DatatableEditButton({editUrl: `@Url.Action("Edit", "Users")/${row.id}`})}
+                        ${DatatableDeleteButton({deleteUrl: `@Url.Action("Delete", "Users")/${row.id}`})}
+                    `,
+                    ...DatatableActionsColumnOptions({
+                        width: 150
                     }),
-                    ...DatatableActionsColumnOptions(),
                 }
             ]
         });
