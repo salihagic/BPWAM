@@ -99,7 +99,7 @@
             map: (x) => {
                 return {
                     id: x.id,
-                    text: x.name
+                    text: `${x.name} ${x.company != null ? '(' + x.company.name + ')' : ''}`,
                 };
             },
             placeholder: '@Translations.Select_roles',

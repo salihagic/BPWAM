@@ -50,7 +50,10 @@
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">@Translations.Close</button>
         <button class="btn btn-primary" type="submit">@Translations.Change</button>
-        <button class="btn btn-primary select_all" type="button">@Translations.Select_all</button>
+        @if (currentUser.HasCompanyGodMode() || currentUser.HasGodMode()) 
+        { 
+            <button class="btn btn-primary select_all" type="button">@Translations.Select_all</button>
+        }
     </div>
 
 </form>

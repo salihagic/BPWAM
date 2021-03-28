@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
-using BPWA.DAL.Models;
 
 namespace BPWA.DAL.Services
 {
@@ -74,8 +73,8 @@ namespace BPWA.DAL.Services
             try
             {
                 var user = (await UserManager.FindByNameAsync(userName)) ?? (await UserManager.FindByEmailAsync(userName));
-                
-                if(user == null)
+
+                if (user == null)
                     return Result.Failed<User>(Translations.User_name_or_email_invalid);
 
                 return Result.Success(user);
@@ -312,7 +311,7 @@ namespace BPWA.DAL.Services
                 {
                     await EmailService.Send(entity.Email,
                                       "Your account info",
-                                      $"UserName: {entity.UserName}\nPassword: ${password}");
+                                      $"UserName: {entity.UserName}\nPassword: {password}");
                 }
 
                 return result;

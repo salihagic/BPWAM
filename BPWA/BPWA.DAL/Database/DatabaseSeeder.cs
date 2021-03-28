@@ -68,7 +68,7 @@ namespace BPWA.DAL.Database
                     Business unit X2      GodMode         -                             -
                     Business unit X3      GodMode         -                             -
                     Company Y             GodMode         -                             -
-                    Business unit Y1      GodMode         User, Business unit GodMode   User 
+                    Business unit Y1      GodMode         User, Business unit GodMode   User, Business unit GodMode 
                     Business unit Y2      GodMode         User                          User
                     Business unit Y3      GodMode         User                          User
                     Company Z             GodMode         -                             -
@@ -218,8 +218,20 @@ namespace BPWA.DAL.Database
                             new BusinessUnitUserRole { RoleId = businessUnitY1BusinessUnitAdminRole.Id }
                         }
                     };
+                    var businessUnitY1User2 = new BusinessUnitUser
+                    {
+                        UserId = businessUnitAdminUser.Id,
+                        BusinessUnitUserRoles = new List<BusinessUnitUserRole>
+                        {
+                            new BusinessUnitUserRole { RoleId = businessUnitY1BusinessUnitAdminRole.Id }
+                        }
+                    };
 
-                    businessUnitY1.BusinessUnitUsers = new List<BusinessUnitUser>() { businessUnitY1User1 };
+                    businessUnitY1.BusinessUnitUsers = new List<BusinessUnitUser>() 
+                    { 
+                        businessUnitY1User1,
+                        businessUnitY1User2,
+                    };
 
                     await databaseContext.SaveChangesAsync();
 
@@ -246,7 +258,7 @@ namespace BPWA.DAL.Database
                         UserId = companyAdminUser.Id,
                     };
 
-                    businessUnitY1.BusinessUnitUsers = new List<BusinessUnitUser>() { businessUnitY1User1 };
+                    businessUnitY2.BusinessUnitUsers = new List<BusinessUnitUser>() { businessUnitY2User1 };
 
                     await databaseContext.SaveChangesAsync();
 
@@ -273,7 +285,7 @@ namespace BPWA.DAL.Database
                         UserId = companyAdminUser.Id,
                     };
 
-                    businessUnitY1.BusinessUnitUsers = new List<BusinessUnitUser>() { businessUnitY1User1 };
+                    businessUnitY3.BusinessUnitUsers = new List<BusinessUnitUser>() { businessUnitY3User1 };
 
                     await databaseContext.SaveChangesAsync();
 

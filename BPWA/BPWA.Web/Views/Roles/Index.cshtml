@@ -65,6 +65,17 @@
                 {
                     field: '@nameof(RoleDTO.Name).ToCamelCase()',
                     title: '@Translations.Name',
+                    template: (row) => {
+                        if (row.company != null) {
+                            return `${row.name} (${row.company.name})`;
+                        }
+
+                        if (row.businessUnit != null) {
+                            return `${row.name} (${row.businessUnit.name})`;
+                        }
+
+                        return row.name;
+                    }
                 },
                 {
                     template: (row) => DatatableBasicActions({

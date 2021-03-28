@@ -6,6 +6,8 @@ namespace BPWA.DAL.Models
     {
         public string Name { get; set; }
 
+        public CompanyDTO Company { get; set; }
+        public BusinessUnitDTO BusinessUnit { get; set; }
         public List<RoleClaimDTO> RoleClaims { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿@inject IViewHelperService viewHelperService
+@inject CurrentUser currentUser 
 @{ Layout = null;}
 
 <button class="kt-aside-close " id="kt_aside_close_btn"><i class="la la-close"></i></button>
@@ -16,9 +17,15 @@
                     </a>
                 </li>
 
-                <partial name="_AdministrationSection.cshtml" />
+                @if (viewHelperService.ShowAdministrationSection())
+                {
+                    <partial name="_AdministrationSection.cshtml" />
+                }
                 
-                <partial name="_CompanySection.cshtml" />
+                @if (viewHelperService.ShowCompanySection() && currentUser.CurrentCompanyId().HasValue)
+                {
+                    <partial name="_CompanySection.cshtml" />
+                }
 
             </ul>
         </div>
