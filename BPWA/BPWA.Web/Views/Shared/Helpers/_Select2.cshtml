@@ -97,9 +97,16 @@
             element: options.element,
             url: '@Url.Action("Dropdown", "Roles")',
             map: (x) => {
+
+                var name = x.name;
+                if (x.company != null)
+                    name += ` (${x.company.name})`;
+                if (x.businessUnit != null)
+                    name += ` (${x.businessUnit.name})`;
+
                 return {
                     id: x.id,
-                    text: `${x.name} ${x.company != null ? '(' + x.company.name + ')' : ''}`,
+                    text: name,
                 };
             },
             placeholder: '@Translations.Select_roles',
@@ -196,7 +203,8 @@
                     return {
                         name: params.term,
                         pagination: {
-                            skip: (params.page * 10) || 0
+                            skip: (((params.page ?? 1) - 1) * 20),
+                            take: 20
                         }
                     };
                 },

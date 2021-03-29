@@ -7,7 +7,7 @@ namespace BPWA.DAL.Models
         public int? Skip { get; set; } = 0;
         public int? Take { get; set; } = 10;
         public int? Page { get; set; } = 0;
-        public bool HasMore => Page < TotalNumberOfPages;
+        public bool HasMore => Page < (TotalNumberOfPages - 1);
         public bool? ShouldTakeAllRecords { get; set; }
         public List<OrderField> OrderFields { get; set; } = new List<OrderField>();
 

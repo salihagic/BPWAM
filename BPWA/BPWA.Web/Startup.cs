@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using System.Text.Json.Serialization;
 
 namespace BPWA
 {
@@ -30,6 +29,7 @@ namespace BPWA
                     .AddSession()
                     .ConfigureLocalization()
                     .AddControllersWithViews() //returns IMvcBuilder
+                    .ConfigureNewtonsoftJson()
                     .ConfigureFluentValidation()
                     .AddViewLocalization()
                     .ConfigureDataAnnotationsLocalization()

@@ -1,5 +1,13 @@
 ﻿@model RoleDTO
-@{ Layout = null; }
+@{ 
+    Layout = null;
+
+    var name = Model.Name;
+    if (Model.Company != null)
+        name += $" ({Model.Company.Name})";
+    if (Model.BusinessUnit != null)
+        name += $" ({Model.BusinessUnit.Name})";
+}
 
 <div class="modal-header">
     <h5 class="modal-title">
@@ -13,7 +21,7 @@
     <div class="col-md-12 row">
         <div class="col-md form-group">
             <label>@Translations.Name</label>
-            <input asp-for="Name" class="form-control m-input" disabled>
+            <input value="@name" class="form-control m-input" disabled>
         </div>
     </div>
         <div class="claim_item col-md-12 row">

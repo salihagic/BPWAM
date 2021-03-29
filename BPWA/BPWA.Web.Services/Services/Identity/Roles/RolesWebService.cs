@@ -21,20 +21,20 @@ namespace BPWA.Web.Services.Services
         {
         }
 
-        //public override IQueryable<Role> BuildIncludesById(string id, IQueryable<Role> query)
-        //{
-        //    return base.BuildIncludesById(id, query)
-        //        .Include(x => x.RoleClaims.Where(y => !y.IsDeleted))
-        //        .Include(x => x.Company)
-        //        .Include(x => x.BusinessUnit);
-        //}
+        public override IQueryable<Role> BuildIncludesById(string id, IQueryable<Role> query)
+        {
+            return base.BuildIncludesById(id, query)
+                .Include(x => x.RoleClaims.Where(y => !y.IsDeleted))
+                .Include(x => x.Company)
+                .Include(x => x.BusinessUnit);
+        }
 
-        //public override IQueryable<Role> BuildIncludes(IQueryable<Role> query)
-        //{
-        //    return base.BuildIncludes(query)
-        //        .Include(x => x.Company)
-        //        .Include(x => x.BusinessUnit);
-        //}
+        public override IQueryable<Role> BuildIncludes(IQueryable<Role> query)
+        {
+            return base.BuildIncludes(query)
+                .Include(x => x.Company)
+                .Include(x => x.BusinessUnit);
+        }
 
         public override async Task<Result<RoleDTO>> Update(Role entity)
         {
