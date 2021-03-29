@@ -1,7 +1,6 @@
 ﻿using BPWA.Core.Entities;
 using BPWA.DAL.Models;
 using System.Threading.Tasks;
-using BPWA.DAL.Models;
 
 namespace BPWA.DAL.Services
 {
@@ -13,5 +12,6 @@ namespace BPWA.DAL.Services
         Task<Result<User>> GetEntityByUserNameOrEmail(string userNameOrEmail);
         Task<Result<UserDTO>> SignIn(string userName, string password);
         Task<Result> UpdateTimezoneForCurrentUser(int timezoneUtcOffsetInMinutes);
+        Task<Result> SendPasswordResetToken(string userId);
     }
 }

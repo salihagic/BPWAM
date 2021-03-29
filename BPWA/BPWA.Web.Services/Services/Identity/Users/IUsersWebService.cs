@@ -12,6 +12,7 @@ namespace BPWA.Web.Services.Services
     {
         Task<Result> ToggleCurrentCompany(ToggleCurrentCompanyModel model);
         Task<Result> ToggleCurrentBusinessUnit(ToggleCurrentBusinessUnitModel model);
+        Task<Result<ResetPasswordModel>> PrepareForResetPassword(string userId, string resetPasswordToken);
         Task<Result> ResetPassword(ResetPasswordModel model);
         Task SignOut();
     }

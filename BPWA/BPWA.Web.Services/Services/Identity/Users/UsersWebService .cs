@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BPWA.DAL.Models;
+using BPWA.Common.Configuration;
 
 namespace BPWA.Web.Services.Services
 {
@@ -27,7 +28,8 @@ namespace BPWA.Web.Services.Services
             SignInManager<User> signInManager,
             CurrentUser currentUser,
             IPasswordGeneratorService passwordGeneratorService,
-            IEmailService emailService
+            IEmailService emailService,
+            RouteSettings routeSettings
             ) : base(
                 databaseContext,
                 mapper,
@@ -35,7 +37,8 @@ namespace BPWA.Web.Services.Services
                 signInManager,
                 currentUser,
                 passwordGeneratorService,
-                emailService
+                emailService,
+                routeSettings
                 )
         {
         }
@@ -304,7 +307,23 @@ namespace BPWA.Web.Services.Services
 
             return Result.Success();
         }
-        
+
+        public async Task<Result<ResetPasswordModel>> PrepareForResetPassword(string userId, string token)
+        {
+            var user = await UserManager.FindByIdAsync(userId);
+
+            if (user == null)
+                return Result.Failed<ResetPasswordModel>("Failed to load user");
+
+            var model = new ResetPasswordModel
+            {
+                UserId = userId,
+                Token = token
+            };
+
+            return Result.Success(model);
+        }
+
         public async Task<Result> ResetPassword(ResetPasswordModel model)
         {
             var user = await UserManager.FindByIdAsync(model.UserId);
@@ -312,15 +331,10 @@ namespace BPWA.Web.Services.Services
             if (user == null)
                 return Result.Failed("Failed to load user");
 
-            await UserManager.RemovePasswordAsync(user);
-            var result = await UserManager.AddPasswordAsync(user, model.Password);
+            var result = await UserManager.ResetPasswordAsync(user, model.Token, model.Password);
 
             if (!result.Succeeded)
-                Result.Failed(result.Errors.Select(x => x.Description).ToList());
-
-            await EmailService.Send(user.Email,
-                                      "Your password changed",
-                                      $"UserName: {user.UserName}\nPassword: {model.Password}");
+                return Result.Failed(result.Errors.Select(x => x.Description).ToList());
 
             return Result.Success();
         }

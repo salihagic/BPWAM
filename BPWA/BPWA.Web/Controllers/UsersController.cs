@@ -34,49 +34,22 @@ namespace BPWA.Administration.Controllers
             IToastNotification toast,
             IMapper mapper
             ) :
-            base(service, toast, mapper)
+            base(service, mapper, toast)
         {
             _usersWebService = service;
         }
 
         #region Change password
 
-        public virtual async Task<IActionResult> ResetPassword(string userId)
-        {
-            return View(new ResetPasswordModel { UserId = userId });
-        }
-
         [HttpPost, Transaction]
-        public virtual async Task<IActionResult> ResetPassword(ResetPasswordModel model)
+        public virtual async Task<IActionResult> SendPasswordResetToken(string userId)
         {
-            async Task<IActionResult> Failed()
-            {
-                return View(model);
-            }
+            var result = await _usersWebService.SendPasswordResetToken(userId);
 
-            if (!ModelState.IsValid)
-                return await Failed();
+            if (!result.IsSuccess)
+                return BadRequest();
 
-            try
-            {
-                var result = await _usersWebService.ResetPassword(model);
-
-                if (!result.IsSuccess)
-                {
-                    Toast.AddErrorToastMessage(result.GetErrorMessages().FirstOrDefault());
-                    return await Failed();
-                }
-
-                Toast.AddSuccessToastMessage(Translations.Successfully_changed_password);
-                return Json(new { success = true });
-            }
-            catch (Exception ex)
-            {
-                Toast.AddErrorToastMessage(Translations.Failed_to_change_password);
-            }
-
-
-            return await Failed();
+            return Ok();
         }
 
         #endregion

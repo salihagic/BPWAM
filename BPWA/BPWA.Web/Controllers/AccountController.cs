@@ -1,15 +1,18 @@
 ﻿using BPWA.Common.Resources;
+using BPWA.Web.Helpers.Filters;
 using BPWA.Web.Services.Models;
 using BPWA.Web.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BPWA.Controllers
 {
     [Authorize]
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         private readonly IUsersWebService _usersWebService;
         private readonly ICompaniesWebService _companiesWebService;
@@ -108,6 +111,56 @@ namespace BPWA.Controllers
             return !string.IsNullOrEmpty(returnUrl) ? LocalRedirect(returnUrl) : RedirectToAction("Index", "Dashboard");
         }
 
-        #endregion Toggle current business unit
+        #endregion 
+
+        #region Reset password
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(string userId, string token)
+        {
+            var result = await _usersWebService.PrepareForResetPassword(userId, token);
+
+            if (!result.IsSuccess)
+                return _Error();
+
+            var model = result.Item;
+
+            return View(model);
+        }
+
+        [HttpPost, Transaction, AllowAnonymous]
+        public virtual async Task<IActionResult> ResetPassword(ResetPasswordModel model)
+        {
+            async Task<IActionResult> Failed()
+            {
+                return View(model);
+            }
+
+            if (!ModelState.IsValid)
+                return await Failed();
+
+            try
+            {
+                var result = await _usersWebService.ResetPassword(model);
+
+                if (!result.IsSuccess)
+                {
+                    _toast.AddErrorToastMessage(result.GetErrorMessages().FirstOrDefault());
+                    return await Failed();
+                }
+
+                _toast.AddSuccessToastMessage(Translations.Successfully_changed_password);
+                return RedirectToAction("Login", "Authentication");
+            }
+            catch (Exception ex)
+            {
+                _toast.AddErrorToastMessage(Translations.Failed_to_change_password);
+            }
+
+
+            return await Failed();
+        }
+
+        #endregion
     }
 }

@@ -4,7 +4,9 @@ using BPWA.Web.Helpers;
 using BPWA.Web.Services.Models;
 using BPWA.Web.Services.Services;
 using Microsoft.AspNetCore.Mvc;
+using NToastNotify;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BPWA.Controllers
@@ -12,12 +14,15 @@ namespace BPWA.Controllers
     public class AuthenticationController : Controller
     {
         private readonly IUsersWebService _usersWebService;
+        private readonly IToastNotification _toast;
 
         public AuthenticationController(
-            IUsersWebService usersWebService
+            IUsersWebService usersWebService,
+            IToastNotification toast
             )
         {
             _usersWebService = usersWebService;
+            _toast = toast;
         }
 
         public IActionResult Login() => View(new LoginModel());
@@ -30,7 +35,13 @@ namespace BPWA.Controllers
 
             try
             {
-                var user = await _usersWebService.SignIn(model.UserName, model.Password);
+                var result = await _usersWebService.SignIn(model.UserName, model.Password);
+
+                if (!result.IsSuccess)
+                {
+                    _toast.AddErrorToastMessage(result.GetErrorMessages().FirstOrDefault());
+                    return View(model);
+                }
 
                 return !string.IsNullOrEmpty(returnUrl) ? LocalRedirect(returnUrl) : RedirectToAction("Index", "Dashboard");
             }

@@ -25,9 +25,9 @@ namespace BPWA.Controllers
     {
         public BaseCRUDController(
             IBaseCRUDWebService<TEntity, TSearchModel, TDTO, TAddModel, TUpdateModel, int> service,
-            IToastNotification toast,
-            IMapper mapper
-            ) : base(service, toast, mapper) { }
+            IMapper mapper,
+            IToastNotification toast
+            ) : base(service, mapper, toast) { }
     }
 
     public class BaseCRUDController<TEntity, TSearchModel, TDTO, TAddModel, TUpdateModel, TId> :
@@ -41,7 +41,6 @@ namespace BPWA.Controllers
         #region Props
 
         public IBaseCRUDWebService<TEntity, TSearchModel, TDTO, TAddModel, TUpdateModel, TId> BaseCRUDService;
-        public IToastNotification Toast;
 
         #endregion
 
@@ -60,12 +59,11 @@ namespace BPWA.Controllers
 
         public BaseCRUDController(
             IBaseCRUDWebService<TEntity, TSearchModel, TDTO, TAddModel, TUpdateModel, TId> service,
-            IToastNotification toast,
-            IMapper mapper
-            ) : base(service, mapper)
+            IMapper mapper,
+            IToastNotification toast
+            ) : base(service, mapper, toast)
         {
             BaseCRUDService = service;
-            Toast = toast;
 
             Message_add_success = Translations.Add_success;
             Message_add_error = Translations.Add_error;

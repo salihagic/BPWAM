@@ -627,4 +627,19 @@
   <data name="Successfully_changed_password" xml:space="preserve">
     <value>Successfully changed password</value>
   </data>
+  <data name="Password_reset_link_has_been_sent" xml:space="preserve">
+    <value>Password reset link has been sent</value>
+  </data>
+  <data name="Password_reset_link_will_be_sent_to_users_email" xml:space="preserve">
+    <value>Password reset link will be sent to user's email</value>
+  </data>
+  <data name="Reset_password" xml:space="preserve">
+    <value>Reset password</value>
+  </data>
+  <data name="Sent" xml:space="preserve">
+    <value>Sent</value>
+  </data>
+  <data name="Yes_reset_it" xml:space="preserve">
+    <value>Yes, reset it</value>
+  </data>
 </root>

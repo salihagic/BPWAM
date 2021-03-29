@@ -87,7 +87,7 @@
                 },
                 {
                     template: (row) => `\
-                        <a href="@Url.Action("ResetPassword", "Users")?userId=${row.id}" class="btn btn-sm btn-clean btn-icon btn-icon-sm datatable_details_button" title="@Translations.Change_password">\
+                        <a href="@Url.Action("SendPasswordResetToken", "Users")?userId=${row.id}" class="btn btn-sm btn-clean btn-icon btn-icon-sm reset_password_button" title="@Translations.Reset_password">\
                             <i class="flaticon-lock"></i>\
                         </a>\
                         ${DatatableDetailsButton({ detailsUrl: `@Url.Action("Details", "Users")/${row.id}` })}
@@ -101,6 +101,41 @@
             ]
         });
     });
+
+
+    $(document).on('click', '.reset_password_button', function (e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+
+        Swal.fire({
+            title: '@Translations.Are_you_sure?',
+            text: "@Html.Raw(Translations.Password_reset_link_will_be_sent_to_users_email)!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '@Translations.Yes_reset_it!'
+        }).then((result) => {
+
+            if (result.value) {
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    success: (data) => {
+                        Swal.fire(
+                            '@Translations.Sent!',
+                            '@Translations.Password_reset_link_has_been_sent.',
+                            'success'
+                        );
+                    }
+                });
+
+            }
+
+        });
+    });
+
 
 </script>
 

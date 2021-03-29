@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BPWA.Common.Configuration;
 using BPWA.Common.Extensions;
 using BPWA.Common.Resources;
 using BPWA.Common.Services;
@@ -11,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace BPWA.DAL.Services
@@ -25,15 +27,17 @@ namespace BPWA.DAL.Services
         protected readonly CurrentUser CurrentUser;
         protected readonly IPasswordGeneratorService PasswordGeneratorService;
         protected readonly IEmailService EmailService;
+        protected readonly RouteSettings RouteSettings;
 
         public UsersService(
             DatabaseContext databaseContext,
             IMapper mapper,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            CurrentUser loggedUserService,
+            CurrentUser currentUser,
             IPasswordGeneratorService passwordGeneratorService,
-            IEmailService emailService
+            IEmailService emailService,
+            RouteSettings routeSettings
             )
         {
             DatabaseContext = databaseContext;
@@ -41,9 +45,10 @@ namespace BPWA.DAL.Services
             Query = databaseContext.Users.AsQueryable();
             UserManager = userManager;
             SignInManager = signInManager;
-            CurrentUser = loggedUserService;
+            CurrentUser = currentUser;
             PasswordGeneratorService = passwordGeneratorService;
             EmailService = emailService;
+            RouteSettings = routeSettings;
         }
 
         public async Task<Result<User>> AddEntity(User entity, string password)
@@ -134,6 +139,29 @@ namespace BPWA.DAL.Services
             }
 
             return Result.Failed(Translations.Failed_to_update_timezone);
+        }
+
+        public async Task<Result> SendPasswordResetToken(string userId)
+        {
+            var user = await UserManager.FindByIdAsync(userId);
+
+            if (user == null)
+                return Result.Failed("Failed to load user");
+
+            var token = await UserManager.GeneratePasswordResetTokenAsync(user);
+
+            var passwordResetUrl = GeneratePasswordResetUrl(user, token);
+
+            await EmailService.Send(user.Email,
+                                      "Change your password",
+                                      $"You requested a reset of your password.\n\n\nClick on the following link to set your new password: {passwordResetUrl}");
+
+            return Result.Success();
+        }
+
+        protected string GeneratePasswordResetUrl(User user, string token)
+        {
+            return $"{RouteSettings.WebUrl}{RouteSettings.PasswordResetUrl}?userId={WebUtility.UrlEncode(user.Id)}&token={WebUtility.UrlEncode(token)}";
         }
 
         #region Base

@@ -10,6 +10,7 @@ using BPWA.Web.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NToastNotify;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,8 +25,9 @@ namespace BPWA.Controllers
     {
         public BaseReadController(
             IBaseReadWebService<TEntity, TSearchModel, TDTO, int> service,
-            IMapper mapper
-            ) : base(service, mapper) { }
+            IMapper mapper,
+            IToastNotification toast
+            ) : base(service, mapper, toast) { }
     }
 
     public class BaseReadController<TEntity, TSearchModel, TDTO, TId> : 
@@ -38,6 +40,7 @@ namespace BPWA.Controllers
 
         public IBaseReadWebService<TEntity, TSearchModel, TDTO, TId> BaseReadService;
         public IMapper Mapper;
+        public IToastNotification Toast;
 
         #endregion
 
@@ -45,11 +48,13 @@ namespace BPWA.Controllers
 
         public BaseReadController(
             IBaseReadWebService<TEntity, TSearchModel, TDTO, TId> service,
-            IMapper mapper
+            IMapper mapper,
+            IToastNotification toast
             )
         {
             BaseReadService = service;
             Mapper = mapper;
+            Toast = toast;
         }
 
         #endregion

@@ -25,7 +25,7 @@ namespace BPWA.Administration.Controllers
             IToastNotification toast,
             IMapper mapper
             ) :
-            base(service, toast, mapper)
+            base(service, mapper, toast)
         { }
     }
 }

@@ -14,6 +14,8 @@ namespace BPWA.Web.Configuration
                     .AddSingleton(resolver => resolver.GetRequiredService<IOptions<DatabaseSettings>>().Value)
                     .Configure<EmailSettings>(configuration.GetSection("EmailSettings"))
                     .AddSingleton(resolver => resolver.GetRequiredService<IOptions<EmailSettings>>().Value)
+                    .Configure<RouteSettings>(configuration.GetSection("RouteSettings"))
+                    .AddSingleton(resolver => resolver.GetRequiredService<IOptions<RouteSettings>>().Value)
                     .Configure<IdentityOptions>(configuration.GetSection("IdentityOptions"))
                     .AddSingleton(resolver => resolver.GetRequiredService<IOptions<IdentityOptions>>().Value)
                     .Configure<PasswordOptions>(configuration.GetSection("IdentityOptions:Password"))

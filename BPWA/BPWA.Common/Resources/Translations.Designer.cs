@@ -1078,6 +1078,24 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Password reset link has been sent.
+        /// </summary>
+        public static string Password_reset_link_has_been_sent {
+            get {
+                return ResourceManager.GetString("Password_reset_link_has_been_sent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password reset link will be sent to user&apos;s email.
+        /// </summary>
+        public static string Password_reset_link_will_be_sent_to_users_email {
+            get {
+                return ResourceManager.GetString("Password_reset_link_will_be_sent_to_users_email", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password too short.
         /// </summary>
         public static string Password_too_short {
@@ -1173,6 +1191,15 @@ namespace BPWA.Common.Resources {
         public static string Required_field {
             get {
                 return ResourceManager.GetString("Required_field", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset password.
+        /// </summary>
+        public static string Reset_password {
+            get {
+                return ResourceManager.GetString("Reset_password", resourceCulture);
             }
         }
         
@@ -1326,6 +1353,15 @@ namespace BPWA.Common.Resources {
         public static string Select_ticket_type {
             get {
                 return ResourceManager.GetString("Select_ticket_type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sent.
+        /// </summary>
+        public static string Sent {
+            get {
+                return ResourceManager.GetString("Sent", resourceCulture);
             }
         }
         
@@ -1578,6 +1614,15 @@ namespace BPWA.Common.Resources {
         public static string Yes_delete_it {
             get {
                 return ResourceManager.GetString("Yes_delete_it", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes, reset it.
+        /// </summary>
+        public static string Yes_reset_it {
+            get {
+                return ResourceManager.GetString("Yes_reset_it", resourceCulture);
             }
         }
         
