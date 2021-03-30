@@ -1,4 +1,5 @@
-﻿@model UserDTO
+﻿@inject CurrentUser currentUser
+@model UserDTO
 @{ Layout = null; }
 
 <div class="modal-header">
@@ -46,7 +47,7 @@
                 }
             </div>
         }
-        @if (Model.CompanyUsers.IsNotEmpty())
+        @if (!currentUser.CurrentCompanyId().HasValue && Model.CompanyUsers.IsNotEmpty())
         {
             <div class="col-md-12 row">
                 <div class="col-md">
@@ -60,8 +61,8 @@
                     </div>
                 }
             </div>
-        }       
-        @if (Model.BusinessUnitUsers.IsNotEmpty())
+        }
+        @if (!currentUser.CurrentBusinessUnitId().HasValue && Model.BusinessUnitUsers.IsNotEmpty())
         {
             <div class="col-md-12 row">
                 <div class="col-md">

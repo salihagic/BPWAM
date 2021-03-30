@@ -15,7 +15,27 @@ namespace BPWA.Web.Configuration
 
                 foreach (var claim in AppClaimsHelper.Authorization.All)
                 {
-                    if (administrationClaims.Contains(claim))
+                    if(claim == AppClaims.Authorization.Administration.RolesManagement)
+                    {
+                        options.AddPolicy(claim, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type,
+                            claim,
+                            AppClaims.Authorization.BusinessUnit.BusinessUnitRolesManagement,
+                            AppClaims.Authorization.BusinessUnit.BusinessUnitGodMode,
+                            AppClaims.Authorization.Company.CompanyRolesManagement,
+                            AppClaims.Authorization.Company.CompanyGodMode,
+                            AppClaims.Authorization.Administration.GodMode));
+                    }
+                    else if (claim == AppClaims.Authorization.Administration.UsersManagement)
+                    {
+                        options.AddPolicy(claim, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type,
+                            claim,
+                            AppClaims.Authorization.BusinessUnit.BusinessUnitUsersManagement,
+                            AppClaims.Authorization.BusinessUnit.BusinessUnitGodMode,
+                            AppClaims.Authorization.Company.CompanyUsersManagement,
+                            AppClaims.Authorization.Company.CompanyGodMode,
+                            AppClaims.Authorization.Administration.GodMode));
+                    }
+                    else if (administrationClaims.Contains(claim))
                     {
                         options.AddPolicy(claim, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type, 
                             claim, 

@@ -1,4 +1,5 @@
-﻿@model UserUpdateModel
+﻿@inject CurrentUser currentUser
+@model UserUpdateModel
 @{ Layout = null; }
 
 <form asp-controller="Users"
@@ -56,28 +57,33 @@
                 </select>
                 <span asp-validation-for="RoleIds" class="text-danger"></span>
             </div>
-            <div class="col-md-12 form-group">
-                <label>@Translations.Companies</label>
-                <select asp-for="CompanyIds" id="modal_@nameof(UserAddModel.CompanyIds)" multiple="multiple" class="form-control select2">
-                    @foreach (var item in Model.CompanyIdsSelectList)
-                    {
-                        <option value="@item.Value" selected="selected">@item.Text</option>
-                    }
-                </select>
-                <span asp-validation-for="CompanyIds" class="text-danger"></span>
-            </div>
-            <div class="col-md-12 form-group">
-                <label>@Translations.BusinessUnits</label>
-                <select asp-for="BusinessUnitIds" id="modal_@nameof(UserAddModel.BusinessUnitIds)" multiple="multiple" class="form-control select2">
-                    @foreach (var item in Model.BusinessUnitIdsSelectList)
-                    {
-                        <option value="@item.Value" selected="selected">@item.Text</option>
-                    }
-                </select>
-                <span asp-validation-for="BusinessUnitIds" class="text-danger"></span>
-            </div>
+            @if (!currentUser.CurrentCompanyId().HasValue)
+            {
+                <div class="col-md-12 form-group">
+                    <label>@Translations.Companies</label>
+                    <select asp-for="CompanyIds" id="modal_@nameof(UserAddModel.CompanyIds)" multiple="multiple" class="form-control select2">
+                        @foreach (var item in Model.CompanyIdsSelectList)
+                        {
+                            <option value="@item.Value" selected="selected">@item.Text</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CompanyIds" class="text-danger"></span>
+                </div>
+            }
+            @if (!currentUser.CurrentBusinessUnitId().HasValue)
+            {
+                <div class="col-md-12 form-group">
+                    <label>@Translations.BusinessUnits</label>
+                    <select asp-for="BusinessUnitIds" id="modal_@nameof(UserAddModel.BusinessUnitIds)" multiple="multiple" class="form-control select2">
+                        @foreach (var item in Model.BusinessUnitIdsSelectList)
+                        {
+                            <option value="@item.Value" selected="selected">@item.Text</option>
+                        }
+                    </select>
+                    <span asp-validation-for="BusinessUnitIds" class="text-danger"></span>
+                </div>
+            }
         </div>
-
     </div>
 
     <div class="modal-footer">

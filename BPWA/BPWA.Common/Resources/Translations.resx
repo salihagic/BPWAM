@@ -642,4 +642,16 @@
   <data name="Yes_reset_it" xml:space="preserve">
     <value>Yes, reset it</value>
   </data>
+  <data name="BusinessUnitGodMode" xml:space="preserve">
+    <value>Business unit god mode</value>
+  </data>
+  <data name="Business_unit" xml:space="preserve">
+    <value>Business unit</value>
+  </data>
+  <data name="CompanyGodMode" xml:space="preserve">
+    <value>Company god mode</value>
+  </data>
+  <data name="GodMode" xml:space="preserve">
+    <value>God mode</value>
+  </data>
 </root>

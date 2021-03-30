@@ -13,12 +13,23 @@ namespace BPWA.Web.Services.Services
 {
     public class RolesWebService : RolesService, IRolesWebService
     {
+        private CurrentUser _currentUser;
+
         public RolesWebService(
             DatabaseContext databaseContext,
             IMapper mapper,
-            RoleManager<Role> roleManager
+            RoleManager<Role> roleManager,
+            CurrentUser currentUser
             ) : base(databaseContext, mapper, roleManager)
         {
+            _currentUser = currentUser;
+        }
+
+        public override IQueryable<Role> BuildQueryConditions(IQueryable<Role> Query, RoleSearchModel searchModel = null)
+        {
+            return base.BuildQueryConditions(Query, searchModel)
+                .WhereIf(_currentUser.CurrentCompanyId().HasValue, x => x.CompanyId == _currentUser.CurrentCompanyId())
+                .WhereIf(_currentUser.CurrentBusinessUnitId().HasValue, x => x.BusinessUnitId == _currentUser.CurrentBusinessUnitId());
         }
 
         public override IQueryable<Role> BuildIncludesById(string id, IQueryable<Role> query)
@@ -36,7 +47,15 @@ namespace BPWA.Web.Services.Services
                 .Include(x => x.BusinessUnit);
         }
 
-        public override async Task<Result<RoleDTO>> Update(Role entity)
+        public override async Task<Result<Role>> AddEntity(Role entity)
+        {
+            entity.CompanyId = _currentUser.CurrentCompanyId();
+            entity.BusinessUnitId = _currentUser.CurrentBusinessUnitId();
+
+            return await base.AddEntity(entity);
+        }
+
+        public override async Task<Result<Role>> UpdateEntity(Role entity)
         {
             var currentRoleClaims = await DatabaseContext.RoleClaims.Where(x => x.RoleId == entity.Id).ToListAsync();
 
@@ -52,7 +71,7 @@ namespace BPWA.Web.Services.Services
                 entity.RoleClaims = entity.RoleClaims.Where(x => !currentRoleClaims.Any(y => y.ClaimValue == x.ClaimValue)).ToList();
             }
 
-            return await base.Update(entity);
+            return await base.UpdateEntity(entity);
         }
 
         public override Task<Result> Delete(Role entity, bool softDelete = true)

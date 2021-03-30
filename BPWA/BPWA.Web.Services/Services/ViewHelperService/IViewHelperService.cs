@@ -33,15 +33,36 @@
         #region Sections
 
         bool ShowCompanySection();
+        bool ShowCompanyAuthSection();
 
-        #endregion Sections
+        #endregion 
 
         #region Items
 
         bool ShowBusinessUnitsItem();
+        bool ShowCompanyRolesItem();
+        bool ShowCompanyUsersItem();
 
-        #endregion Items
+        #endregion
 
-        #endregion Company
+        #endregion
+
+        #region Business unit
+
+        #region Sections
+
+        bool ShowBusinessUnitSection();
+        bool ShowBusinessUnitAuthSection();
+
+        #endregion 
+
+        #region Items
+
+        bool ShowBusinessUnitRolesItem();
+        bool ShowBusinessUnitUsersItem();
+
+        #endregion 
+
+        #endregion 
     }
 }

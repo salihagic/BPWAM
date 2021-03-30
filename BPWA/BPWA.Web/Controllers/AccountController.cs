@@ -97,7 +97,6 @@ namespace BPWA.Controllers
             });
         }
 
-
         [HttpPost]
         public async Task<IActionResult> ToggleCurrentBusinessUnit(ToggleCurrentBusinessUnitModel model, string returnUrl = "")
         {

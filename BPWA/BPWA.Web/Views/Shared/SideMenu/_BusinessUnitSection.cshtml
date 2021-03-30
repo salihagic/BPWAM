@@ -3,21 +3,11 @@
 @{ Layout = null;}
 
 <li class="kt-menu__section ">
-    <h4 class="kt-menu__section-text">@Translations.Company (@currentUser.CurrentCompanyName())</h4>
+    <h4 class="kt-menu__section-text">@Translations.Business_unit (@currentUser.CurrentBusinessUnitName())</h4>
     <i class="kt-menu__section-icon flaticon-more-v2"></i>
 </li>
 
-@if (viewHelperService.ShowBusinessUnitsItem())
-{
-    <li class="kt-menu__item " aria-haspopup="true">
-        <a asp-controller="BusinessUnits" asp-action="Index" class="kt-menu__link">
-            <i class="kt-menu__link-icon flaticon-grid-menu-v2"></i>
-            <span class="kt-menu__link-text">@Translations.BusinessUnits</span>
-        </a>
-    </li>
-}
-
-@if (viewHelperService.ShowCompanyAuthSection())
+@if (viewHelperService.ShowBusinessUnitAuthSection())
 {
     <li class="kt-menu__item  kt-menu__item--submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
         <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
@@ -33,7 +23,7 @@
                         <span class="kt-menu__link-text">@Translations.Auth_settings</span>
                     </span>
                 </li>
-                @if (viewHelperService.ShowCompanyRolesItem())
+                @if (viewHelperService.ShowBusinessUnitRolesItem())
                 {
                     <li class="kt-menu__item " aria-haspopup="true">
                         <a asp-controller="Roles"
@@ -46,7 +36,7 @@
                         </a>
                     </li>
                 }
-                @if (viewHelperService.ShowCompanyUsersItem())
+                @if (viewHelperService.ShowBusinessUnitUsersItem())
                 {
                     <li class="kt-menu__item " aria-haspopup="true">
                         <a asp-controller="Users"

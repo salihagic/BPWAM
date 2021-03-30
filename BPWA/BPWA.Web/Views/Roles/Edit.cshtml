@@ -1,7 +1,8 @@
 ﻿@model RoleUpdateModel
+@inject IDropdownHelperService dropdownHelperService
 @{
     Layout = null;
-    var appClaims = AppClaimsHelper.Authorization.All;
+    var appClaims = dropdownHelperService.GetAppClaims();
 }
 
 <form asp-controller="Roles"
@@ -25,23 +26,23 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
         </div>
-            <div class="claim_item col-md-12 row">
-        @{ int counter = 0; }
-        @foreach (var item in appClaims)
-        {
-            var isChecked = Model.Claims.Contains(item) ? "checked" : "";
-            var id = $"Claims_{counter}";
+        <div class="claim_item col-md-12 row">
+            @{ int counter = 0; }
+            @foreach (var item in appClaims)
+            {
+                var isChecked = Model.Claims.Contains(item.Value) ? "checked" : "";
+                var id = $"Claims_{counter}";
 
                 <div class="col-md-6 form-group">
                     <label class="kt-checkbox kt-checkbox--single">
-                        <input type="checkbox" id="@id" name="Claims" value="@item" @isChecked><span></span>
-                        <label for="@id">@Translations.ResourceManager.GetString(item, Translations.Culture)</label>
+                        <input type="checkbox" id="@id" name="Claims" value="@item.Value" @isChecked><span></span>
+                        <label for="@id">@item.Text</label>
                     </label>
                 </div>
 
-            counter++;
-        }
-            </div>
+                counter++;
+            }
+        </div>
 
     </div>
 

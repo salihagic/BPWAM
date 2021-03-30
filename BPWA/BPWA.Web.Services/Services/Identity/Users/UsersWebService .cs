@@ -61,6 +61,13 @@ namespace BPWA.Web.Services.Services
                        .Include(x => x.City);
         }
 
+        public override IQueryable<User> BuildQueryConditions(IQueryable<User> Query, UserSearchModel searchModel = null)
+        {
+            return base.BuildQueryConditions(Query, searchModel)
+                .WhereIf(CurrentUser.CurrentCompanyId().HasValue, x => x.CompanyUsers.Any(y => y.CompanyId == CurrentUser.CurrentCompanyId()) || x.BusinessUnitUsers.Any(y => y.BusinessUnit.CompanyId == CurrentUser.CurrentCompanyId()))
+                .WhereIf(CurrentUser.CurrentBusinessUnitId().HasValue, x => x.BusinessUnitUsers.Any(y => y.BusinessUnit.Id == CurrentUser.CurrentBusinessUnitId()));
+        }
+
         public async Task<Result<UserAddModel>> PrepareForAdd(UserAddModel model = null)
         {
             model ??= new UserAddModel();
@@ -78,30 +85,37 @@ namespace BPWA.Web.Services.Services
                     return Result.Failed<UserAddModel>("Could not load roles");
                 }
             }
-            if (model.CompanyIds.IsNotEmpty())
+            if (CurrentUser.CurrentCompanyId().HasValue)
             {
-                try
+                if (model.CompanyIds.IsNotEmpty())
                 {
-                    model.CompanyIdsSelectList = await DatabaseContext.Companies
-                    .Where(x => model.CompanyIds.Contains(x.Id))
-                    .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToListAsync();
-                }
-                catch (Exception e)
-                {
-                    return Result.Failed<UserAddModel>("Could not load companies");
+                    try
+                    {
+                        model.CompanyIdsSelectList = await DatabaseContext.Companies
+                        .Where(x => model.CompanyIds.Contains(x.Id))
+                        .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToListAsync();
+                    }
+                    catch (Exception e)
+                    {
+                        return Result.Failed<UserAddModel>("Could not load companies");
+                    }
                 }
             }
-            if (model.BusinessUnitIds.IsNotEmpty())
+
+            if (CurrentUser.CurrentBusinessUnitId().HasValue)
             {
-                try
+                if (model.BusinessUnitIds.IsNotEmpty())
                 {
-                    model.BusinessUnitIdsSelectList = await DatabaseContext.BusinessUnits
-                    .Where(x => model.BusinessUnitIds.Contains(x.Id))
-                    .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToListAsync();
-                }
-                catch (Exception e)
-                {
-                    return Result.Failed<UserAddModel>("Could not load business units");
+                    try
+                    {
+                        model.BusinessUnitIdsSelectList = await DatabaseContext.BusinessUnits
+                        .Where(x => model.BusinessUnitIds.Contains(x.Id))
+                        .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToListAsync();
+                    }
+                    catch (Exception e)
+                    {
+                        return Result.Failed<UserAddModel>("Could not load business units");
+                    }
                 }
             }
 
@@ -110,6 +124,26 @@ namespace BPWA.Web.Services.Services
             model.BusinessUnitIdsSelectList ??= new List<SelectListItem>();
 
             return Result.Success(model);
+        }
+
+        public override Task<Result<User>> AddEntity(User entity)
+        {
+            if (CurrentUser.CurrentBusinessUnitId().HasValue)
+            {
+                entity.BusinessUnitUsers = new List<BusinessUnitUser>
+                {
+                    new BusinessUnitUser { BusinessUnitId = CurrentUser.CurrentBusinessUnitId().Value }
+                };
+            }
+            else if (CurrentUser.CurrentCompanyId().HasValue)
+            {
+                entity.CompanyUsers = new List<CompanyUser>
+                {
+                    new CompanyUser { CompanyId = CurrentUser.CurrentCompanyId().Value }
+                };
+            }
+
+            return base.AddEntity(entity);
         }
 
         public async Task<Result<UserUpdateModel>> PrepareForUpdate(UserUpdateModel model = null)
@@ -163,7 +197,7 @@ namespace BPWA.Web.Services.Services
             return Result.Success(model);
         }
 
-        public override async Task<Result<UserDTO>> Update(User entity)
+        public override async Task<Result<User>> UpdateEntity(User entity)
         {
             var currentUserRoles = await DatabaseContext.UserRoles.Where(x => x.UserId == entity.Id && !x.IsDeleted).ToListAsync();
 
@@ -179,35 +213,41 @@ namespace BPWA.Web.Services.Services
                 entity.UserRoles = entity.UserRoles.Where(x => !currentUserRoles.Any(y => y.RoleId == x.RoleId)).ToList();
             }
 
-            var currentCompanyUsers = await DatabaseContext.CompanyUsers.Where(x => x.UserId == entity.Id && !x.IsDeleted).ToListAsync();
-
-            if (currentCompanyUsers.IsNotEmpty())
+            if (!CurrentUser.CurrentCompanyId().HasValue)
             {
-                //Delete
-                var currentCompanyUsersToDelete = currentCompanyUsers.Where(x => !entity.CompanyUsers?.Any(y => y.CompanyId == x.CompanyId) ?? true).ToList();
-                currentCompanyUsersToDelete?.ForEach(x => x.IsDeleted = true);
+                var currentCompanyUsers = await DatabaseContext.CompanyUsers.Where(x => x.UserId == entity.Id && !x.IsDeleted).ToListAsync();
 
-                await DatabaseContext.SaveChangesAsync();
+                if (currentCompanyUsers.IsNotEmpty())
+                {
+                    //Delete
+                    var currentCompanyUsersToDelete = currentCompanyUsers.Where(x => !entity.CompanyUsers?.Any(y => y.CompanyId == x.CompanyId) ?? true).ToList();
+                    currentCompanyUsersToDelete?.ForEach(x => x.IsDeleted = true);
 
-                //Only leave the new ones
-                entity.CompanyUsers = entity.CompanyUsers.Where(x => !currentCompanyUsers.Any(y => y.CompanyId == x.CompanyId)).ToList();
+                    await DatabaseContext.SaveChangesAsync();
+
+                    //Only leave the new ones
+                    entity.CompanyUsers = entity.CompanyUsers.Where(x => !currentCompanyUsers.Any(y => y.CompanyId == x.CompanyId)).ToList();
+                }
             }
 
-            var currentBusinessUnitUsers = await DatabaseContext.BusinessUnitUsers.Where(x => x.UserId == entity.Id && !x.IsDeleted).ToListAsync();
-
-            if (currentBusinessUnitUsers.IsNotEmpty())
+            if (!CurrentUser.CurrentBusinessUnitId().HasValue)
             {
-                //Delete
-                var currentBusinessUnitUsersToDelete = currentBusinessUnitUsers.Where(x => !entity.BusinessUnitUsers?.Any(y => y.BusinessUnitId == x.BusinessUnitId) ?? true).ToList();
-                currentBusinessUnitUsersToDelete?.ForEach(x => x.IsDeleted = true);
+                var currentBusinessUnitUsers = await DatabaseContext.BusinessUnitUsers.Where(x => x.UserId == entity.Id && !x.IsDeleted).ToListAsync();
 
-                await DatabaseContext.SaveChangesAsync();
+                if (currentBusinessUnitUsers.IsNotEmpty())
+                {
+                    //Delete
+                    var currentBusinessUnitUsersToDelete = currentBusinessUnitUsers.Where(x => !entity.BusinessUnitUsers?.Any(y => y.BusinessUnitId == x.BusinessUnitId) ?? true).ToList();
+                    currentBusinessUnitUsersToDelete?.ForEach(x => x.IsDeleted = true);
 
-                //Only leave the new ones
-                entity.BusinessUnitUsers = entity.BusinessUnitUsers.Where(x => !currentBusinessUnitUsers.Any(y => y.BusinessUnitId == x.BusinessUnitId)).ToList();
+                    await DatabaseContext.SaveChangesAsync();
+
+                    //Only leave the new ones
+                    entity.BusinessUnitUsers = entity.BusinessUnitUsers.Where(x => !currentBusinessUnitUsers.Any(y => y.BusinessUnitId == x.BusinessUnitId)).ToList();
+                }
             }
 
-            return await base.Update(entity);
+            return await base.UpdateEntity(entity);
         }
 
         public async Task<Result> ToggleCurrentCompany(ToggleCurrentCompanyModel model)
@@ -273,7 +313,7 @@ namespace BPWA.Web.Services.Services
                         var firstCompany = await DatabaseContext.CompanyUsers
                         .FirstOrDefaultAsync(x => x.UserId == CurrentUser.Id());
 
-                        if(firstCompany == null)
+                        if (firstCompany == null)
                             return Result.Failed(Translations.There_was_an_error_while_trying_to_change_current_business_unit);
 
                         currentUserResult.Item.CurrentCompanyId = firstCompany.CompanyId;

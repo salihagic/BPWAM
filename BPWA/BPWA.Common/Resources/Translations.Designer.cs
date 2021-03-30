@@ -232,11 +232,29 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Business unit.
+        /// </summary>
+        public static string Business_unit {
+            get {
+                return ResourceManager.GetString("Business_unit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Business unit must be selected.
         /// </summary>
         public static string Business_unit_must_be_selected {
             get {
                 return ResourceManager.GetString("Business_unit_must_be_selected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Business unit god mode.
+        /// </summary>
+        public static string BusinessUnitGodMode {
+            get {
+                return ResourceManager.GetString("BusinessUnitGodMode", resourceCulture);
             }
         }
         
@@ -390,6 +408,15 @@ namespace BPWA.Common.Resources {
         public static string Company_must_be_selected {
             get {
                 return ResourceManager.GetString("Company_must_be_selected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Company god mode.
+        /// </summary>
+        public static string CompanyGodMode {
+            get {
+                return ResourceManager.GetString("CompanyGodMode", resourceCulture);
             }
         }
         
@@ -768,6 +795,15 @@ namespace BPWA.Common.Resources {
         public static string Geolocations {
             get {
                 return ResourceManager.GetString("Geolocations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to God mode.
+        /// </summary>
+        public static string GodMode {
+            get {
+                return ResourceManager.GetString("GodMode", resourceCulture);
             }
         }
         
