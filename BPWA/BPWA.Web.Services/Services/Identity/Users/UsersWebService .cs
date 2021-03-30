@@ -85,7 +85,8 @@ namespace BPWA.Web.Services.Services
                     return Result.Failed<UserAddModel>("Could not load roles");
                 }
             }
-            if (CurrentUser.CurrentCompanyId().HasValue)
+
+            if (!CurrentUser.CurrentCompanyId().HasValue)
             {
                 if (model.CompanyIds.IsNotEmpty())
                 {
@@ -102,7 +103,7 @@ namespace BPWA.Web.Services.Services
                 }
             }
 
-            if (CurrentUser.CurrentBusinessUnitId().HasValue)
+            if (!CurrentUser.CurrentBusinessUnitId().HasValue)
             {
                 if (model.BusinessUnitIds.IsNotEmpty())
                 {

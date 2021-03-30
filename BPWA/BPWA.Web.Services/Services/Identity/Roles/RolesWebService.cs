@@ -28,23 +28,23 @@ namespace BPWA.Web.Services.Services
         public override IQueryable<Role> BuildQueryConditions(IQueryable<Role> Query, RoleSearchModel searchModel = null)
         {
             return base.BuildQueryConditions(Query, searchModel)
-                .WhereIf(_currentUser.CurrentCompanyId().HasValue, x => x.CompanyId == _currentUser.CurrentCompanyId())
-                .WhereIf(_currentUser.CurrentBusinessUnitId().HasValue, x => x.BusinessUnitId == _currentUser.CurrentBusinessUnitId());
+                       .WhereIf(_currentUser.CurrentCompanyId().HasValue, x => x.CompanyId == _currentUser.CurrentCompanyId() || x.BusinessUnit.CompanyId == _currentUser.CurrentCompanyId())
+                       .WhereIf(_currentUser.CurrentBusinessUnitId().HasValue, x => x.BusinessUnitId == _currentUser.CurrentBusinessUnitId());
         }
 
         public override IQueryable<Role> BuildIncludesById(string id, IQueryable<Role> query)
         {
             return base.BuildIncludesById(id, query)
-                .Include(x => x.RoleClaims.Where(y => !y.IsDeleted))
-                .Include(x => x.Company)
-                .Include(x => x.BusinessUnit);
+                       .Include(x => x.RoleClaims.Where(y => !y.IsDeleted))
+                       .Include(x => x.Company)
+                       .Include(x => x.BusinessUnit);
         }
 
         public override IQueryable<Role> BuildIncludes(IQueryable<Role> query)
         {
             return base.BuildIncludes(query)
-                .Include(x => x.Company)
-                .Include(x => x.BusinessUnit);
+                       .Include(x => x.Company)
+                       .Include(x => x.BusinessUnit);
         }
 
         public override async Task<Result<Role>> AddEntity(Role entity)
