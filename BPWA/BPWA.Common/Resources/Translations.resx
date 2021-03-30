@@ -654,4 +654,10 @@
   <data name="GodMode" xml:space="preserve">
     <value>God mode</value>
   </data>
+  <data name="BusinessUnitUsersManagement" xml:space="preserve">
+    <value>Business unit users management</value>
+  </data>
+  <data name="CompanyUsersManagement" xml:space="preserve">
+    <value>Company users management</value>
+  </data>
 </root>

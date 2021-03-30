@@ -286,6 +286,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Business unit users management.
+        /// </summary>
+        public static string BusinessUnitUsersManagement {
+            get {
+                return ResourceManager.GetString("BusinessUnitUsersManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change.
         /// </summary>
         public static string Change {
@@ -426,6 +435,15 @@ namespace BPWA.Common.Resources {
         public static string CompanyRolesManagement {
             get {
                 return ResourceManager.GetString("CompanyRolesManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Company users management.
+        /// </summary>
+        public static string CompanyUsersManagement {
+            get {
+                return ResourceManager.GetString("CompanyUsersManagement", resourceCulture);
             }
         }
         
