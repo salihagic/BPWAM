@@ -30,8 +30,14 @@ namespace BPWA.DAL.Services
 
         public async Task<List<T>> Translate<T>(List<T> elements)
         {
+            var translationKeys = elements.SelectMany(x => x.GetTranslatableProps()).ToHashedList();
+
+            var translations = (await DatabaseContext.Translations
+                .Where(x => translationKeys.Contains(x.KeyHash))
+                .ToDictionaryAsync(x => x.Key, x => x.Value));
+
             foreach (var element in elements)
-                await Translate(element);
+                element.SetTranslatableProps(translations);
 
             return elements;
         }
