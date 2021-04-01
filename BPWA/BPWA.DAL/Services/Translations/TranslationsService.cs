@@ -23,7 +23,6 @@ namespace BPWA.DAL.Services
 
             var translations = (await DatabaseContext.Translations
                 .Where(x => translationKeys.Contains(x.KeyHash))
-                .Select(x => new { Key = x.Key, Value = x.Value })
                 .ToDictionaryAsync(x => x.Key, x => x.Value));
 
             return element.SetTranslatableProps(translations);
