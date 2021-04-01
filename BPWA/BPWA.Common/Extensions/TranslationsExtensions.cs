@@ -1,5 +1,6 @@
 ﻿using BPWA.Common.Resources;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BPWA.Common.Extensions
 {
@@ -17,24 +18,19 @@ namespace BPWA.Common.Extensions
 
             var translationKeys = new List<string>();
 
-            foreach (var prop in element.GetType().GetProperties())
+            foreach (var prop in element.GetType().GetProperties().Where(x => x.IsTranslatable() || x.PropertyType.IsClass))
             {
                 var propValue = prop.GetValue(element);
 
                 if (propValue != null)
                 {
-                    if (prop.IsTranslatable() && prop.PropertyType == typeof(string))
+                    if (prop.PropertyType == typeof(string))
                     {
                         translationKeys.Add(propValue as string);
                     }
-                    else if (prop.PropertyType.IsClass && prop.PropertyType != typeof(string))
+                    else
                     {
-                        var subClassProps = propValue.GetTranslatableProps();
-
-                        if (subClassProps.IsNotEmpty())
-                        {
-                            translationKeys.AddRange(subClassProps);
-                        }
+                        translationKeys.AddRange(propValue.GetTranslatableProps());
                     }
                 }
             }
@@ -47,22 +43,22 @@ namespace BPWA.Common.Extensions
             if (element == null)
                 return default(T);
 
-            foreach (var prop in element.GetType().GetProperties())
+            foreach (var prop in element.GetType().GetProperties().Where(x => x.IsTranslatable() || x.PropertyType.IsClass))
             {
                 var propValue = prop.GetValue(element);
 
                 if (propValue != null)
                 {
-                    if (prop.IsTranslatable() && prop.PropertyType == typeof(string))
+                    if (prop.PropertyType == typeof(string))
                     {
                         var translatedPropValue = translations.GetValueOrDefault(propValue as string);
 
                         if (translatedPropValue.HasValue())
                             prop.SetValue(element, translatedPropValue);
                     }
-                    else if (prop.PropertyType.IsClass && prop.PropertyType != typeof(string))
+                    else
                     {
-                       propValue.SetTranslatableProps(translations);
+                        propValue.SetTranslatableProps(translations);
                     }
                 }
             }
