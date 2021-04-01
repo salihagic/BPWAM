@@ -23,6 +23,7 @@ namespace BPWA.DAL.Database
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<Language> Languages { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<Translation> Translations { get; set; }
 
         #region Configure Identity entities
 

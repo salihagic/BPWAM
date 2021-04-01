@@ -34,24 +34,23 @@ namespace BPWA.DAL.Services
         protected DatabaseContext DatabaseContext { get; set; }
         protected IQueryable<TEntity> Query { get; set; }
         protected IMapper Mapper { get; set; }
+        public bool _shouldTranslate { get; set; }
 
         public BaseReadService(
             DatabaseContext databaseContext,
-            IMapper mapper
+            IMapper mapper,
+            bool shouldTranslate = false
             )
         {
             DatabaseContext = databaseContext;
             Mapper = mapper;
             Query = databaseContext.Set<TEntity>().AsQueryable();
+            _shouldTranslate = shouldTranslate;
         }
 
         virtual public IQueryable<TEntity> BuildQueryConditions(IQueryable<TEntity> Query, TSearchModel searchModel = null)
         {
-            if (searchModel == null)
-                return Query;
-
-            return Query
-                .WhereIf(searchModel.IsDeleted.HasValue, x => x.IsDeleted == searchModel.IsDeleted.Value);
+            return Query.WhereIf(searchModel != null, x => x.IsDeleted == searchModel.IsDeleted);
         }
 
         virtual public IQueryable<TEntity> BuildIncludesById(TId id, IQueryable<TEntity> query) => query;

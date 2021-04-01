@@ -68,10 +68,6 @@
                     title: '@Translations.Name',
                 },
                 {
-                    field: '@nameof(BusinessUnitDTO.Company).ToCamelCase().@nameof(BusinessUnitDTO.Company.Name).ToCamelCase()',
-                    title: '@Translations.Company',
-                },
-                {
                     template: (row) => DatatableBasicActions({
                         detailsUrl: `@Url.Action("Details", "BusinessUnits")/${row.id}`,
                         editUrl: `@Url.Action("Edit", "BusinessUnits")/${row.id}`,

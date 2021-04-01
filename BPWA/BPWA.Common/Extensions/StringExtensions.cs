@@ -1,4 +1,7 @@
-﻿namespace BPWA.Common.Extensions
+﻿using System.Security.Cryptography;
+using System.Text;
+
+namespace BPWA.Common.Extensions
 {
     public static class StringExtensions
     {
@@ -25,6 +28,21 @@
 
             var base64EncodedBytes = System.Convert.FromBase64String(s);
             return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+        }
+
+        public static string GetHashString(this string s)
+        {
+            StringBuilder hash = new StringBuilder();
+            foreach (byte b in s.GetHash())
+                hash.Append(b.ToString("X2"));
+
+            return hash.ToString();
+        }
+
+        public static byte[] GetHash(this string s)
+        {
+            using (HashAlgorithm algorithm = SHA256.Create())
+                return algorithm.ComputeHash(Encoding.UTF8.GetBytes(s));
         }
     }
 }

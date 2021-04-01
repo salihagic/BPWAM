@@ -13,8 +13,8 @@ namespace BPWA.Common.Extensions
                 return query;
 
             return query.Where(predicate);
-        }       
-        
+        }
+
         public static IEnumerable<T> WhereIf<T>(this IEnumerable<T> query, bool condition, Func<T, bool> predicate)
         {
             if (!condition)
