@@ -36,5 +36,19 @@ namespace BPWA.DAL.Services
 
             return elements;
         }
+
+        public override Task<Result<Translation>> AddEntity(Translation entity)
+        {
+            entity.KeyHash = entity.Key.GetHashString();
+
+            return base.AddEntity(entity);
+        }
+
+        public override Task<Result<Translation>> UpdateEntity(Translation entity)
+        {
+            entity.KeyHash = entity.Key.GetHashString();
+
+            return base.AddEntity(entity);
+        }
     }
 }

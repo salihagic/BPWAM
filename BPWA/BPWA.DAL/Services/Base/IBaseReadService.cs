@@ -2,7 +2,6 @@
 using BPWA.DAL.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BPWA.DAL.Models;
 
 namespace BPWA.DAL.Services
 {
