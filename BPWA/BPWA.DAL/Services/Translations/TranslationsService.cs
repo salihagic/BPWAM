@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using BPWA.Common.Extensions;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using BPWA.Common.Resources;
+using System.Globalization;
 
 namespace BPWA.DAL.Services
 {
@@ -34,6 +36,7 @@ namespace BPWA.DAL.Services
 
             var translations = (await DatabaseContext.Translations
                 .Where(x => translationKeys.Contains(x.KeyHash))
+                .Where(x => x.Culture == CultureInfo.CurrentCulture.Name)
                 .ToDictionaryAsync(x => x.Key, x => x.Value));
 
             foreach (var element in elements)
