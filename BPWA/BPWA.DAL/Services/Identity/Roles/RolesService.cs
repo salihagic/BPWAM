@@ -181,7 +181,7 @@ namespace BPWA.DAL.Services
             }
         }
 
-        virtual public async Task<Result<Role>> GetEntityById(string id)
+        virtual public async Task<Result<Role>> GetEntityById(string id, bool shouldTranslate = true)
         {
             try
             {
@@ -199,7 +199,7 @@ namespace BPWA.DAL.Services
             }
         }
 
-        virtual public async Task<Result<Role>> GetEntityByIdWithoutIncludes(string id)
+        virtual public async Task<Result<Role>> GetEntityByIdWithoutIncludes(string id, bool shouldTranslate = true)
         {
             try
             {

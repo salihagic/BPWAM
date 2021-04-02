@@ -154,7 +154,7 @@ namespace BPWA.Controllers
             if (fullPage)
                 BreadcrumbItem(null, new { id, fullPage });
 
-            var result = await BaseCRUDService.GetEntityById(id);
+            var result = await BaseCRUDService.GetEntityById(id, shouldTranslate: false);
 
             if (!result.IsSuccess)
                 return fullPage ? Error() : _Error();
@@ -199,7 +199,7 @@ namespace BPWA.Controllers
 
                 if (!entityResult.IsSuccess)
                 {
-                    var getEntityByIdResult = await BaseCRUDService.GetEntityByIdWithoutIncludes(model.Id);
+                    var getEntityByIdResult = await BaseCRUDService.GetEntityByIdWithoutIncludes(model.Id, shouldTranslate: false);
 
                     if (!getEntityByIdResult.IsSuccess)
                         return BadRequest(getEntityByIdResult);

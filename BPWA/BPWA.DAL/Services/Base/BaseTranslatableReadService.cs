@@ -39,21 +39,21 @@ namespace BPWA.DAL.Services
             TranslationsService = translationsService;
         }
 
-        public override async Task<Result<TEntity>> GetEntityById(TId id)
+        public override async Task<Result<TEntity>> GetEntityById(TId id, bool shouldTranslate = true)
         {
             var result = await base.GetEntityById(id);
 
-            if (result.IsSuccess)
+            if (result.IsSuccess && shouldTranslate)
                 result.Item = await TranslationsService.Translate(result.Item);
 
             return result;
         }
 
-        public override async Task<Result<TEntity>> GetEntityByIdWithoutIncludes(TId id)
+        public override async Task<Result<TEntity>> GetEntityByIdWithoutIncludes(TId id, bool shouldTranslate = true)
         {
             var result = await base.GetEntityByIdWithoutIncludes(id);
 
-            if (result.IsSuccess)
+            if (result.IsSuccess && shouldTranslate)
                 result.Item = await TranslationsService.Translate(result.Item);
 
             return result;
