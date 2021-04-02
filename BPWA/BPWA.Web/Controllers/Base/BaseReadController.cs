@@ -68,9 +68,9 @@ namespace BPWA.Controllers
                 ResetNavigationStack();
             }
 
-            BreadcrumbItem(TranslationsHelper.Translate(CurrentController));
+            BreadcrumbItem(CurrentBreadcrumbItem ?? TranslationsHelper.Translate(CurrentController));
 
-            ViewBag.Title = TranslationsHelper.Translate(CurrentController);
+            ViewBag.Title = CurrentBreadcrumbItem ?? TranslationsHelper.Translate(CurrentController);
 
             var result = await BaseReadService.PrepareForGet();
 

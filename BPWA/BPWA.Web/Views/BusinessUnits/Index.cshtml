@@ -1,4 +1,5 @@
-﻿@model BusinessUnitSearchModel
+﻿@inject CurrentUser currentUser 
+@model BusinessUnitSearchModel
 
 <div class="kt-portlet kt-portlet--mobile col-lg-12">
     <form method="POST" class="datatable_search_form">
@@ -35,9 +36,6 @@
             <div class="col-md-12 row mt-4">
                 <div class="col-md form-group">
                     <input asp-for="Name" placeholder="@Translations.Name" class="form-control kt-input">
-                </div>
-                <div class="col-md-6 form-group">
-                    <select asp-for="CompanyId" class="form-control select2"></select>
                 </div>
             </div>
         </div>

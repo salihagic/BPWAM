@@ -49,6 +49,8 @@ namespace BPWA.Controllers
             set => _currentController = value;
         }
 
+        public string CurrentBreadcrumbItem { get; set; }
+
         protected void ResetNavigationStack()
         {
             var stack = _sessionNavigationStack;
