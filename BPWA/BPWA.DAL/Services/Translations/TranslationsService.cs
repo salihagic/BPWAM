@@ -1,43 +1,80 @@
 ﻿using AutoMapper;
+using BPWA.Common.Extensions;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
 using BPWA.DAL.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using BPWA.Common.Extensions;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using BPWA.Common.Resources;
+using Microsoft.Extensions.Caching.Memory;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BPWA.DAL.Services
 {
     public class TranslationsService : BaseCRUDService<Translation, TranslationSearchModel, TranslationDTO>, ITranslationsService
     {
+        private IMemoryCache _memoryCache;
+        private string _currentCulture => CultureInfo.CurrentCulture.Name;
+
         public TranslationsService(
             DatabaseContext databaseContext,
-            IMapper mapper
-            ) : base(databaseContext, mapper) { }
+            IMapper mapper,
+            IMemoryCache memoryCache
+            ) : base(databaseContext, mapper)
+        {
+            _memoryCache = memoryCache;
+        }
 
         public async Task<T> Translate<T>(T element)
         {
-            var translationKeys = element.GetTranslatableProps().ToHashedList();
+            var translationKeys = element.GetTranslatableProps();
 
-            var translations = (await DatabaseContext.Translations
-                .Where(x => translationKeys.Contains(x.KeyHash))
-                .ToDictionaryAsync(x => x.Key, x => x.Value));
+            var translations = await GetTranslations(translationKeys);
 
             return element.SetTranslatableProps(translations);
         }
 
+        private async Task<Dictionary<string, string>> GetTranslations(List<string> translationKeys)
+        {
+            var translations = new Dictionary<string, string>();
+
+            foreach (var translationKey in translationKeys)
+            {
+                var translationCacheModel = new TranslationCacheModel
+                {
+                    Culture = _currentCulture,
+                    Key = translationKey,
+                    KeyHash = translationKey.GetHashString()
+                };
+
+                var cacheEntry = await _memoryCache.GetOrCreateAsync(
+                    translationCacheModel.CacheKey, 
+                    async entry =>
+                    {
+                        entry.SlidingExpiration = TimeSpan.FromDays(5);
+
+                        var translation = await DatabaseContext.Translations
+                            .Where(x => x.KeyHash == translationCacheModel.KeyHash)
+                            .Where(x => x.Culture == _currentCulture)
+                            .FirstOrDefaultAsync();
+
+                        return translation;
+                    });
+
+                if (cacheEntry != null)
+                    translations.Add(cacheEntry.Key, cacheEntry.Value);
+            }
+
+            return translations;
+        }
+
         public async Task<List<T>> Translate<T>(List<T> elements)
         {
-            var translationKeys = elements.SelectMany(x => x.GetTranslatableProps()).ToHashedList();
+            var translationKeys = elements.SelectMany(x => x.GetTranslatableProps()).ToList();
 
-            var translations = (await DatabaseContext.Translations
-                .Where(x => translationKeys.Contains(x.KeyHash))
-                .Where(x => x.Culture == CultureInfo.CurrentCulture.Name)
-                .ToDictionaryAsync(x => x.Key, x => x.Value));
+            var translations = await GetTranslations(translationKeys);
 
             foreach (var element in elements)
                 element.SetTranslatableProps(translations);
@@ -58,5 +95,15 @@ namespace BPWA.DAL.Services
 
             return base.AddEntity(entity);
         }
+    }
+
+    class TranslationCacheModel
+    {
+        public string Culture { get; set; }
+        public string Key { get; set; }
+        public string KeyHash { get; set; }
+        public string Value { get; set; }
+
+        public string CacheKey => $"{KeyHash}-{Culture}";
     }
 }
