@@ -20,6 +20,7 @@ namespace BPWA.Common.Security
                 public const string CountriesManagement = nameof(CountriesManagement);
                 public const string CurrenciesManagement = nameof(CurrenciesManagement);
                 public const string LanguagesManagement = nameof(LanguagesManagement);
+                public const string TranslationsManagement = nameof(TranslationsManagement);
                 public const string TicketsManagement = nameof(TicketsManagement);
             }
 

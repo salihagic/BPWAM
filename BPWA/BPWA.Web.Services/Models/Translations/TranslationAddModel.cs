@@ -1,6 +1,6 @@
-﻿namespace BPWA.DAL.Models
+﻿namespace BPWA.Web.Services.Models
 {
-    public class TranslationSearchModel : BaseSearchModel
+    public class TranslationAddModel
     {
         public string Culture { get; set; }
         public string Key { get; set; }

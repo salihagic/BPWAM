@@ -131,6 +131,19 @@
                         </a>
                     </li>
                 }
+                @if (viewHelperService.ShowTranslationsItem())
+                {
+                    <li class="kt-menu__item" aria-haspopup="true">
+                        <a asp-controller="Translations"
+                           asp-action="Index"
+                           class="kt-menu__link ">
+                            <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
+                                <span></span>
+                            </i>
+                            <span class="kt-menu__link-text">@Translations._Translations</span>
+                        </a>
+                    </li>
+                }
             </ul>
         </div>
     </li>

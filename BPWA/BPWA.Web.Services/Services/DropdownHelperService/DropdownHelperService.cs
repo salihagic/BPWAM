@@ -1,5 +1,6 @@
 ﻿using BPWA.Common.Enumerations;
 using BPWA.Common.Extensions;
+using BPWA.Common.Resources;
 using BPWA.Common.Security;
 using BPWA.DAL.Services;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -70,6 +71,16 @@ namespace BPWA.Web.Services.Services
                 {
                     Value = x.ToString(),
                     Text = TranslationsHelper.Translate(x.ToString())
+                }).ToList();
+        }
+
+        public List<SelectListItem> GetSystemLanguages()
+        {
+            return TranslationOptions.SupportedLanguages
+                .Select(x => new SelectListItem
+                {
+                    Value = x.CultureInfo.Name,
+                    Text = x.Name
                 }).ToList();
         }
     }

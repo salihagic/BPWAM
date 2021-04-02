@@ -4,10 +4,19 @@
     var appClaimsJson = JsonConvert.SerializeObject(DropdownHelperService.GetAppClaims().Select(x => new { id = x.Value, text = x.Text }).ToList());
     var ticketTypesJson = JsonConvert.SerializeObject(DropdownHelperService.GetTicketTypes().Select(x => new { id = x.Value, text = x.Text }).ToList());
     var ticketStatusesJson = JsonConvert.SerializeObject(DropdownHelperService.GetTicketStatuses().Select(x => new { id = x.Value, text = x.Text }).ToList());
+    var systemLanguagesJson = JsonConvert.SerializeObject(DropdownHelperService.GetSystemLanguages().Select(x => new { id = x.Value, text = x.Text }).ToList());
 }
 
 <script>
 
+    function Select2SystemLanguages(options) {
+        Select2({
+            data: @Html.Raw(systemLanguagesJson),
+            placeholder: '@Translations.Select_language',
+            ...options
+        });
+    }
+    
     function Select2AppClaims(options) {
         Select2({
             data: @Html.Raw(appClaimsJson),

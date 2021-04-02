@@ -18,6 +18,7 @@ namespace BPWA.Web.Configuration
             services.AddScoped<ILanguagesWebService, LanguagesWebService>();
             services.AddScoped<ITicketsWebService, TicketsWebService>();
             services.AddScoped<ITranslationsService, TranslationsService>();
+            services.AddScoped<ITranslationsWebService, TranslationsWebService>();
 
             #region Identity
 

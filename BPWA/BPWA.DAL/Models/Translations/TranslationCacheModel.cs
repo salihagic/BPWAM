@@ -1,13 +1,12 @@
-﻿using BPWA.Common.Resources;
-
-namespace BPWA.DAL.Models
+﻿namespace BPWA.DAL.Models.Translations
 {
-    public class TranslationDTO : BaseDTO
+    public class TranslationCacheModel
     {
         public string Culture { get; set; }
-        public string Language => TranslationOptions.GetByCulture(Culture)?.Name;
         public string Key { get; set; }
         public string KeyHash { get; set; }
         public string Value { get; set; }
+
+        public string CacheKey => $"{KeyHash}-{Culture}";
     }
 }

@@ -9,5 +9,6 @@ namespace BPWA.Web.Services.Services
         List<SelectListItem> GetAppClaims();
         List<SelectListItem> GetTicketTypes();
         List<SelectListItem> GetTicketStatuses();
+        List<SelectListItem> GetSystemLanguages();
     }
 }

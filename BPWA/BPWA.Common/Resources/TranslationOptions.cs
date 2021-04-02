@@ -14,10 +14,17 @@ namespace BPWA.Common.Resources
                 CultureInfo = new CultureInfo("en-US"),
                 IconPath = "/assets/media/flags/flag-us.png"
             },
+            new LanguageModel
+            {
+                Name = "Bosanski",
+                CultureInfo = new CultureInfo("bs-Latn-BA"),
+                IconPath = "/assets/media/flags/flag-ba.png"
+            },
         };
 
         public static LanguageModel DefaultLanguage => SupportedLanguages[0];
         public static List<CultureInfo> SupportedCultures => SupportedLanguages.Select(x => x.CultureInfo).ToList();
+        public static LanguageModel GetByCulture(string culture) => SupportedLanguages.FirstOrDefault(x => x.CultureInfo.Name == culture);
     }
 
     public class LanguageModel

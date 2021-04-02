@@ -1,0 +1,54 @@
+﻿@model TranslationUpdateModel
+@{ Layout = null; }
+
+<form asp-controller="Translations"
+      asp-action="Edit"
+      method="POST"
+      class="kt-form kt-form--fit">
+
+    <input asp-for="Id" type="hidden" />
+
+    <div class="modal-header">
+        <h5 class="modal-title">
+            @Translations.Edit_translation
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+    </div>
+
+    <div class="modal-body">
+
+        <div class="col-md-12 row">
+            <div class="col-md-12 form-group">
+                <label>@Translations.Key</label>
+                <textarea asp-for="Key" class="form-control m-input" placeholder="@Translations.Key"></textarea>
+                <span asp-validation-for="Key" class="text-danger"></span>
+            </div>
+            <div class="col-md-12 form-group">
+                <label>@Translations.Language</label>
+                <select asp-for="Culture" id="modal_@nameof(TranslationUpdateModel.Culture)" class="form-control select2"></select>
+                <span asp-validation-for="Culture" class="text-danger"></span>
+            </div>
+            <div class="col-md-12 form-group">
+                <label>@Translations.Translation</label>
+                <textarea asp-for="Value" class="form-control m-input" placeholder="@Translations.Translation"></textarea>
+                <span asp-validation-for="Value" class="text-danger"></span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">@Translations.Close</button>
+        <button class="modal_submit_close_button btn btn-primary" type="button">@Translations.Save</button>
+    </div>
+
+</form>
+
+<script>
+
+    Select2SystemLanguages({
+        element: '#modal_@nameof(TranslationUpdateModel.Culture)',
+        initialValue: '@Model.Culture.ToString()',
+    });
+
+</script>

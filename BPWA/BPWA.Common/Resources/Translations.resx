@@ -660,4 +660,22 @@
   <data name="CompanyUsersManagement" xml:space="preserve">
     <value>Company users management</value>
   </data>
+  <data name="Add_translation" xml:space="preserve">
+    <value>Add translation</value>
+  </data>
+  <data name="Edit_translation" xml:space="preserve">
+    <value>Edit translation</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Key</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Translation" xml:space="preserve">
+    <value>Translation</value>
+  </data>
+  <data name="_Translations" xml:space="preserve">
+    <value>Translations</value>
+  </data>
 </root>

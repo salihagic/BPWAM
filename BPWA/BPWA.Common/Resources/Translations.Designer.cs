@@ -61,6 +61,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Translations.
+        /// </summary>
+        public static string _Translations {
+            get {
+                return ResourceManager.GetString("_Translations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Account locked out.
         /// </summary>
         public static string Account_locked_out {
@@ -165,6 +174,15 @@ namespace BPWA.Common.Resources {
         public static string Add_ticket {
             get {
                 return ResourceManager.GetString("Add_ticket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add translation.
+        /// </summary>
+        public static string Add_translation {
+            get {
+                return ResourceManager.GetString("Add_translation", resourceCulture);
             }
         }
         
@@ -727,6 +745,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit translation.
+        /// </summary>
+        public static string Edit_translation {
+            get {
+                return ResourceManager.GetString("Edit_translation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit user.
         /// </summary>
         public static string Edit_user {
@@ -894,6 +921,24 @@ namespace BPWA.Common.Resources {
         public static string Invalid_username_or_password {
             get {
                 return ResourceManager.GetString("Invalid_username_or_password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key.
+        /// </summary>
+        public static string Key {
+            get {
+                return ResourceManager.GetString("Key", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string Language {
+            get {
+                return ResourceManager.GetString("Language", resourceCulture);
             }
         }
         
@@ -1551,6 +1596,15 @@ namespace BPWA.Common.Resources {
         public static string ToggleCompany {
             get {
                 return ResourceManager.GetString("ToggleCompany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Translation.
+        /// </summary>
+        public static string Translation {
+            get {
+                return ResourceManager.GetString("Translation", resourceCulture);
             }
         }
         

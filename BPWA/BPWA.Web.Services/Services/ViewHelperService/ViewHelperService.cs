@@ -28,6 +28,7 @@ namespace BPWA.Web.Services.Services
             ShowCountriesItem(),
             ShowCurrenciesItem(),
             ShowLanguagesItem(),
+            ShowTranslationsItem(),
         }.Any(x => x);
 
         #endregion 
@@ -43,6 +44,7 @@ namespace BPWA.Web.Services.Services
         public bool ShowCountriesItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.CountriesManagement) || _currentUser.HasGodMode();
         public bool ShowCurrenciesItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.CurrenciesManagement) || _currentUser.HasGodMode();
         public bool ShowLanguagesItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.LanguagesManagement) || _currentUser.HasGodMode();
+        public bool ShowTranslationsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.TranslationsManagement) || _currentUser.HasGodMode();
         public bool ShowTicketsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.TicketsManagement) || _currentUser.HasGodMode();
 
         #endregion 

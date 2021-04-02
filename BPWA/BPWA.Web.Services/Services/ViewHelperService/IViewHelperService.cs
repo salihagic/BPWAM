@@ -22,6 +22,7 @@
         bool ShowCountriesItem();
         bool ShowCurrenciesItem();
         bool ShowLanguagesItem();
+        bool ShowTranslationsItem();
         bool ShowTicketsItem();
 
         #endregion Items
