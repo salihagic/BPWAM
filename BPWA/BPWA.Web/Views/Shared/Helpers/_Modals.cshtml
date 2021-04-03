@@ -1,7 +1,6 @@
 ﻿@{ Layout = null; }
 
 <style>
-
     .modal_spinner {
         display: none;
         justify-content: center;
@@ -65,6 +64,8 @@
             success: (data) => {
 
                 if (data.success) {
+                    translationsManager.submit();
+                    $('.translation_item').val('');
                     $(modal).modal('toggle');
                     $('.datatable_search_form').submit();
                 } else {
@@ -93,6 +94,8 @@
             success: (data) => {
 
                 if (data.success) {
+                    translationsManager.submit();
+                    $('.translation_item').val('');
                     $(form)[0].reset();
                     $('.field-validation-error').remove();
                     $('.datatable_search_form').submit();

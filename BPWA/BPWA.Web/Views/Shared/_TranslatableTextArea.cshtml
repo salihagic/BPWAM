@@ -1,0 +1,77 @@
+﻿@model string
+@{
+    Layout = null;
+    var sourceValueClass = $"source_value_{Model}";
+    var modalId = $"modal_{Model}";
+}
+
+<button class="btn btn-primary translation_modal_btn" type="button">
+    <i class="flaticon-globe text-white"></i>
+</button>
+
+<div id="@modalId" class="modal fade translation_modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+
+            <form method="POST"
+                  class="kt-form kt-form--fit">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        @Translations.Translation
+                    </h5>
+                    <button type="button" class="close" data-target="#@modalId" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="col-md-12 row">
+
+                        <div class="col-md-12 form-group">
+                            <label>Your are translating this</label>
+                            <textarea class="form-control m-input @sourceValueClass"></textarea>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-12 row">
+
+                        @*@foreach (var language in TranslationOptions.SupportedLanguages)
+                        {
+                            <div class="col-md-12 form-group">
+                                <label>@Translations.Description</label>
+                                <textarea asp-for="Description" class="form-control m-input" placeholder="@Translations.Description"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        }*@
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Translations.Close</button>
+                    <button class="modal_submit_close_button btn btn-primary" type="button">@Translations.Save</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $('.translation_modal_btn').on('click', function (e) {
+        console.log('clicked');
+        var translationModal = $(this).siblings('.translation_modal')[0];
+        console.log('clicked 2');
+        console.log($(this).closest('.translation_modal'));
+        $(translationModal).modal().show();
+        console.log('clicked 3');
+        var source = $(this).closest('textarea')[0];
+        console.log('clicked 4');
+
+        $('.@sourceValueClass').val($('#@Model').val());
+    });
+
+</script>

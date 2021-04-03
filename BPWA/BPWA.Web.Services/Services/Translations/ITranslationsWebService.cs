@@ -2,6 +2,8 @@
 using BPWA.DAL.Models;
 using BPWA.DAL.Services;
 using BPWA.Web.Services.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BPWA.Web.Services.Services
 {
@@ -9,5 +11,6 @@ namespace BPWA.Web.Services.Services
         IBaseCRUDWebService<Translation, TranslationSearchModel, TranslationDTO, TranslationAddModel, TranslationUpdateModel>,
         ITranslationsService
     {
+        Task<Result> AddRange(List<TranslationAddModel> models);
     }
 }

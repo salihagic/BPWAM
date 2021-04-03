@@ -22,7 +22,7 @@ namespace BPWA.Web.Services.Services
             DatabaseContext databaseContext,
             IMapper mapper,
             CurrentUser currentUser
-            ) : base(databaseContext, mapper)
+            ) : base(databaseContext, mapper, currentUser)
         {
             _currentUser = currentUser;
         }

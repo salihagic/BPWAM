@@ -1,0 +1,74 @@
+﻿@inject IDropdownHelperService DropdownHelperService
+@{
+    Layout = null;
+    var systemLanguagesJson = JsonConvert.SerializeObject(DropdownHelperService.GetSystemLanguages().Select(x => new { id = x.Value, text = x.Text }).ToList());
+}
+
+<script>
+
+    function Translatable(options) {
+        var source = $(options.element);
+        var keyId = options.element;
+        var key = $(source).val();
+        var formGroup = $(source).closest('.translatable_form_group')[0];
+        var sourceLabelText = $(formGroup).find('label')[0]?.textContent?.toLowerCase() ?? '';
+        var translationBtn = $(formGroup).find('.translation_btn')[0];
+
+        //Generate translations wrapper for current input
+        var translationsWrapperId = `${options.element.replace('#', '')}_translation_wrapper`;
+        var translationsWrapper = $(`<div id="${translationsWrapperId}" class="translation_wrapper"></div>`);
+
+        $(formGroup).append(translationsWrapper);
+
+        //Append translation inputs for currents input translations wrapper
+        @(Html.Raw(systemLanguagesJson)).forEach(function (item, index) {
+
+            var languageCulture = item.id;
+            var languageName = item.text;
+
+            //Clone source
+            var clone = $(source).clone();
+
+            //Try and load translation from translationsManager
+
+            //Append translation input in the translations wrapper
+            var translationForCurrentItem =
+                translationsManager.findByCultureAndKeyId(languageCulture, keyId)?.value ??
+                translationsManager.findByCultureAndKey(languageCulture, key)?.value ??
+                '';
+
+            var translationItem = $(`
+                <div class="form-group">
+                    <label>${languageName}</label>
+                    <input data-culture="${languageCulture}"
+                           data-keyid="${keyId}"
+                           value="${translationForCurrentItem}"
+                           class="translation_item form-control m-input"
+                           placeholder="Enter_translation_for ${sourceLabelText}" />
+                </div>
+            `);
+
+            $(translationsWrapper).append(translationItem);
+        });
+
+        //Toggle visiblity of the translations wrapper for the current input
+        $(translationBtn).on('click', function (e) {
+            $(translationsWrapper).slideToggle("fast", function () { });
+            console.log(window.localStorage.getItem(translationsWrapperId));
+            if (window.localStorage.getItem(translationsWrapperId) != null) {
+                window.localStorage.removeItem(translationsWrapperId);
+            } else {
+                window.localStorage.setItem(translationsWrapperId, '');
+            }
+        });
+
+        $(options.element).on('change', function (e) {
+            $('.translation_item').trigger('change');
+        });
+
+        if (window.localStorage.getItem(translationsWrapperId) != null) {
+            $(translationsWrapper).toggle();
+        }
+    }
+
+</script>
