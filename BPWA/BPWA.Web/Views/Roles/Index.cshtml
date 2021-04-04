@@ -79,10 +79,17 @@
                 },
                 {
                     template: (row) => DatatableBasicActions({
-                        detailsUrl: `@Url.Action("Details", "Roles")/${row.id}`,
-                        editUrl: `@Url.Action("Edit", "Roles")/${row.id}`,
-                        deleteUrl: `@Url.Action("Delete", "Roles")/${row.id}`,
-                        modalClass: 'modal-lg'
+                        details: {
+                            url: `@Url.Action("Details", "Roles")/${row.id}`,
+                            modalClass: 'modal-lg'
+                        },
+                        edit: {
+                            url: `@Url.Action("Edit", "Roles")/${row.id}`,
+                            modalClass: 'modal-lg'
+                        },
+                        delete: {
+                            url: `@Url.Action("Delete", "Roles")/${row.id}`
+                        }
                     }),
                     ...DatatableActionsColumnOptions(),
                 }

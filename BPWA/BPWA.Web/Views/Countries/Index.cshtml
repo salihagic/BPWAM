@@ -97,9 +97,15 @@
                 },
                 {
                     template: (row) => DatatableBasicActions({
-                        detailsUrl: `@Url.Action("Details", "Countries")/${row.id}`,
-                        editUrl: `@Url.Action("Edit", "Countries")/${row.id}`,
-                        deleteUrl: `@Url.Action("Delete", "Countries")/${row.id}`,
+                        details: {
+                            url: `@Url.Action("Details", "Countries")/${row.id}`
+                        },
+                        edit: {
+                            url: `@Url.Action("Edit", "Countries")/${row.id}`
+                        },
+                        delete: {
+                            url: `@Url.Action("Delete", "Countries")/${row.id}`
+                        }
                     }),
                     ...DatatableActionsColumnOptions(),
                 }

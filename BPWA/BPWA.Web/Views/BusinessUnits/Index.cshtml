@@ -67,9 +67,15 @@
                 },
                 {
                     template: (row) => DatatableBasicActions({
-                        detailsUrl: `@Url.Action("Details", "BusinessUnits")/${row.id}`,
-                        editUrl: `@Url.Action("Edit", "BusinessUnits")/${row.id}`,
-                        deleteUrl: `@Url.Action("Delete", "BusinessUnits")/${row.id}`
+                        details: {
+                            url: `@Url.Action("Details", "BusinessUnits")/${row.id}`
+                        },
+                        edit: {
+                            url: `@Url.Action("Edit", "BusinessUnits")/${row.id}`
+                        },
+                        delete: {
+                            url: `@Url.Action("Delete", "BusinessUnits")/${row.id}`
+                        }
                     }),
                     ...DatatableActionsColumnOptions(),
                 }

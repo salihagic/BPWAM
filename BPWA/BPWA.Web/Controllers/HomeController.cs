@@ -27,7 +27,8 @@ namespace BPWA.Controllers
                     HttpOnly = true,
                     IsEssential = true,
                     Secure = true,
-                    Domain = HttpContext.Request.Host.Host
+                    Domain = HttpContext.Request.Host.Host,
+                    SameSite = SameSiteMode.None
                 }
             );
 

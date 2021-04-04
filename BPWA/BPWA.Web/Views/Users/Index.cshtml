@@ -90,9 +90,9 @@
                         <a href="@Url.Action("SendPasswordResetToken", "Users")?userId=${row.id}" class="btn btn-sm btn-clean btn-icon btn-icon-sm reset_password_button" title="@Translations.Reset_password">\
                             <i class="flaticon-lock"></i>\
                         </a>\
-                        ${DatatableDetailsButton({ detailsUrl: `@Url.Action("Details", "Users")/${row.id}` })}
-                        ${DatatableEditButton({editUrl: `@Url.Action("Edit", "Users")/${row.id}`})}
-                        ${DatatableDeleteButton({deleteUrl: `@Url.Action("Delete", "Users")/${row.id}`})}
+                        ${DatatableDetailsButton({url: `@Url.Action("Details", "Users")/${row.id}` })}
+                        ${DatatableEditButton({url: `@Url.Action("Edit", "Users")/${row.id}`})}
+                        ${DatatableDeleteButton({url: `@Url.Action("Delete", "Users")/${row.id}`})}
                     `,
                     ...DatatableActionsColumnOptions({
                         width: 150

@@ -772,6 +772,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter translation for.
+        /// </summary>
+        public static string Enter_translation_for {
+            get {
+                return ResourceManager.GetString("Enter_translation_for", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exception.
         /// </summary>
         public static string Exception {
@@ -1605,6 +1614,15 @@ namespace BPWA.Common.Resources {
         public static string Translation {
             get {
                 return ResourceManager.GetString("Translation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Translations management.
+        /// </summary>
+        public static string TranslationsManagement {
+            get {
+                return ResourceManager.GetString("TranslationsManagement", resourceCulture);
             }
         }
         

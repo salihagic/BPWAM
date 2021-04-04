@@ -678,4 +678,10 @@
   <data name="_Translations" xml:space="preserve">
     <value>Translations</value>
   </data>
+  <data name="Enter_translation_for" xml:space="preserve">
+    <value>Enter translation for</value>
+  </data>
+  <data name="TranslationsManagement" xml:space="preserve">
+    <value>Translations management</value>
+  </data>
 </root>

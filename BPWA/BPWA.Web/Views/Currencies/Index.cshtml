@@ -75,9 +75,15 @@
                 },
                 {
                     template: (row) => DatatableBasicActions({
-                        detailsUrl: `@Url.Action("Details", "Currencies")/${row.id}`,
-                        editUrl: `@Url.Action("Edit", "Currencies")/${row.id}`,
-                        deleteUrl: `@Url.Action("Delete", "Currencies")/${row.id}`
+                        details: {
+                            url: `@Url.Action("Details", "Currencies")/${row.id}`
+                        },
+                        edit: {
+                            url: `@Url.Action("Edit", "Currencies")/${row.id}`
+                        },
+                        delete: {
+                            url: `@Url.Action("Delete", "Currencies")/${row.id}`
+                        }
                     }),
                     ...DatatableActionsColumnOptions(),
                 }
