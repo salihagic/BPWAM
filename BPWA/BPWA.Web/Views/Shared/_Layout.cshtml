@@ -20,6 +20,7 @@
     <partial name="Helpers/_Select2.cshtml" />
     <partial name="Helpers/_Modals.cshtml" />
     <partial name="Helpers/_Datatable.cshtml" />
+    <partial name="Helpers/_Translatable.cshtml" />
 
     <link rel="shortcut icon" href="~/images/logo.png" />
 </head>
@@ -87,6 +88,10 @@
     <partial name="_StickyToolbar.cshtml" />
 
     @await Component.InvokeAsync("NToastNotify")
+
+    <script>
+        translationsManager.submit();
+    </script>
 
 </body>
 </html>

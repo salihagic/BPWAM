@@ -9,5 +9,7 @@ namespace BPWA.DAL.Services
     {
         Task<T> Translate<T>(T element);
         Task<List<T>> Translate<T>(List<T> elements);
+        Task<string> Translate(TranslationSearchModel model);
+        Task<Result> AddOrUpdateRange(List<Translation> entities);
     }
 }

@@ -114,16 +114,23 @@
                 },
                 {
                     template: (row) => DatatableBasicActions({
-                        detailsUrl: `@Url.Action("Details", "Tickets")/${row.id}`,
-                        editUrl: `@Url.Action("Edit", "Tickets")/${row.id}`,
-                        deleteUrl: `@Url.Action("Delete", "Tickets")/${row.id}`
+                        details: {
+                            url: `@Url.Action("Details", "Tickets")/${row.id}`
+                        },
+                        edit: {
+                            url: `@Url.Action("Edit", "Tickets")/${row.id}?fullPage=true`,
+                            fullPage: true
+                        },
+                        delete: {
+                            url: `@Url.Action("Delete", "Tickets")/${row.id}`
+                        }
                     }),
                     ...DatatableActionsColumnOptions(),
                 }
             ]
         });
     });
-     
+
 </script>
 
 

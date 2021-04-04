@@ -49,6 +49,62 @@ namespace BPWA.DAL.Services
             return elements;
         }
 
+        public async Task<string> Translate(TranslationSearchModel model)
+        {
+            var translationCacheModel = new TranslationCacheModel
+            {
+                Culture = model.Culture,
+                Key = model.Key,
+                KeyHash = model.Key.GetHashString()
+            };
+
+            var cacheEntry = await _memoryCache.GetOrCreateAsync(
+                translationCacheModel.CacheKey,
+                async entry =>
+                {
+                    entry.SlidingExpiration = TimeSpan.FromDays(5);
+
+                    var translation = await DatabaseContext.Translations
+                        .Where(x => x.KeyHash == translationCacheModel.KeyHash)
+                        .Where(x => x.Culture == _currentCulture)
+                        .Select(x => new TranslationCacheModel
+                        {
+                            Culture = x.Culture,
+                            Key = x.Key,
+                            KeyHash = x.KeyHash,
+                            Value = x.Value
+                        })
+                        .FirstOrDefaultAsync();
+
+                    return translation;
+                });
+
+            return cacheEntry?.Value;
+        }
+
+        public async Task<Result> AddOrUpdateRange(List<Translation> entities)
+        {
+            foreach (var entity in entities)
+            {
+                var keyHash = entity.Key.GetHashString();
+
+                var entityFromDatabase = await DatabaseContext.Translations
+                    .FirstOrDefaultAsync(x => x.Culture == entity.Culture && x.KeyHash == keyHash) ??
+                    new Translation
+                    {
+                        Culture = entity.Culture,
+                        Key = entity.Key,
+                        Value = entity.Value
+                    };
+
+                entityFromDatabase.Value = entity.Value;
+
+                await UpdateEntity(entityFromDatabase);
+            }
+
+            return Result.Success();
+        }
+
         public override async Task<Result<Translation>> AddEntity(Translation entity)
         {
             entity.KeyHash = entity.Key.GetHashString();

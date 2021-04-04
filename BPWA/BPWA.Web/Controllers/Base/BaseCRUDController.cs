@@ -174,7 +174,7 @@ namespace BPWA.Controllers
         }
 
         [HttpPost, Transaction]
-        public virtual async Task<IActionResult> Edit(TUpdateModel model)
+        public virtual async Task<IActionResult> Edit(TUpdateModel model, bool fullPage = false)
         {
             ViewBag.Title = TranslationsHelper.Translate(CurrentAction);
 
@@ -221,7 +221,7 @@ namespace BPWA.Controllers
                 }
 
                 Toast.AddSuccessToastMessage(Message_edit_success);
-                return Json(new { success = true });
+                return fullPage ? RedirectToAction("Index") : Json(new { success = true });
             }
             catch (Exception ex)
             {

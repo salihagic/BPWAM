@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BPWA.Common.Extensions;
 using BPWA.Common.Resources;
 using BPWA.Controllers;
 using BPWA.Core.Entities;
@@ -42,10 +43,20 @@ namespace BPWA.Administration.Controllers
             return base.Index();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddRange(List<TranslationAddModel> translations)
+        public async Task<IActionResult> Translate(TranslationSearchModel model)
         {
-            var result = await _translationsWebService.AddRange(translations);
+            var translation = await _translationsWebService.Translate(model);
+
+            if (!translation.HasValue())
+                return BadRequest();
+
+            return Ok(translation);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddOrUpdateRange(List<TranslationAddModel> translations)
+        {
+            var result = await _translationsWebService.AddOrUpdateRange(translations);
 
             if (!result.IsSuccess)
                 return BadRequest();

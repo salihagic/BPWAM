@@ -11,10 +11,8 @@ class TranslationsManager {
     static localStorageKey = "__translations__";
 
     constructor() {
+        this.shouldSubmit = true;
         this.loadFromLocalStorage();
-        if (this.translations.length > 0) {
-            this.submit();
-        }
     }
 
     saveToLocalStorage() {
@@ -22,18 +20,22 @@ class TranslationsManager {
     }
 
     submit() {
-        console.log('Sending to the database');
+        var filteredTranslations = this.translations.filter((x) => x.culture != null && x.key != null && x.value != null);
+        
+        if (filteredTranslations.length > 0 && this.shouldSubmit) {
 
-        $.ajax({
-            url: '/Translations/AddRange',
-            type: 'POST',
-            data: {
-                translations: this.translations
-            },
-            success: (data) => {
-                this.reset();
-            }
-        });
+            $.ajax({
+                url: '/Translations/AddOrUpdateRange',
+                type: 'POST',
+                data: {
+                    translations: filteredTranslations
+                },
+                success: (data) => {
+                    this.reset();
+                    $('.datatable_search_form').submit();
+                }
+            });
+        }
     }
 
     reset() {
@@ -65,26 +67,17 @@ class TranslationsManager {
         this.saveToLocalStorage();
     }
 
-    findByCultureAndKey(culture, key) {
-        return this.translations.find(
-            x => x.culture === culture && x.key === key
-        );
-    }
-
     findByCultureAndKeyId(culture, keyId) {
         return this.translations.find(
             x => x.culture === culture && x.keyId === keyId
         );
     }
+
+    findByCultureAndKey(culture, key) {
+        return this.translations.find(
+            x => x.culture === culture && x.key === key
+        );
+    }
 }
 
 var translationsManager = new TranslationsManager();
-
-$(document).on('change', '.translation_item', function (e) {
-    var keyId = $(this).data('keyid');
-    var key = $(keyId).val();
-    var culture = $(this).data('culture');
-    var value = $(this).val();
-
-    translationsManager.addOrUpdate(new Translation(keyId, key, culture, value));
-});

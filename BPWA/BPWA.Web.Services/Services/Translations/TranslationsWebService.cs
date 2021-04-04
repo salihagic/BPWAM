@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BPWA.Common.Extensions;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
 using BPWA.DAL.Models;
@@ -6,6 +7,7 @@ using BPWA.DAL.Services;
 using BPWA.Web.Services.Models;
 using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BPWA.Web.Services.Services
@@ -20,17 +22,13 @@ namespace BPWA.Web.Services.Services
         {
         }
 
-        public async Task<Result> AddRange(List<TranslationAddModel> models)
+        public async Task<Result> AddOrUpdateRange(List<TranslationAddModel> models)
         {
+            models = models.Where(x => x.Key.HasValue() && x.Value.HasValue()).ToList();
+
             var entities = Mapper.Map<List<Translation>>(models);
 
-            foreach (var entity in entities)
-            {
-                var result = await base.AddEntity(entity);
-
-                if (!result.IsSuccess)
-                    return result;
-            }
+            await AddOrUpdateRange(entities);
 
             return Result.Success();
         }

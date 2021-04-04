@@ -16,7 +16,8 @@
         }
     });
 
-    $(document).on('click', '.datatable_edit_button', function(e) {
+    $(document).on('click', '.datatable_edit_button', function (e) {
+        console.log(`$(this).data('fullpage'): ${$(this).data('fullpage')}`);
         if ($(this).data('fullpage') != true) {
             e.preventDefault();
             OpenModal(this);
@@ -41,15 +42,15 @@
 
     function DatatableBasicActions(options) {
         return `\
-                ${DatatableDetailsButton(options)}
-                ${DatatableEditButton(options)}
-                ${DatatableDeleteButton(options)}
+                ${DatatableDetailsButton(options.details)}
+                ${DatatableEditButton(options.edit)}
+                ${DatatableDeleteButton(options.delete)}
             `;
     }
 
     function DatatableDetailsButton(options) {
         return `
-                <a href="${options.detailsUrl}" data-fullpage=${options.fullPage} data-modalclass="${options.modalClass}" class="btn btn-sm btn-clean btn-icon btn-icon-sm datatable_details_button" title="@Translations.Details">\
+                <a href="${options.url}" data-fullpage=${options.fullPage} data-modalclass="${options.modalClass}" class="btn btn-sm btn-clean btn-icon btn-icon-sm datatable_details_button" title="@Translations.Details">\
                     <i class="flaticon2-paper"></i>\
                 </a>\
             `;
@@ -57,7 +58,7 @@
 
     function DatatableEditButton(options) {
         return `
-                <a href="${options.editUrl}" data-fullpage=${options.fullPage} data-modalclass="${options.modalClass}" class="btn btn-sm btn-clean btn-icon btn-icon-sm datatable_edit_button" title="@Translations.Edit">\
+                <a href="${options.url}" data-fullpage=${options.fullPage} data-modalclass="${options.modalClass}" class="btn btn-sm btn-clean btn-icon btn-icon-sm datatable_edit_button" title="@Translations.Edit">\
                     <i class="flaticon-edit"></i>\
                 </a>\
             `;
@@ -65,7 +66,7 @@
 
     function DatatableDeleteButton(options) {
         return `
-                <a href="${options.deleteUrl}" data-modalclass="${options.modalClass}" class="btn btn-sm btn-clean btn-icon btn-icon-sm datatable_delete_button" title="@Translations.Delete">\
+                <a href="${options.url}" class="btn btn-sm btn-clean btn-icon btn-icon-sm datatable_delete_button" title="@Translations.Delete">\
                     <i class="flaticon2-trash"></i>\
                 </a>\
             `;

@@ -5,14 +5,6 @@
     var systemLanguagesJson = JsonConvert.SerializeObject(dropdownHelperService.GetSystemLanguages().Select(x => new { id = x.Value, text = x.Text }).ToList());
 }
 
-<style>
-    .translation_wrapper {
-        background-color: #f7f7f7;
-        padding: 2em 1.5em 1em 1.5em;
-        display: none;
-    }
-</style>
-
 <form asp-controller="Tickets"
       asp-action="Add"
       method="POST"
@@ -46,9 +38,16 @@
                 </select>
                 <span asp-validation-for="TicketType" class="text-danger"></span>
             </div>
-            <div class="col-md-12 form-group">
+            <div class="translatable_form_group col-md-12 form-group">
                 <label>@Translations.Description</label>
-                <textarea asp-for="Description" class="form-control m-input" placeholder="@Translations.Description"></textarea>
+                <div class="input-group">
+                    <textarea asp-for="Description" rows="5" class="translatable form-control m-input" placeholder="@Translations.Description"></textarea>
+                    <div class="input-group-append">
+                        <button class="translation_btn btn btn-primary" type="button">
+                            <i class="flaticon-globe text-white"></i>
+                        </button>
+                    </div>
+                </div>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
         </div>
@@ -71,6 +70,10 @@
 
     Translatable({
         element: '#@nameof(TicketAddModel.Title)'
+    });
+    
+    Translatable({
+        element: '#@nameof(TicketAddModel.Description)'
     });
 
 </script>

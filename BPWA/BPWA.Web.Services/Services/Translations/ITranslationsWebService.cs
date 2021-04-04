@@ -11,6 +11,6 @@ namespace BPWA.Web.Services.Services
         IBaseCRUDWebService<Translation, TranslationSearchModel, TranslationDTO, TranslationAddModel, TranslationUpdateModel>,
         ITranslationsService
     {
-        Task<Result> AddRange(List<TranslationAddModel> models);
+        Task<Result> AddOrUpdateRange(List<TranslationAddModel> models);
     }
 }
