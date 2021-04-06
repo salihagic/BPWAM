@@ -37,7 +37,7 @@ namespace BPWA.Web.Services.Services
             return int.Parse(companyIdClaim);
         }
         public string CurrentBusinessUnitName() => User.FindFirstValue(AppClaims.Meta.CurrentBusinessUnitName);
-        public bool HasAuthorizationClaim(string claim) => User.Claims.Any(x => x.Type == AppClaimsHelper.Authorization.Type && x.Value == claim);
+        public bool HasAuthorizationClaim(string claim) => User.Claims.Any(x => x.Type == AppClaimsHelper.Authorization.Type && x.Value == claim) || HasCompanyGodMode();
         public bool HasGodMode() => HasAuthorizationClaim(AppClaims.Authorization.Administration.GodMode);
         public bool HasCompanyGodMode() => HasAuthorizationClaim(AppClaims.Authorization.Company.CompanyGodMode);
         public bool HasBusinessUnitGodMode() => HasAuthorizationClaim(AppClaims.Authorization.BusinessUnit.BusinessUnitGodMode);

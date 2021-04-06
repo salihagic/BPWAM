@@ -62,8 +62,18 @@
         bool ShowBusinessUnitRolesItem();
         bool ShowBusinessUnitUsersItem();
 
-        #endregion 
+        #endregion
 
-        #endregion 
+        #endregion
+
+        #region Users
+
+        bool ShowUsersRolesManagement();
+        bool ShowUsersCompanyRolesManagement();
+        bool ShowUsersBusinessUnitRolesManagement();
+        bool ShowUsersCompaniesManagement();
+        bool ShowUsersBusinessUnitsManagement();
+
+        #endregion
     }
 }

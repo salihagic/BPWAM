@@ -101,6 +101,15 @@ namespace BPWA.Web.Services.Services
 
         #endregion
 
+        #region Users 
+
+        public bool ShowUsersRolesManagement() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.UserRolesManagement);
+        public bool ShowUsersCompanyRolesManagement() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.CompanyUserRolesManagement) || _currentUser.HasCompanyGodMode();
+        public bool ShowUsersBusinessUnitRolesManagement() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.BusinessUnit.BusinessUnitUserRolesManagement) || _currentUser.HasBusinessUnitGodMode();
+        public bool ShowUsersCompaniesManagement() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.UserCompaniesManagement);
+        public bool ShowUsersBusinessUnitsManagement() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.UserBusinessUnitsManagement) || _currentUser.HasCompanyGodMode();
+
+        #endregion
 
         private CurrentUser _currentUser;
 

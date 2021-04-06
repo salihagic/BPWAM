@@ -72,11 +72,13 @@
             columns: [
                 {
                     field: '@nameof(TicketDTO.Title).ToCamelCase()',
-                    title: '@Translations.Name',
+                    title: '@Translations.Title',
+                    sortable: false
                 },
                 {
                     field: '@nameof(TicketDTO.Description).ToCamelCase()',
                     title: '@Translations.Description',
+                    sortable: false
                 },
                 {
                     field: '@nameof(TicketDTO.TicketType).ToCamelCase()',

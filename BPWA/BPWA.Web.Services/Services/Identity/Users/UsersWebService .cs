@@ -14,8 +14,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BPWA.DAL.Models;
 using BPWA.Common.Configuration;
+using BPWA.Common.Security;
 
 namespace BPWA.Web.Services.Services
 {
@@ -47,10 +47,14 @@ namespace BPWA.Web.Services.Services
         {
             return base.BuildIncludesById(id, query)
                        .Include(x => x.City)
-                       .Include(x => x.CompanyUsers)
+                       .Include(x => x.CompanyUsers.Where(y => !CurrentUser.CurrentCompanyId().HasValue || y.CompanyId == CurrentUser.CurrentCompanyId()))
                        .ThenInclude(x => x.Company)
-                       .Include(x => x.BusinessUnitUsers)
+                       .Include(x => x.CompanyUsers.Where(y => !CurrentUser.CurrentCompanyId().HasValue || y.CompanyId == CurrentUser.CurrentCompanyId()))
+                       .ThenInclude(x => x.CompanyUserRoles)
+                       .Include(x => x.BusinessUnitUsers.Where(y => !CurrentUser.CurrentBusinessUnitId().HasValue || y.BusinessUnitId == CurrentUser.CurrentBusinessUnitId()))
                        .ThenInclude(x => x.BusinessUnit)
+                       .Include(x => x.BusinessUnitUsers.Where(y => !CurrentUser.CurrentBusinessUnitId().HasValue || y.BusinessUnitId == CurrentUser.CurrentBusinessUnitId()))
+                       .ThenInclude(x => x.BusinessUnitUserRoles)
                        .Include(x => x.UserRoles)
                        .ThenInclude(x => x.Role);
         }
@@ -66,6 +70,42 @@ namespace BPWA.Web.Services.Services
             return base.BuildQueryConditions(Query, searchModel)
                 .WhereIf(CurrentUser.CurrentCompanyId().HasValue, x => x.CompanyUsers.Any(y => y.CompanyId == CurrentUser.CurrentCompanyId()) || x.BusinessUnitUsers.Any(y => y.BusinessUnit.CompanyId == CurrentUser.CurrentCompanyId()))
                 .WhereIf(CurrentUser.CurrentBusinessUnitId().HasValue, x => x.BusinessUnitUsers.Any(y => y.BusinessUnit.Id == CurrentUser.CurrentBusinessUnitId()));
+        }
+
+        public override async Task<Result<User>> GetEntityById(string id, bool shouldTranslate = true)
+        {
+            var result = await base.GetEntityById(id, shouldTranslate);
+
+            if (result.IsSuccess)
+            {
+                result.Item.UserRoles ??= new List<UserRole>();
+
+                if (!CurrentUser.HasGodMode() && !CurrentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.UsersManagement))
+                {
+                    result.Item.UserRoles.Clear();
+                }
+
+                result.Item.UserRoles.AddRange(
+                    result.Item.CompanyUsers
+                    .WhereIf(CurrentUser.CurrentCompanyId().HasValue, x => x.CompanyId == CurrentUser.CurrentCompanyId())
+                    .SelectMany(x => x.CompanyUserRoles)
+                    .Select(x => new UserRole
+                    {
+                        Role = x.Role
+                    })
+                );
+                result.Item.UserRoles.AddRange(
+                    result.Item.BusinessUnitUsers
+                    .WhereIf(CurrentUser.CurrentBusinessUnitId().HasValue, x => x.BusinessUnitId == CurrentUser.CurrentBusinessUnitId())
+                    .SelectMany(x => x.BusinessUnitUserRoles)
+                    .Select(x => new UserRole
+                    {
+                        Role = x.Role
+                    })
+                );
+            }
+
+            return result;
         }
 
         public async Task<Result<UserAddModel>> PrepareForAdd(UserAddModel model = null)
@@ -127,24 +167,56 @@ namespace BPWA.Web.Services.Services
             return Result.Success(model);
         }
 
-        public override Task<Result<User>> AddEntity(User entity)
+        public override async Task<Result<User>> AddEntity(User entity)
         {
             if (CurrentUser.CurrentBusinessUnitId().HasValue)
             {
+                //Load the roles that are specific for current business unit
+                var businessUnitRolesToAdd = await DatabaseContext.Roles
+                    .WhereIf(entity.UserRoles.Any(), x => entity.UserRoles.Any(y => y.RoleId == x.Id) && x.BusinessUnitId == CurrentUser.CurrentBusinessUnitId())
+                    .ToListAsync();
+
+                //Remove business unit roles from entity's Roles
+                entity.UserRoles = entity.UserRoles
+                    .Where(x => !businessUnitRolesToAdd.Any(y => y.Id == x.RoleId))
+                    .ToList();
+
                 entity.BusinessUnitUsers = new List<BusinessUnitUser>
                 {
-                    new BusinessUnitUser { BusinessUnitId = CurrentUser.CurrentBusinessUnitId().Value }
+                    new BusinessUnitUser {
+                        BusinessUnitId = CurrentUser.CurrentBusinessUnitId().Value,
+                        BusinessUnitUserRoles = businessUnitRolesToAdd.Select(x => new BusinessUnitUserRole
+                        {
+                            RoleId = x.Id
+                        }).ToList()
+                    },
                 };
             }
             else if (CurrentUser.CurrentCompanyId().HasValue)
             {
+                //Load the roles that are specific for current business unit
+                var companyRolesToAdd = await DatabaseContext.Roles
+                    .WhereIf(entity.UserRoles.Any(), x => entity.UserRoles.Any(y => y.RoleId == x.Id) && x.CompanyId == CurrentUser.CurrentCompanyId())
+                    .ToListAsync();
+
+                //Remove company roles from entity's Roles
+                entity.UserRoles = entity.UserRoles
+                    .Where(x => !companyRolesToAdd.Any(y => y.Id == x.RoleId))
+                    .ToList();
+
                 entity.CompanyUsers = new List<CompanyUser>
                 {
-                    new CompanyUser { CompanyId = CurrentUser.CurrentCompanyId().Value }
+                    new CompanyUser {
+                        CompanyId = CurrentUser.CurrentCompanyId().Value,
+                        CompanyUserRoles = companyRolesToAdd.Select(x => new CompanyUserRole
+                        {
+                            RoleId = x.Id
+                        }).ToList()
+                    },
                 };
             }
 
-            return base.AddEntity(entity);
+            return await base.AddEntity(entity);
         }
 
         public async Task<Result<UserUpdateModel>> PrepareForUpdate(UserUpdateModel model = null)
@@ -156,8 +228,8 @@ namespace BPWA.Web.Services.Services
                 try
                 {
                     model.RoleIdsSelectList = await DatabaseContext.Roles
-                    .Where(x => model.RoleIds.Contains(x.Id))
-                    .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToListAsync();
+                        .Where(x => model.RoleIds.Contains(x.Id))
+                        .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToListAsync();
                 }
                 catch (Exception e)
                 {
@@ -200,18 +272,85 @@ namespace BPWA.Web.Services.Services
 
         public override async Task<Result<User>> UpdateEntity(User entity)
         {
-            var currentUserRoles = await DatabaseContext.UserRoles.Where(x => x.UserId == entity.Id && !x.IsDeleted).ToListAsync();
-
-            if (currentUserRoles.IsNotEmpty())
+            if (entity.UserRoles.IsNotEmpty())
             {
-                //Delete
-                var currentUserRolesToDelete = currentUserRoles.Where(x => !entity.UserRoles?.Any(y => y.RoleId == x.RoleId) ?? true).ToList();
-                DatabaseContext.UserRoles.RemoveRange(currentUserRolesToDelete);
+                var roles = await DatabaseContext.Roles
+                    .Where(x => entity.UserRoles.Select(y => y.RoleId).Contains(x.Id) && !x.IsDeleted)
+                    .ToListAsync();
 
-                await DatabaseContext.SaveChangesAsync();
+                var businessUnitRoles = roles.Where(x => !x.CompanyId.HasValue && x.BusinessUnitId.HasValue).ToList();
 
-                //Only leave the new ones
-                entity.UserRoles = entity.UserRoles.Where(x => !currentUserRoles.Any(y => y.RoleId == x.RoleId)).ToList();
+                #region System roles
+
+                if (CurrentUser.HasGodMode() || CurrentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.UsersManagement))
+                {
+                    var systemRoles = roles.Where(x => !x.CompanyId.HasValue && !x.BusinessUnitId.HasValue).ToList();
+
+                    var currentUserRoles = await DatabaseContext.UserRoles
+                        .Where(x => x.UserId == entity.Id && !x.IsDeleted).ToListAsync();
+
+                    if (currentUserRoles.IsNotEmpty())
+                    {
+                        //Delete
+                        var currentUserRolesToDelete = currentUserRoles.Where(x => !systemRoles?.Any(y => y.Id == x.RoleId) ?? true).ToList();
+                        DatabaseContext.UserRoles.RemoveRange(currentUserRolesToDelete);
+
+                        await DatabaseContext.SaveChangesAsync();
+
+                        //Leave the new ones
+                        entity.UserRoles = entity.UserRoles.Where(x => !currentUserRoles.Any(y => y.RoleId == x.RoleId)).ToList();
+                    }
+                }
+
+                #endregion
+
+                #region Company roles
+
+                if (CurrentUser.CurrentCompanyId().HasValue)
+                {
+                    var companyRoles = roles.Where(x => x.CompanyId.HasValue && !x.BusinessUnitId.HasValue).ToList();
+
+                    var currentCompanyUser = await DatabaseContext.CompanyUsers
+                        .Where(x => x.UserId == entity.Id && x.CompanyId == CurrentUser.CurrentCompanyId() && !x.IsDeleted).FirstOrDefaultAsync();
+
+                    if (currentCompanyUser != null)
+                    {
+                        //Delete
+                        var currentCompanyUserRolesToDelete = currentCompanyUser.CompanyUserRoles.Where(x => !companyRoles?.Any(y => y.Id == x.RoleId) ?? true).ToList();
+                        DatabaseContext.CompanyUserRoles.RemoveRange(currentCompanyUserRolesToDelete);
+                        await DatabaseContext.SaveChangesAsync();
+
+                        //Leave the new ones
+                        currentCompanyUser.CompanyUserRoles = currentCompanyUser.CompanyUserRoles.Where(x => !companyRoles.Any(y => y.Id == x.RoleId)).ToList();
+                        await DatabaseContext.SaveChangesAsync();
+                    }
+                }
+
+                #endregion
+
+                #region BusinessUnit roles
+
+                if (CurrentUser.CurrentBusinessUnitId().HasValue)
+                {
+                    var companyRoles = roles.Where(x => x.BusinessUnitId.HasValue && !x.BusinessUnitId.HasValue).ToList();
+
+                    var currentBusinessUnitUser = await DatabaseContext.BusinessUnitUsers
+                        .Where(x => x.UserId == entity.Id && x.BusinessUnitId == CurrentUser.CurrentBusinessUnitId() && !x.IsDeleted).FirstOrDefaultAsync();
+
+                    if (currentBusinessUnitUser != null)
+                    {
+                        //Delete
+                        var currentBusinessUnitUserRolesToDelete = currentBusinessUnitUser.BusinessUnitUserRoles.Where(x => !businessUnitRoles?.Any(y => y.Id == x.RoleId) ?? true).ToList();
+                        DatabaseContext.BusinessUnitUserRoles.RemoveRange(currentBusinessUnitUserRolesToDelete);
+                        await DatabaseContext.SaveChangesAsync();
+
+                        //Leave the new ones
+                        currentBusinessUnitUser.BusinessUnitUserRoles = currentBusinessUnitUser.BusinessUnitUserRoles.Where(x => !businessUnitRoles.Any(y => y.Id == x.RoleId)).ToList();
+                        await DatabaseContext.SaveChangesAsync();
+                    }
+                }
+
+                #endregion
             }
 
             if (!CurrentUser.CurrentCompanyId().HasValue)
@@ -230,10 +369,11 @@ namespace BPWA.Web.Services.Services
                     entity.CompanyUsers = entity.CompanyUsers.Where(x => !currentCompanyUsers.Any(y => y.CompanyId == x.CompanyId)).ToList();
                 }
             }
-
-            if (!CurrentUser.CurrentBusinessUnitId().HasValue)
+            else if (!CurrentUser.CurrentBusinessUnitId().HasValue)
             {
-                var currentBusinessUnitUsers = await DatabaseContext.BusinessUnitUsers.Where(x => x.UserId == entity.Id && !x.IsDeleted).ToListAsync();
+                var currentBusinessUnitUsers = await DatabaseContext.BusinessUnitUsers
+                    .Where(x => x.UserId == entity.Id && !x.IsDeleted && x.BusinessUnit.CompanyId == CurrentUser.CurrentCompanyId())
+                    .ToListAsync();
 
                 if (currentBusinessUnitUsers.IsNotEmpty())
                 {
