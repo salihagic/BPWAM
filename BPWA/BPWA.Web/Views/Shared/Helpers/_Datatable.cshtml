@@ -17,7 +17,6 @@
     });
 
     $(document).on('click', '.datatable_edit_button', function (e) {
-        console.log(`$(this).data('fullpage'): ${$(this).data('fullpage')}`);
         if ($(this).data('fullpage') != true) {
             e.preventDefault();
             OpenModal(this);

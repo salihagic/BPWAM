@@ -10,36 +10,29 @@ namespace BPWA.Web.Configuration
     {
         public static IServiceCollection ConfigureAppServices(this IServiceCollection services)
         {
-            services.AddScoped<IBusinessUnitsWebService, BusinessUnitsWebService>();
-            services.AddScoped<ICitiesWebService, CitiesWebService>();
-            services.AddScoped<ICompaniesWebService, CompaniesWebService>();
-            services.AddScoped<ICountriesWebService, CountriesWebService>();
-            services.AddScoped<ICurrenciesWebService, CurrenciesWebService>();
-            services.AddScoped<ILanguagesWebService, LanguagesWebService>();
-            services.AddScoped<ITicketsWebService, TicketsWebService>();
-            services.AddScoped<ITranslationsService, TranslationsService>();
-            services.AddScoped<ITranslationsWebService, TranslationsWebService>();
-
+            services.AddScoped<IBusinessUnitsWebService, BusinessUnitsWebService>()
+                    .AddScoped<ICitiesWebService, CitiesWebService>()
+                    .AddScoped<ICompaniesWebService, CompaniesWebService>()
+                    .AddScoped<ICompanyUsersWebService, CompanyUsersWebService>()
+                    .AddScoped<ICountriesWebService, CountriesWebService>()
+                    .AddScoped<ICurrenciesWebService, CurrenciesWebService>()
+                    .AddScoped<ILanguagesWebService, LanguagesWebService>()
+                    .AddScoped<ITicketsWebService, TicketsWebService>()
+                    .AddScoped<ITranslationsService, TranslationsService>()
+                    .AddScoped<ITranslationsWebService, TranslationsWebService>()
             #region Identity
-
-            services.AddScoped<IUsersService, UsersService>();
-            services.AddScoped<IUsersWebService, UsersWebService>();
-
-            services.AddScoped<IRolesWebService, RolesWebService>();
-            services.AddScoped<IRolesService, RolesService>();
-
-            services.AddScoped<CurrentUser, CurrentWebUser>();
-            services.AddScoped<IPasswordGeneratorService, PasswordGeneratorService>();
-
-            #endregion Identity
-
+                    .AddScoped<IUsersService, UsersService>()
+                    .AddScoped<IUsersWebService, UsersWebService>()
+                    .AddScoped<IRolesWebService, RolesWebService>()
+                    .AddScoped<IRolesService, RolesService>()
+                    .AddScoped<CurrentUser, CurrentWebUser>()
+                    .AddScoped<IPasswordGeneratorService, PasswordGeneratorService>()
+            #endregion 
             #region Other
-
-            services.AddScoped<IDropdownHelperService, DropdownHelperService>();
-            services.AddScoped<IViewHelperService, ViewHelperService>();
-            services.AddScoped<IEmailService, EmailService>();
-
-            #endregion Other
+                    .AddScoped<IDropdownHelperService, DropdownHelperService>()
+                    .AddScoped<IViewHelperService, ViewHelperService>()
+                    .AddScoped<IEmailService, EmailService>();
+            #endregion 
 
             return services;
         }

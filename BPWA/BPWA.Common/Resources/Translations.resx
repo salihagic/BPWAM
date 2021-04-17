@@ -684,4 +684,7 @@
   <data name="TranslationsManagement" xml:space="preserve">
     <value>Translations management</value>
   </data>
+  <data name="Company_users" xml:space="preserve">
+    <value>Company users</value>
+  </data>
 </root>

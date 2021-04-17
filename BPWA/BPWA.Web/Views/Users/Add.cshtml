@@ -47,7 +47,7 @@
                 </select>
                 <span asp-validation-for="CityId" class="text-danger"></span>
             </div>
-            <div class="col-md-12 form-group">
+            @*<div class="col-md-12 form-group">
                 <label>@Translations.Roles</label>
                 <select asp-for="RoleIds" id="modal_@nameof(UserAddModel.RoleIds)" multiple="multiple" class="form-control select2">
                     @foreach (var item in Model.RoleIdsSelectList)
@@ -82,7 +82,7 @@
                     </select>
                     <span asp-validation-for="BusinessUnitIds" class="text-danger"></span>
                 </div>
-            }
+            }*@
         </div>
 
     </div>
@@ -101,7 +101,7 @@
         element: '#modal_@nameof(UserAddModel.CityId)',
         onChangeCopyTextTo: '#@nameof(UserAddModel.SelectedCity)',
     });
-    Select2AjaxRoles({
+    @*Select2AjaxRoles({
         element: '#modal_@nameof(UserAddModel.RoleIds)',
     });
     Select2AjaxCompanies({
@@ -109,6 +109,6 @@
     });
     Select2AjaxBusinessUnits({
         element: '#modal_@nameof(UserAddModel.BusinessUnitIds)',
-    });
+    });*@
 
 </script>

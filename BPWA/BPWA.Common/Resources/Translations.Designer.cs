@@ -439,6 +439,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Company users.
+        /// </summary>
+        public static string Company_users {
+            get {
+                return ResourceManager.GetString("Company_users", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Company god mode.
         /// </summary>
         public static string CompanyGodMode {

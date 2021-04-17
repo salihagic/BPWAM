@@ -14,8 +14,8 @@ namespace BPWA.Controllers
             ShouldResetNavigationStack = true;
         }
 
-        public virtual IActionResult Error() => RedirectToAction("Error", "Home");
-        public virtual IActionResult _Error() => RedirectToAction("_Error", "Home");
+        public virtual IActionResult Error() => View("Error");
+        public virtual IActionResult _Error() => View("_Error");
 
         #region Navigation
 

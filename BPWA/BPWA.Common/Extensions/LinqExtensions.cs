@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -21,6 +23,14 @@ namespace BPWA.Common.Extensions
                 return query;
 
             return query.Where(predicate);
+        }
+
+        public static IQueryable<TEntity> IncludeIf<TEntity, TProperty>([NotNullAttribute] this IQueryable<TEntity> source, bool condition, [NotNullAttribute] Expression<Func<TEntity, TProperty>> navigationPropertyPath) where TEntity : class
+        {
+            if (!condition)
+                return source;
+
+            return source.Include(navigationPropertyPath);
         }
     }
 }

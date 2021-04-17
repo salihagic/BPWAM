@@ -180,11 +180,11 @@ namespace BPWA.DAL.Services
         {
             var translations = new Dictionary<string, string>();
 
-            try
+            foreach (var translationKey in translationKeys)
             {
-
-                foreach (var translationKey in translationKeys)
+                try
                 {
+
                     var translationCacheModel = new TranslationCacheModel
                     {
                         Culture = _currentCulture,
@@ -216,11 +216,9 @@ namespace BPWA.DAL.Services
                     if (cacheEntry != null)
                         translations.Add(cacheEntry.Key, cacheEntry.Value);
                 }
-
-                return translations;
-            }
-            catch (Exception e)
-            {
+                catch (Exception e)
+                {
+                }
             }
 
             return translations;

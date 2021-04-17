@@ -1,9 +1,33 @@
-﻿@{ 
+﻿@{
     Layout = null;
 }
 
-<div style="text-align: end; width: 100%; margin-right: 10em;">
-        <h1>
-            <a href="/Authentication/Login">Login</a>
-        </h1>
+<style>
+    .langing_page_wrapper {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+        .langing_page_wrapper > h1 {
+            width: 100%;
+            justify-content: center;
+            text-align: center;
+        }
+
+    .login_btn {
+        position: absolute;
+        top: 0;
+        right: 0;
+        font-size: 45px;
+        font-weight: 600;
+    }
+</style>
+
+<div class="langing_page_wrapper">
+    <a class="login_btn" href="/Authentication/Login">Login</a>
+    <h1>BPWA Landing page</h1>
 </div>

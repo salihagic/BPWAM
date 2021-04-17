@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
-using BootstrapBreadcrumbs.Core;
 using BPWA.Common.Enumerations;
 using BPWA.Common.Extensions;
-using BPWA.Common.Resources;
 using BPWA.Core.Entities;
 using BPWA.DAL.Models;
 using BPWA.Web.Helpers;
 using BPWA.Web.Services.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
@@ -30,7 +27,7 @@ namespace BPWA.Controllers
             ) : base(service, mapper, toast) { }
     }
 
-    public class BaseReadController<TEntity, TSearchModel, TDTO, TId> : 
+    public class BaseReadController<TEntity, TSearchModel, TDTO, TId> :
         BaseController
         where TEntity : IBaseEntity<TId>, new()
         where TSearchModel : BaseSearchModel, new()
