@@ -39,7 +39,7 @@ namespace BPWA.Web.Services.Services
         public bool ShowToggleCurrentBusinessUnitItem() => _currentUser.BusinessUnitIds().Count > 1 || (_currentUser.BusinessUnitIds().Any() && _currentUser.CompanyIds().Any()) || _currentUser.HasCompanyGodMode() || _currentUser.HasGodMode();
         public bool ShowCompaniesItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.CompaniesManagement) || _currentUser.HasGodMode();
         public bool ShowRolesItem() => (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.RolesManagement) || _currentUser.HasGodMode()) && !_currentUser.CurrentCompanyId().HasValue && !_currentUser.CurrentBusinessUnitId().HasValue;
-        public bool ShowUsersItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.UsersManagement);
+        public bool ShowUsersItem() => (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.UsersManagement) || _currentUser.HasGodMode()) && !_currentUser.CurrentCompanyId().HasValue && !_currentUser.CurrentBusinessUnitId().HasValue;
         public bool ShowCitiesItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.CitiesManagement);
         public bool ShowCountriesItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.CountriesManagement);
         public bool ShowCurrenciesItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.CurrenciesManagement);
@@ -71,7 +71,7 @@ namespace BPWA.Web.Services.Services
 
         public bool ShowBusinessUnitsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.BusinessUnitsManagement) || _currentUser.HasCompanyGodMode();
         public bool ShowCompanyRolesItem() => (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.CompanyRolesManagement) || _currentUser.HasCompanyGodMode()) && _currentUser.CurrentCompanyId().HasValue && !_currentUser.CurrentBusinessUnitId().HasValue;
-        public bool ShowCompanyUsersItem() => (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.CompanyUsersManagement) || _currentUser.HasCompanyGodMode()) && _currentUser.CurrentCompanyId().HasValue;
+        public bool ShowCompanyUsersItem() => (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.CompanyUsersManagement) || _currentUser.HasCompanyGodMode()) && _currentUser.CurrentCompanyId().HasValue && !_currentUser.CurrentBusinessUnitId().HasValue;
 
         #endregion
 

@@ -89,36 +89,16 @@
                 },
                 {
                     template: (row) => `\
-                        <span class="dropdown">
-                            <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
-                              <i class="la la-ellipsis-h"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item open_modal_button" href="@Url.Action("Details", "Users")/${row.id}">
-                                    <i class="la la-file-text"></i>
-                                    @Translations.Details
-                                </a>
-                                <a class="dropdown-item open_modal_button" href="@Url.Action("Edit", "Users")/${row.id}">
-                                    <i class="la la-edit"></i>
-                                    @Translations.Edit
-                                </a>
-                                <a class="dropdown-item datatable_delete_button" href="@Url.Action("Edit", "Users")/${row.id}">
-                                    <i class="la la-trash"></i>
-                                    @Translations.Delete
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item reset_password_button" href="#">
-                                    <i class="la la-unlock"></i>
-                                    @Translations.Reset_password
-                                </a>
-                                <a class="dropdown-item" href="#">
-                                    <i class="la la-shield"></i>
-                                    @Translations.Roles
-                                </a>
-                            </div>
-                        </span>
+                        <a href="@Url.Action("SendPasswordResetToken", "Users")?userId=${row.id}" class="btn btn-sm btn-clean btn-icon btn-icon-sm reset_password_button" title="@Translations.Reset_password">\
+                            <i class="flaticon-lock"></i>\
+                        </a>\
+                        ${DatatableDetailsButton({ url: `@Url.Action("Details", "Users")/${row.id}` })}
+                        ${DatatableEditButton({ url: `@Url.Action("Edit", "Users")/${row.id}` })}
+                        ${DatatableDeleteButton({ url: `@Url.Action("Delete", "Users")/${row.id}` })}
                     `,
-                    ...DatatableActionsColumnOptions(),
+                    ...DatatableActionsColumnOptions({
+                        width: 150
+                    }),
                 }
             ]
         });
