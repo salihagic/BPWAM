@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace BPWA.Core.Entities
+﻿namespace BPWA.Core.Entities
 {
     public class CompanyUser : BaseEntity, IBaseEntity
     {
@@ -9,6 +7,5 @@ namespace BPWA.Core.Entities
 
         public Company Company { get; set; }
         public User User { get; set; }
-        public List<CompanyUserRole> CompanyUserRoles { get; set; }
     }
 }

@@ -53,9 +53,15 @@ namespace BPWA.DAL.Database
         {
             var databaseContext = serviceProvider.GetService<DatabaseContext>();
 
-            var superAdminUser = await databaseContext.Users.FirstOrDefaultAsync(x => x.UserName == superAdminUserName);
-            var companyAdminUser = await databaseContext.Users.FirstOrDefaultAsync(x => x.UserName == companyAdminUserName);
-            var businessUnitAdminUser = await databaseContext.Users.FirstOrDefaultAsync(x => x.UserName == businessUnitAdminUserName);
+            var superAdminUser = await databaseContext.Users
+                .Include(x => x.UserRoles)
+                .FirstOrDefaultAsync(x => x.UserName == superAdminUserName);
+            var companyAdminUser = await databaseContext.Users
+                .Include(x => x.UserRoles)
+                .FirstOrDefaultAsync(x => x.UserName == companyAdminUserName);
+            var businessUnitAdminUser = await databaseContext.Users
+                .Include(x => x.UserRoles)
+                .FirstOrDefaultAsync(x => x.UserName == businessUnitAdminUserName);
 
             try
             {
@@ -95,16 +101,16 @@ namespace BPWA.DAL.Database
 
                     var companyXUser1 = new CompanyUser
                     {
-                        UserId = companyAdminUser.Id,
-                        CompanyUserRoles = new List<CompanyUserRole>
-                        {
-                            new CompanyUserRole { RoleId = companyXCompanyAdminRole.Id }
-                        }
+                        UserId = companyAdminUser.Id
                     };
 
                     companyX.CompanyUsers = new List<CompanyUser>() { companyXUser1 };
 
                     companyAdminUser.CurrentCompanyId = companyX.Id;
+                    companyAdminUser.UserRoles.Add(new UserRole
+                    {
+                        RoleId = companyXCompanyAdminRole.Id
+                    });
 
                     await databaseContext.SaveChangesAsync();
 
@@ -130,17 +136,17 @@ namespace BPWA.DAL.Database
 
                     var businessUnitX1User1 = new BusinessUnitUser
                     {
-                        UserId = businessUnitAdminUser.Id,
-                        BusinessUnitUserRoles = new List<BusinessUnitUserRole>
-                        {
-                            new BusinessUnitUserRole { RoleId = businessUnitX1BusinessUnitAdminRole.Id }
-                        }
+                        UserId = businessUnitAdminUser.Id
                     };
 
                     businessUnitX1.BusinessUnitUsers = new List<BusinessUnitUser>() { businessUnitX1User1 };
 
                     businessUnitAdminUser.CurrentCompanyId= businessUnitX1.CompanyId;
                     businessUnitAdminUser.CurrentBusinessUnitId = businessUnitX1.Id;
+                    businessUnitAdminUser.UserRoles.Add(new UserRole
+                    {
+                        RoleId = businessUnitX1BusinessUnitAdminRole.Id
+                    });
 
                     await databaseContext.SaveChangesAsync();
 
@@ -212,19 +218,11 @@ namespace BPWA.DAL.Database
 
                     var businessUnitY1User1 = new BusinessUnitUser
                     {
-                        UserId = companyAdminUser.Id,
-                        BusinessUnitUserRoles = new List<BusinessUnitUserRole>
-                        {
-                            new BusinessUnitUserRole { RoleId = businessUnitY1BusinessUnitAdminRole.Id }
-                        }
+                        UserId = companyAdminUser.Id
                     };
                     var businessUnitY1User2 = new BusinessUnitUser
                     {
-                        UserId = businessUnitAdminUser.Id,
-                        BusinessUnitUserRoles = new List<BusinessUnitUserRole>
-                        {
-                            new BusinessUnitUserRole { RoleId = businessUnitY1BusinessUnitAdminRole.Id }
-                        }
+                        UserId = businessUnitAdminUser.Id
                     };
 
                     businessUnitY1.BusinessUnitUsers = new List<BusinessUnitUser>() 
@@ -232,6 +230,11 @@ namespace BPWA.DAL.Database
                         businessUnitY1User1,
                         businessUnitY1User2,
                     };
+
+                    businessUnitAdminUser.UserRoles.Add(new UserRole
+                    {
+                        RoleId = businessUnitY1BusinessUnitAdminRole.Id
+                    });
 
                     await databaseContext.SaveChangesAsync();
 

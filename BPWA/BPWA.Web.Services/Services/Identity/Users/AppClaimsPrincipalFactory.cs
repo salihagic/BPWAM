@@ -5,6 +5,7 @@ using BPWA.DAL.Database;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -21,7 +22,7 @@ namespace BPWA.Web.Services.Services
             RoleManager<Role> roleManager,
             IOptions<IdentityOptions> optionsAccessor,
             DatabaseContext databaseContext
-            ) : base(userManager, roleManager, optionsAccessor) 
+            ) : base(userManager, roleManager, optionsAccessor)
         {
             _databaseContext = databaseContext;
         }
@@ -29,15 +30,25 @@ namespace BPWA.Web.Services.Services
         public async override Task<ClaimsPrincipal> CreateAsync(User user)
         {
             var principal = await base.CreateAsync(user);
+            var claimsIdentity = (principal.Identity as ClaimsIdentity);
             var claims = new List<Claim>();
 
+            try
+            {
+                foreach (var claim in claimsIdentity.Claims.ToList())
+                    if (claim.Type == ClaimTypes.Role || claim.Type == AppClaimsHelper.Authorization.Type)
+                        claimsIdentity.RemoveClaim(claim);
+            }
+            catch(Exception e){}
+
             await AddBasicInfo(user, claims);
+            await AddRoles(user, claims);
             await AddCurrentCompanyId(user, claims);
             await AddCurrentBusinessUnitId(user, claims);
             await AddCompanyIds(user, claims);
             await AddBusinessUnitIds(user, claims);
 
-            (principal.Identity as ClaimsIdentity).AddClaims(claims);
+            claimsIdentity.AddClaims(claims);
 
             return principal;
         }
@@ -51,7 +62,23 @@ namespace BPWA.Web.Services.Services
             if (user.TimezoneId != null)
                 claims.Add(new Claim(AppClaims.Meta.TimezoneId, user.TimezoneId));
         }
-        
+
+        async Task AddRoles(User user, List<Claim> claims)
+        {
+            var systemRoles = _databaseContext.UserRoles
+               .Where(x => !x.IsDeleted)
+               .Where(x => x.UserId == user.Id)
+               .WhereIf(user.CurrentCompanyId.HasValue, x => (x.Role.CompanyId == null && x.Role.BusinessUnitId == null) || x.Role.CompanyId == user.CurrentCompanyId)
+               .WhereIf(user.CurrentBusinessUnitId.HasValue, x => (x.Role.CompanyId == null && x.Role.BusinessUnitId == null) || x.Role.BusinessUnitId == user.CurrentBusinessUnitId)
+               .Select(x => x.Role);
+
+            if (systemRoles.IsNotEmpty())
+            {
+                claims.AddRange(systemRoles.Select(x => new Claim(ClaimTypes.Role, x.Name)));
+                claims.AddRange(systemRoles.SelectMany(x => x.RoleClaims.Select(y => new Claim(y.ClaimType, y.ClaimValue))));
+            }
+        }
+
         async Task AddCurrentCompanyId(User user, List<Claim> claims)
         {
             if (user.CurrentCompanyId != null)
@@ -61,18 +88,6 @@ namespace BPWA.Web.Services.Services
 
                 claims.Add(new Claim(AppClaims.Meta.CurrentCompanyId, user.CurrentCompanyId.ToString()));
                 claims.Add(new Claim(AppClaims.Meta.CurrentCompanyName, company.Name));
-
-                var companyRoles = _databaseContext.CompanyUserRoles
-                    .Where(x => x.CompanyUser.UserId == user.Id && x.CompanyUser.CompanyId == user.CurrentCompanyId)
-                    .Select(x => x.Role.Name);
-                if (companyRoles.IsNotEmpty())
-                    claims.AddRange(companyRoles.Select(x => new Claim(ClaimTypes.Role, x)));
-
-                var companyRoleClaims = _databaseContext.CompanyUserRoles
-                    .Where(x => x.CompanyUser.UserId == user.Id && x.CompanyUser.CompanyId == user.CurrentCompanyId)
-                    .SelectMany(x => x.Role.RoleClaims);
-                if (companyRoleClaims.IsNotEmpty())
-                    claims.AddRange(companyRoleClaims.Select(x => new Claim(x.ClaimType, x.ClaimValue)));
             }
         }
 
@@ -84,18 +99,6 @@ namespace BPWA.Web.Services.Services
 
                 claims.Add(new Claim(AppClaims.Meta.CurrentBusinessUnitId, user.CurrentBusinessUnitId.ToString()));
                 claims.Add(new Claim(AppClaims.Meta.CurrentBusinessUnitName, businessUnit.Name));
-
-                var businessUnitRoles = _databaseContext.BusinessUnitUserRoles
-                    .Where(x => x.BusinessUnitUser.UserId == user.Id && x.BusinessUnitUser.BusinessUnitId == user.CurrentBusinessUnitId)
-                    .Select(x => x.Role.Name);
-                if (businessUnitRoles.IsNotEmpty())
-                    claims.AddRange(businessUnitRoles.Select(x => new Claim(ClaimTypes.Role, x)));
-
-                var businessUnitRoleClaims = _databaseContext.BusinessUnitUserRoles
-                    .Where(x => x.BusinessUnitUser.UserId == user.Id && x.BusinessUnitUser.BusinessUnitId == user.CurrentBusinessUnitId)
-                    .SelectMany(x => x.Role.RoleClaims);
-                if (businessUnitRoleClaims.IsNotEmpty())
-                    claims.AddRange(businessUnitRoleClaims.Select(x => new Claim(x.ClaimType, x.ClaimValue)));
             }
         }
 

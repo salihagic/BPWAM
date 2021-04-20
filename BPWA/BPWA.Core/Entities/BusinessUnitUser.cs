@@ -9,6 +9,5 @@ namespace BPWA.Core.Entities
 
         public BusinessUnit BusinessUnit { get; set; }
         public User User { get; set; }
-        public List<BusinessUnitUserRole> BusinessUnitUserRoles { get; set; }
     }
 }
