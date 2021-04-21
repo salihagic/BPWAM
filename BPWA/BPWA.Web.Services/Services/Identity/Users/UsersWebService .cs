@@ -253,7 +253,9 @@ namespace BPWA.Web.Services.Services
                     var systemRoles = roles;
 
                     var currentUserRoles = await DatabaseContext.UserRoles
-                        .Where(x => x.UserId == entity.Id && !x.IsDeleted).ToListAsync();
+                        .AsNoTracking()
+                        .Where(x => x.UserId == entity.Id && !x.IsDeleted)
+                        .ToListAsync();
 
                     if (currentUserRoles.IsNotEmpty())
                     {
@@ -267,7 +269,7 @@ namespace BPWA.Web.Services.Services
                     }
                 }
 
-                #endregion
+                #endregion 
 
                 #region Company roles
 
@@ -276,6 +278,7 @@ namespace BPWA.Web.Services.Services
                     var companyRoles = roles.Where(x => x.CompanyId.HasValue && !x.BusinessUnitId.HasValue).ToList();
 
                     var currentUserCompanyRoles = await DatabaseContext.UserRoles
+                        .AsNoTracking()
                         .Where(x => x.UserId == entity.Id && x.Role.CompanyId == CurrentUser.CurrentCompanyId() && x.Role.BusinessUnitId == null && !x.IsDeleted)
                         .ToListAsync();
 
@@ -300,6 +303,7 @@ namespace BPWA.Web.Services.Services
                     var businessUnitRoles = roles.Where(x => x.BusinessUnitId.HasValue && !x.BusinessUnitId.HasValue).ToList();
 
                     var currentUserBusinessUnitRoles = await DatabaseContext.UserRoles
+                        .AsNoTracking()
                         .Where(x => x.UserId == entity.Id && x.Role.BusinessUnitId == CurrentUser.CurrentBusinessUnitId() && x.Role.BusinessUnitId == null && !x.IsDeleted)
                         .ToListAsync();
 
@@ -362,7 +366,7 @@ namespace BPWA.Web.Services.Services
             //if (!CurrentUser.HasGodMode() && !(CurrentUser.CompanyIds().Count > 1))
             //    return Result.Failed(Translations.There_was_an_error_while_trying_to_change_current_company);
 
-            var currentUserResult = await GetEntityById(CurrentUser.Id());
+            var currentUserResult = await GetEntityByIdWithoutIncludes(CurrentUser.Id());
 
             if (!currentUserResult.IsSuccess)
                 return Result.Failed(currentUserResult.GetErrorMessages());
@@ -372,7 +376,7 @@ namespace BPWA.Web.Services.Services
                 currentUserResult.Item.CurrentCompanyId = model.CompanyId;
                 currentUserResult.Item.CurrentBusinessUnitId = null;
 
-                await Update(currentUserResult.Item);
+                DatabaseContext.Users.Update(currentUserResult.Item);
                 await DatabaseContext.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -394,7 +398,7 @@ namespace BPWA.Web.Services.Services
             //if (!CurrentUser.HasGodMode() && !CurrentUser.HasCompanyGodMode() && !(CurrentUser.BusinessUnitIds().Count > 1))
             //    return Result.Failed(Translations.There_was_an_error_while_trying_to_change_current_business_unit);
 
-            var currentUserResult = await GetEntityById(CurrentUser.Id());
+            var currentUserResult = await GetEntityByIdWithoutIncludes(CurrentUser.Id());
 
             if (!currentUserResult.IsSuccess)
                 return Result.Failed(currentUserResult.GetErrorMessages());
@@ -426,7 +430,7 @@ namespace BPWA.Web.Services.Services
                     }
                 }
 
-                await Update(currentUserResult.Item);
+                DatabaseContext.Users.Update(currentUserResult.Item);
                 await DatabaseContext.SaveChangesAsync();
             }
             catch (Exception ex)

@@ -66,6 +66,7 @@ namespace BPWA.Web.Services.Services
         async Task AddRoles(User user, List<Claim> claims)
         {
             var systemRoles = _databaseContext.UserRoles
+               .AsNoTracking()
                .Where(x => !x.IsDeleted)
                .Where(x => x.UserId == user.Id)
                .WhereIf(user.CurrentCompanyId.HasValue, x => (x.Role.CompanyId == null && x.Role.BusinessUnitId == null) || x.Role.CompanyId == user.CurrentCompanyId)

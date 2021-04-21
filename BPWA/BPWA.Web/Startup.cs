@@ -61,7 +61,7 @@ namespace BPWA
             app.UseSession();
 
             app.UseRequestLocalization(app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>().Value);
-            //app.UseNToastNotify();
+            app.UseNToastNotify();
 
             app.UseEndpoints(endpoints =>
             {
