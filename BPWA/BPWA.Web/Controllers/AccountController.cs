@@ -64,15 +64,20 @@ namespace BPWA.Controllers
             {
                 var result = await _usersWebService.UpdateAccount(model);
 
-                if (result.IsSuccess)
-                    _toast.AddSuccessToastMessage("Successfully edited my profile");
-                else
+                if (!result.IsSuccess)
+                {
                     _toast.AddErrorToastMessage(result.GetErrorMessages().FirstOrDefault());
+                    return View(model);
+                }
+
+                _toast.AddSuccessToastMessage("Successfully edited my profile");
+                return RedirectToAction(nameof(Edit));
             }
             catch (Exception ex)
             {
                 _toast.AddErrorToastMessage("Failed to edit my profile");
             }
+
 
             return View(model);
         }
