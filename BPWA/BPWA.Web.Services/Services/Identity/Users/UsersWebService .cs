@@ -43,6 +43,47 @@ namespace BPWA.Web.Services.Services
         {
         }
 
+        public async Task<Result<AccountUpdateModel>> PrepareForUpdateAccount()
+        {
+            try
+            {
+                var user = await DatabaseContext.Users
+                    .AsNoTracking()
+                    .Include(x => x.City)
+                    .FirstOrDefaultAsync(x => x.Id == CurrentUser.Id());
+
+                var model = Mapper.Map<AccountUpdateModel>(user);
+
+                return Result.Success(model);
+            }
+            catch (Exception e)
+            {
+                return Result.Failed<AccountUpdateModel>("Failed to load the user");
+            }
+        }
+        
+        public async Task<Result> UpdateAccount(AccountUpdateModel model)
+        {
+            try
+            {
+                var user = await DatabaseContext.Users
+                    .Include(x => x.City)
+                    .FirstOrDefaultAsync(x => x.Id == CurrentUser.Id());
+                
+                Mapper.Map(model, user);
+
+                await DatabaseContext.SaveChangesAsync();
+
+                await RefreshSignIn();
+
+                return Result.Success(model);
+            }
+            catch (Exception e)
+            {
+                return Result.Failed<AccountUpdateModel>("Failed to update account");
+            }
+        }
+
         public override IQueryable<User> BuildIncludesById(string id, IQueryable<User> query)
         {
             return base.BuildIncludesById(id, query)

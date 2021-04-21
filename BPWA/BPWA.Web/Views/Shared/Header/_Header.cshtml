@@ -98,6 +98,19 @@
                 <!--end: Head -->
                 <!--begin: Navigation -->
                 <div class="kt-notification">
+                    <a href="@Url.Action("Edit", "Account")" class="kt-notification__item">
+                        <div class="kt-notification__item-icon">
+                            <i class="flaticon2-calendar-3 kt-font-success"></i>
+                        </div>
+                        <div class="kt-notification__item-details">
+                            <div class="kt-notification__item-title kt-font-bold">
+                                @Translations.My_profile
+                            </div>
+                            <div class="kt-notification__item-time">
+                                @Translations.Account_settings_and_more
+                            </div>
+                        </div>
+                    </a>
                     <div class="kt-notification__custom">
                         <a asp-area="" asp-controller="Authentication" asp-action="Logout" class="btn btn-label-brand btn-sm btn-bold">Sign Out</a>
                     </div>

@@ -1,0 +1,67 @@
+﻿@model AccountUpdateModel
+
+<div class="kt-portlet kt-portlet--mobile col-lg-12">
+    <form asp-controller="Account"
+          asp-action="Edit"
+          method="POST"
+          class="kt-form kt-form--fit">
+
+        <div class="modal-header">
+            <h5 class="modal-title">
+                @Translations.My_profile
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+
+            <div class="col-md-12 row">
+                <div class="col-md-6 form-group">
+                    <label>@Translations.User_name</label>
+                    <input asp-for="UserName" class="form-control m-input" placeholder="@Translations.User_name">
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label>@Translations.Email</label>
+                    <input asp-for="Email" class="form-control m-input" placeholder="@Translations.Email">
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label>@Translations.First_name</label>
+                    <input asp-for="FirstName" class="form-control m-input" placeholder="@Translations.First_name">
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label>@Translations.Last_name</label>
+                    <input asp-for="LastName" class="form-control m-input" placeholder="@Translations.Last_name">
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+                <div class="col-md-12 form-group">
+                    <label>@Translations.City</label>
+                    <input asp-for="SelectedCity" type="hidden">
+                    <select asp-for="CityId" id="modal_@nameof(UserUpdateModel.CityId)" class="form-control select2">
+                        <option value="@Model.CityId" selected="selected">
+                            @(Model.SelectedCity ?? Translations.Select_city)
+                        </option>
+                    </select>
+                    <span asp-validation-for="CityId" class="text-danger"></span>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-primary" type="submit">@Translations.Save</button>
+        </div>
+
+    </form>
+</div>
+
+<script>
+
+    Select2AjaxCities({
+        element: '#modal_@nameof(UserUpdateModel.CityId)',
+        onChangeCopyTextTo: '#@nameof(UserUpdateModel.SelectedCity)',
+    });
+
+</script>

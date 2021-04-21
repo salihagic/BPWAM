@@ -687,4 +687,10 @@
   <data name="Company_users" xml:space="preserve">
     <value>Company users</value>
   </data>
+  <data name="Account_settings_and_more" xml:space="preserve">
+    <value>Account settings and more</value>
+  </data>
+  <data name="My_profile" xml:space="preserve">
+    <value>My profile</value>
+  </data>
 </root>

@@ -13,6 +13,7 @@ namespace BPWA.DAL.Mappings
                 .ForMember(dest => dest.UserRoles, opt => opt.MapFrom(src => src.RoleIds.Select(x => new UserRole { RoleId = x }).ToList()))
                 .ForMember(dest => dest.CompanyUsers, opt => opt.MapFrom(src => src.CompanyIds.Select(x => new CompanyUser { CompanyId = x }).ToList()))
                 .ForMember(dest => dest.BusinessUnitUsers, opt => opt.MapFrom(src => src.BusinessUnitIds.Select(x => new BusinessUnitUser { BusinessUnitId = x }).ToList()));
+            
             CreateMap<User, UserUpdateModel>()
                 .ForMember(dest => dest.SelectedCity, opt => opt.MapFrom(src => src.City.Name))
                 .ForMember(dest => dest.RoleIds, opt => opt.MapFrom(src => src.UserRoles.Select(x => x.RoleId).ToList()))
@@ -23,6 +24,11 @@ namespace BPWA.DAL.Mappings
                 .ForMember(dest => dest.UserRoles, opt => opt.MapFrom(src => src.RoleIds.Select(x => new UserRole { RoleId = x }).ToList()))
                 .ForMember(dest => dest.CompanyUsers, opt => opt.MapFrom(src => src.CompanyIds.Select(x => new CompanyUser { CompanyId = x }).ToList()))
                 .ForMember(dest => dest.BusinessUnitUsers, opt => opt.MapFrom(src => src.BusinessUnitIds.Select(x => new BusinessUnitUser { BusinessUnitId = x }).ToList()));
+            
+            CreateMap<User, AccountUpdateModel>()
+                .ForMember(dest => dest.SelectedCity, opt => opt.MapFrom(src => src.City.Name))
+                .ReverseMap()
+                .ForMember(dest => dest.City, opt => opt.Ignore());
         }
     }
 }

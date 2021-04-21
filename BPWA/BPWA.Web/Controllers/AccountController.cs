@@ -38,6 +38,47 @@ namespace BPWA.Controllers
             await _usersWebService.UpdateTimezoneForCurrentUser(timezoneUtcOffsetInMinutes);
         }
 
+        #region Update account
+
+        public async Task<IActionResult> Edit()
+        {
+            BreadcrumbItem(Translations.My_profile);
+
+            var result = await _usersWebService.PrepareForUpdateAccount();
+
+            if (!result.IsSuccess)
+                return Error();
+
+            return View(result.Item);
+        }
+
+        [HttpPost, Transaction]
+        public virtual async Task<IActionResult> Edit(AccountUpdateModel model)
+        {
+            ViewBag.Title = Translations.My_profile;
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            try
+            {
+                var result = await _usersWebService.UpdateAccount(model);
+
+                if (result.IsSuccess)
+                    _toast.AddSuccessToastMessage("Successfully edited my profile");
+                else
+                    _toast.AddErrorToastMessage(result.GetErrorMessages().FirstOrDefault());
+            }
+            catch (Exception ex)
+            {
+                _toast.AddErrorToastMessage("Failed to edit my profile");
+            }
+
+            return View(model);
+        }
+
+        #endregion 
+
         #region Toggle current company
 
         public async Task<IActionResult> ToggleCurrentCompany() => View();

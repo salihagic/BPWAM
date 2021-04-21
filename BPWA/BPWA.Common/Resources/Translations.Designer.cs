@@ -79,6 +79,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Account settings and more.
+        /// </summary>
+        public static string Account_settings_and_more {
+            get {
+                return ResourceManager.GetString("Account_settings_and_more", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Actions.
         /// </summary>
         public static string Actions {
@@ -1038,6 +1047,15 @@ namespace BPWA.Common.Resources {
         public static string More_pages {
             get {
                 return ResourceManager.GetString("More_pages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My profile.
+        /// </summary>
+        public static string My_profile {
+            get {
+                return ResourceManager.GetString("My_profile", resourceCulture);
             }
         }
         
