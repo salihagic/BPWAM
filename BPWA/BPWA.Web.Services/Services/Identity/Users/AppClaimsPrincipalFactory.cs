@@ -65,18 +65,21 @@ namespace BPWA.Web.Services.Services
 
         async Task AddRoles(User user, List<Claim> claims)
         {
-            var systemRoles = _databaseContext.UserRoles
+            var roles = await _databaseContext.UserRoles
                .AsNoTracking()
+               .Include(x => x.Role.RoleClaims)
                .Where(x => !x.IsDeleted)
                .Where(x => x.UserId == user.Id)
-               .WhereIf(user.CurrentCompanyId.HasValue, x => (x.Role.CompanyId == null && x.Role.BusinessUnitId == null) || x.Role.CompanyId == user.CurrentCompanyId)
-               .WhereIf(user.CurrentBusinessUnitId.HasValue, x => (x.Role.CompanyId == null && x.Role.BusinessUnitId == null) || x.Role.BusinessUnitId == user.CurrentBusinessUnitId)
-               .Select(x => x.Role);
+               .Where(x => (x.Role.CompanyId == null && x.Role.BusinessUnitId == null) ||
+                            x.Role.BusinessUnitId == user.CurrentBusinessUnitId ||
+                            x.Role.CompanyId == user.CurrentCompanyId)
+                .Select(x => x.Role)
+                .ToListAsync();
 
-            if (systemRoles.IsNotEmpty())
+            if (roles.IsNotEmpty())
             {
-                claims.AddRange(systemRoles.Select(x => new Claim(ClaimTypes.Role, x.Name)));
-                claims.AddRange(systemRoles.SelectMany(x => x.RoleClaims.Select(y => new Claim(y.ClaimType, y.ClaimValue))));
+                claims.AddRange(roles.Select(x => new Claim(ClaimTypes.Role, x.Name)));
+                claims.AddRange(roles.SelectMany(x => x.RoleClaims.Select(y => new Claim(y.ClaimType, y.ClaimValue))));
             }
         }
 
@@ -107,6 +110,7 @@ namespace BPWA.Web.Services.Services
         {
             var companyIds = await _databaseContext.CompanyUsers
                                        .Where(x => x.UserId == user.Id)
+                                       .Where(x => !x.IsDeleted)
                                        .Select(x => x.CompanyId)
                                        .ToListAsync();
 
@@ -118,8 +122,10 @@ namespace BPWA.Web.Services.Services
         {
             var businessUnitIds = await _databaseContext.BusinessUnitUsers
                                         .Where(x => x.UserId == user.Id)
+                                        .Where(x => !x.IsDeleted)
                                         .Select(x => x.BusinessUnitId)
                                         .ToListAsync();
+
             if (businessUnitIds.IsNotEmpty())
                 claims.AddRange(businessUnitIds.Select(x => new Claim(AppClaims.Meta.BusinessUnitIds, x.ToString())));
         }

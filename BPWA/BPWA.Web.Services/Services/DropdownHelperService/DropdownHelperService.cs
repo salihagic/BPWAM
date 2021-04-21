@@ -26,25 +26,17 @@ namespace BPWA.Web.Services.Services
             if (_currentUser.HasGodMode() || _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.RolesManagement))
             {
                 claims.AddRange(AppClaimsHelper.Authorization.Administration.All);
-                if (_currentUser.CurrentCompanyId().HasValue)
-                    claims.AddRange(AppClaimsHelper.Authorization.Company.All);
-                if (_currentUser.CurrentBusinessUnitId().HasValue)
-                    claims.AddRange(AppClaimsHelper.Authorization.BusinessUnit.All);
+                claims.AddRange(AppClaimsHelper.Authorization.Company.All);
+                claims.AddRange(AppClaimsHelper.Authorization.BusinessUnit.All);
             }
-
-            if (_currentUser.HasCompanyGodMode() || _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.CompanyRolesManagement))
+            else if (_currentUser.HasCompanyGodMode() || _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.CompanyRolesManagement))
             {
                 claims.AddRange(AppClaimsHelper.Authorization.Company.All);
-                if (_currentUser.CurrentCompanyId().HasValue)
-                    claims.AddRange(AppClaimsHelper.Authorization.Company.All);
-                if (_currentUser.CurrentBusinessUnitId().HasValue)
-                    claims.AddRange(AppClaimsHelper.Authorization.BusinessUnit.All);
+                claims.AddRange(AppClaimsHelper.Authorization.BusinessUnit.All);
             }
-
-            if (_currentUser.HasBusinessUnitGodMode() || _currentUser.HasAuthorizationClaim(AppClaims.Authorization.BusinessUnit.BusinessUnitRolesManagement))
+            else if (_currentUser.HasBusinessUnitGodMode() || _currentUser.HasAuthorizationClaim(AppClaims.Authorization.BusinessUnit.BusinessUnitRolesManagement))
             {
-                if (_currentUser.CurrentBusinessUnitId().HasValue)
-                    claims.AddRange(AppClaimsHelper.Authorization.BusinessUnit.All);
+                claims.AddRange(AppClaimsHelper.Authorization.BusinessUnit.All);
             }
 
             return claims.Select(x => new SelectListItem
