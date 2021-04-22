@@ -69,12 +69,10 @@ namespace BPWA.Controllers
 
             ViewBag.Title = CurrentBreadcrumbItem ?? TranslationsHelper.Translate(CurrentController);
 
-            var result = await BaseReadService.PrepareForGet();
+            //TODO: Fix form reset on Index pages
+            //var searchModel = _sessionSearchModel ?? (await BaseReadService.PrepareForGet()).Item;
 
-            if (!result.IsSuccess)
-                return Error();
-
-            return View(result.Item);
+            return View((await BaseReadService.PrepareForGet()).Item);
         }
 
         public virtual async Task<IActionResult> IndexJson(TSearchModel searchModel)
@@ -227,7 +225,7 @@ namespace BPWA.Controllers
         protected string __sessionSearchModelKey__ = $"__sessionSearchModelKey__{typeof(TSearchModel).Name}__";
         private TSearchModel _sessionSearchModel
         {
-            get => HttpContext.Session.GetObject<TSearchModel>(__sessionSearchModelKey__) ?? new TSearchModel { IsDeleted = false };
+            get => HttpContext.Session.GetObject<TSearchModel>(__sessionSearchModelKey__);
             set => HttpContext.Session.SetObject(__sessionSearchModelKey__, value);
         }
 
