@@ -20,6 +20,7 @@ namespace BPWA.DAL.Database
         public DbSet<CountryLanguage> CountryLanguages { get; set; }
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<Language> Languages { get; set; }
+        public DbSet<Log> Logs { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Translation> Translations { get; set; }
 
@@ -72,6 +73,11 @@ namespace BPWA.DAL.Database
             builder.Entity<UserToken>().HasOne(x => x.User).WithMany(x => x.UserTokens).HasForeignKey(x => x.UserId);
         }
 
+        void ConfigureLog(ModelBuilder builder)
+        {
+            builder.Entity<Log>().HasNoKey();
+        }
+
         #endregion Configure Identity entities
 
         #region Helpers 
@@ -89,8 +95,8 @@ namespace BPWA.DAL.Database
             ConfigureUserLogin(builder);
             ConfigureUserRole(builder);
             ConfigureUserToken(builder);
+            ConfigureLog(builder);
         }
-
 
         public override int SaveChanges()
         {

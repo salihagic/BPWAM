@@ -2,16 +2,25 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Serilog;
 using System;
 
 namespace BPWA.Controllers
 {
     public class HomeController : BaseController
     {
+        private ILogger<HomeController> _logger;
+
+        public HomeController(ILogger<HomeController> logger)
+        {
+            _logger = logger;
+        }
+
         public IActionResult Index()
         {
             ViewBag.Title = Translations.BPWA;
-
+            _logger.LogError("Erorcina");
             return View();
         }
 

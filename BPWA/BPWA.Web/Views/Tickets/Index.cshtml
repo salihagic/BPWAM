@@ -87,7 +87,6 @@
                         var type = {
                             0: { 'title': '@TranslationsHelper.Translate(TicketTypes.Bug.ToString())', 'class': 'kt-badge--danger' },
                             1: { 'title': '@TranslationsHelper.Translate(TicketTypes.Feature.ToString())', 'class': 'kt-badge--info' },
-                            2: { 'title': '@TranslationsHelper.Translate(TicketTypes.Exception.ToString())', 'class': 'kt-badge--warning' },
                         };
                         if (typeof type[row.ticketType] === 'undefined') {
                             return row.@nameof(TicketDTO.TicketStatusString).ToCamelCase();
