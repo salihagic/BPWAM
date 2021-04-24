@@ -184,7 +184,6 @@ namespace BPWA.DAL.Services
             {
                 try
                 {
-
                     var translationCacheModel = new TranslationCacheModel
                     {
                         Culture = _currentCulture,

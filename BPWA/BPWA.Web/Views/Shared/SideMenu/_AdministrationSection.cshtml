@@ -160,3 +160,15 @@
         </a>
     </li>
 }
+
+@if (viewHelperService.ShowLogsItem())
+{
+    <li class="kt-menu__item " aria-haspopup="true">
+        <a asp-controller="Logs"
+           asp-action="Index"
+           class="kt-menu__link">
+            <i class="kt-menu__link-icon flaticon2-zig-zag-line-sign"></i>
+            <span class="kt-menu__link-text">@Translations.Logs</span>
+        </a>
+    </li>
+}

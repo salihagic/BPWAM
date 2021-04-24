@@ -24,6 +24,7 @@
         bool ShowLanguagesItem();
         bool ShowTranslationsItem();
         bool ShowTicketsItem();
+        bool ShowLogsItem();
 
         #endregion Items
 

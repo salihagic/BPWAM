@@ -24,16 +24,16 @@ namespace BPWA
 
         static void ConfigureLogger()
         {
-            IDictionary<string, ColumnWriterBase> columnWriters = new Dictionary<string, ColumnWriterBase>
+            var columnWriters = new Dictionary<string, ColumnWriterBase>
             {
-                //{"Id", new PropertiesColumnWriter(NpgsqlDbType.Integer) },
-                {"Message", new RenderedMessageColumnWriter(NpgsqlDbType.Text) },
-                {"MessageTemplate", new MessageTemplateColumnWriter(NpgsqlDbType.Text) },
-                {"Level", new LevelColumnWriter(renderAsText: true, NpgsqlDbType.Text) },
-                {"CreatedAt", new TimestampColumnWriter(NpgsqlDbType.Timestamp) },
-                {"Exception", new ExceptionColumnWriter(NpgsqlDbType.Text) },
-                {"Properties", new LogEventSerializedColumnWriter(NpgsqlDbType.Jsonb) },
-                {"MachineName", new SinglePropertyColumnWriter("MachineName", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") }
+                //{"Id", new SinglePropertyColumnWriter("Id", PropertyWriteMethod.Raw, NpgsqlDbType.Integer) },
+                {"Message", new RenderedMessageColumnWriter() },
+                {"MessageTemplate", new MessageTemplateColumnWriter() },
+                {"Level", new LevelColumnWriter() },
+                {"CreatedAt", new TimestampColumnWriter() },
+                {"Exception", new ExceptionColumnWriter() },
+                {"Properties", new LogEventSerializedColumnWriter() },
+                {"MachineName", new SinglePropertyColumnWriter("MachineName", format: "l") }
             };
 
             Log.Logger = new LoggerConfiguration()
@@ -42,7 +42,6 @@ namespace BPWA
                                 "Logs",
                                 columnWriters,
                                 respectCase: true,
-                                needAutoCreateTable: true,
                                 restrictedToMinimumLevel: LogEventLevel.Error
                                 )
                                 .WriteTo.Console()

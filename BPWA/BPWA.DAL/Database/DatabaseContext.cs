@@ -1,10 +1,12 @@
-﻿using BPWA.Core.Entities;
+﻿using EntityFramework.DynamicFilters;
+using BPWA.Core.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace BPWA.DAL.Database
 {
@@ -73,11 +75,6 @@ namespace BPWA.DAL.Database
             builder.Entity<UserToken>().HasOne(x => x.User).WithMany(x => x.UserTokens).HasForeignKey(x => x.UserId);
         }
 
-        void ConfigureLog(ModelBuilder builder)
-        {
-            builder.Entity<Log>().HasNoKey();
-        }
-
         #endregion Configure Identity entities
 
         #region Helpers 
@@ -88,6 +85,8 @@ namespace BPWA.DAL.Database
         {
             base.OnModelCreating(builder);
 
+            SetIsDeletedFilters(builder);
+
             ConfigureRole(builder);
             ConfigureRoleClaim(builder);
             ConfigureUser(builder);
@@ -95,7 +94,24 @@ namespace BPWA.DAL.Database
             ConfigureUserLogin(builder);
             ConfigureUserRole(builder);
             ConfigureUserToken(builder);
-            ConfigureLog(builder);
+        }
+
+        void SetIsDeletedFilters(ModelBuilder builder)
+        {
+            var entities = builder.Model.GetEntityTypes().Where(x => typeof(IBaseEntity).IsAssignableFrom(x.ClrType));
+
+            foreach (var entity in entities)
+            {
+                var parameter = Expression.Parameter(entity.ClrType);
+
+                var propertyMethodInfo = typeof(EF).GetMethod("Property").MakeGenericMethod(typeof(bool));
+                var isDeletedProperty = Expression.Call(propertyMethodInfo, parameter, Expression.Constant("IsDeleted"));
+
+                BinaryExpression compareExpression = Expression.MakeBinary(ExpressionType.Equal, isDeletedProperty, Expression.Constant(false));
+                var lambda = Expression.Lambda(compareExpression, parameter);
+
+                builder.Entity(entity.ClrType).HasQueryFilter(lambda);
+            }
         }
 
         public override int SaveChanges()

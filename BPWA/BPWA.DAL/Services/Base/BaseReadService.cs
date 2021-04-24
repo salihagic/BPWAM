@@ -50,6 +50,7 @@ namespace BPWA.DAL.Services
 
         virtual public IQueryable<TEntity> BuildQueryConditions(IQueryable<TEntity> Query, TSearchModel searchModel = null)
         {
+            return Query;
             return Query.WhereIf(searchModel != null, x => x.IsDeleted == searchModel.IsDeleted);
         }
 

@@ -2,7 +2,5 @@
 {
     public class AppSettings
     {
-        public DatabaseSettings DatabaseSettings { get; set; }
-        public EmailSettings EmailSettings { get; set; }
     }
 }

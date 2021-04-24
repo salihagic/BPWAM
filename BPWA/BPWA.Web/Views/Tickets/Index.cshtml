@@ -84,14 +84,15 @@
                     field: '@nameof(TicketDTO.TicketType).ToCamelCase()',
                     title: '@Translations.Ticket_type',
                     template: function (row) {
+                        var text = row.@nameof(TicketDTO.TicketTypeString).ToCamelCase();
                         var type = {
-                            0: { 'title': '@TranslationsHelper.Translate(TicketTypes.Bug.ToString())', 'class': 'kt-badge--danger' },
-                            1: { 'title': '@TranslationsHelper.Translate(TicketTypes.Feature.ToString())', 'class': 'kt-badge--info' },
+                            0: { 'class': 'kt-badge--danger' },
+                            1: { 'class': 'kt-badge--info' },
                         };
                         if (typeof type[row.ticketType] === 'undefined') {
-                            return row.@nameof(TicketDTO.TicketStatusString).ToCamelCase();
+                            return text;
                         }
-                        return '<span class="kt-badge ' + type[row.ticketType].class + ' kt-badge--inline kt-badge--pill">' + type[row.ticketType].title + '</span>';
+                        return '<span class="kt-badge ' + type[row.ticketType].class + ' kt-badge--inline kt-badge--pill">' + text + '</span>';
                     },
                     textAlign: 'center'
                 },
@@ -99,17 +100,17 @@
                     field: '@nameof(TicketDTO.TicketStatus).ToCamelCase()',
                     title: '@Translations.Ticket_status',
                     template: function (row) {
-                        console.log(row.ticketStatus);
+                        var text = row.@nameof(TicketDTO.TicketStatusString).ToCamelCase();
                         var status = {
-                            0: { 'title': '@TranslationsHelper.Translate(TicketStatuses.Open.ToString())', 'class': 'kt-badge--info' },
-                            1: { 'title': '@TranslationsHelper.Translate(TicketStatuses.Closed.ToString())', 'class': 'kt-badge--success' },
-                            2: { 'title': '@TranslationsHelper.Translate(TicketStatuses.Rejected.ToString())', 'class': 'kt-badge--danger' },
-                            3: { 'title': '@TranslationsHelper.Translate(TicketStatuses.InProgress.ToString())', 'class': 'kt-badge--warning' },
+                            0: { 'class': 'kt-badge--info' },
+                            1: { 'class': 'kt-badge--success' },
+                            2: { 'class': 'kt-badge--danger' },
+                            3: { 'class': 'kt-badge--warning' },
                         };
                         if (typeof status[row.ticketStatus] === 'undefined') {
-                            return row.ticketStatusString;
+                            return text;
                         }
-                        return '<span class="kt-badge ' + status[row.ticketStatus].class + ' kt-badge--inline kt-badge--pill">' + status[row.ticketStatus].title + '</span>';
+                        return '<span class="kt-badge ' + status[row.ticketStatus].class + ' kt-badge--inline kt-badge--pill">' + text + '</span>';
                     },
                     textAlign: 'center'
                 },

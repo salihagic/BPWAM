@@ -520,6 +520,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Created at.
+        /// </summary>
+        public static string CreatedAt {
+            get {
+                return ResourceManager.GetString("CreatedAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Currencies.
         /// </summary>
         public static string Currencies {
@@ -543,6 +552,15 @@ namespace BPWA.Common.Resources {
         public static string Dashboard {
             get {
                 return ResourceManager.GetString("Dashboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debug.
+        /// </summary>
+        public static string Debug {
+            get {
+                return ResourceManager.GetString("Debug", resourceCulture);
             }
         }
         
@@ -799,6 +817,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exception.
         /// </summary>
         public static string Exception {
@@ -822,6 +849,15 @@ namespace BPWA.Common.Resources {
         public static string Failed_to_update_timezone {
             get {
                 return ResourceManager.GetString("Failed_to_update_timezone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fatal.
+        /// </summary>
+        public static string Fatal {
+            get {
+                return ResourceManager.GetString("Fatal", resourceCulture);
             }
         }
         
@@ -894,6 +930,15 @@ namespace BPWA.Common.Resources {
         public static string Home {
             get {
                 return ResourceManager.GetString("Home", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Information.
+        /// </summary>
+        public static string Information {
+            get {
+                return ResourceManager.GetString("Information", resourceCulture);
             }
         }
         
@@ -1006,6 +1051,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Level.
+        /// </summary>
+        public static string Level {
+            get {
+                return ResourceManager.GetString("Level", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Login.
         /// </summary>
         public static string Login {
@@ -1038,6 +1092,33 @@ namespace BPWA.Common.Resources {
         public static string Login_required_two_factor {
             get {
                 return ResourceManager.GetString("Login_required_two_factor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logs.
+        /// </summary>
+        public static string Logs {
+            get {
+                return ResourceManager.GetString("Logs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Machine name.
+        /// </summary>
+        public static string MachineName {
+            get {
+                return ResourceManager.GetString("MachineName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message.
+        /// </summary>
+        public static string Message {
+            get {
+                return ResourceManager.GetString("Message", resourceCulture);
             }
         }
         
@@ -1285,6 +1366,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Properties.
+        /// </summary>
+        public static string Properties {
+            get {
+                return ResourceManager.GetString("Properties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Record has been deleted.
         /// </summary>
         public static string Record_has_been_deleted {
@@ -1380,6 +1470,15 @@ namespace BPWA.Common.Resources {
         public static string Search {
             get {
                 return ResourceManager.GetString("Search", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search (Use &apos;%&apos; as a wildcard anywhere in the text).
+        /// </summary>
+        public static string Search_use_precent_as_a_wildcard_anywhere_in_text {
+            get {
+                return ResourceManager.GetString("Search_use_precent_as_a_wildcard_anywhere_in_text", resourceCulture);
             }
         }
         
@@ -1758,6 +1857,24 @@ namespace BPWA.Common.Resources {
         public static string UsersManagement {
             get {
                 return ResourceManager.GetString("UsersManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verbose.
+        /// </summary>
+        public static string Verbose {
+            get {
+                return ResourceManager.GetString("Verbose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        public static string Warning {
+            get {
+                return ResourceManager.GetString("Warning", resourceCulture);
             }
         }
         

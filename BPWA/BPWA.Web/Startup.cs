@@ -65,9 +65,10 @@ namespace BPWA
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                if (env.IsDevelopment())
+                    endpoints.MapControllerRoute(name: "default", pattern: "{controller=Dashboard}/{action=Index}/{id?}");
+                else
+                    endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

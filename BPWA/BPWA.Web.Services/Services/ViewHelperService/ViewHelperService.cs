@@ -16,6 +16,7 @@ namespace BPWA.Web.Services.Services
             ShowAuthSection(),
             ShowGeolocationsSection(),
             ShowTicketsItem(),
+            ShowLogsItem(),
         }.Any(x => x);
 
         public bool ShowAuthSection() => new List<bool>{
@@ -46,6 +47,7 @@ namespace BPWA.Web.Services.Services
         public bool ShowLanguagesItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.LanguagesManagement);
         public bool ShowTranslationsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.TranslationsManagement);
         public bool ShowTicketsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.TicketsManagement);
+        public bool ShowLogsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.LogsRead);
 
         #endregion 
 

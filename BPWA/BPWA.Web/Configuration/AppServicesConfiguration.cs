@@ -17,6 +17,7 @@ namespace BPWA.Web.Configuration
                     .AddScoped<ICountriesWebService, CountriesWebService>()
                     .AddScoped<ICurrenciesWebService, CurrenciesWebService>()
                     .AddScoped<ILanguagesWebService, LanguagesWebService>()
+                    .AddScoped<ILogsService, LogsService>()
                     .AddScoped<ITicketsWebService, TicketsWebService>()
                     .AddScoped<ITranslationsService, TranslationsService>()
                     .AddScoped<ITranslationsWebService, TranslationsWebService>()

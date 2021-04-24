@@ -1,0 +1,98 @@
+﻿@model LogSearchModel
+
+<div class="kt-portlet kt-portlet--mobile col-lg-12">
+    <form method="POST" class="datatable_search_form">
+
+        <input asp-for="IsDeleted" type="hidden" />
+
+        <div class="kt-portlet__head kt-portlet__head--lg">
+            <div class="kt-portlet__head-label">
+                <span class="kt-portlet__head-icon">
+                    <i class="kt-font-brand kt-menu__link-icon flaticon2-zig-zag-line-sign"></i>
+                </span>
+                <h3 class="kt-portlet__head-title">
+                    @Translations.Logs
+                </h3>
+            </div>
+            <div class="kt-portlet__head-toolbar">
+                <div class="kt-portlet__head-wrapper">
+                    <div class="kt-portlet__head-actions">
+                        <button class="btn btn-default datatable_search_form_reset_button">
+                            <span>@Translations.Clear_filters<i class="flaticon-cancel ml-2"></i></span>
+                        </button>
+                        <button class="btn btn-default" type="submit">
+                            <span>@Translations.Search<i class="la la-search ml-2"></i></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="kt-portlet__head kt-portlet__head--lg">
+            <div class="col-md-12 row mt-4">
+                <div class="col-md form-group">
+                    <input asp-for="SearchTerm" placeholder="@Translations.Search_use_precent_as_a_wildcard_anywhere_in_text" class="form-control kt-input">
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="kt-portlet__body">
+
+        <table class="datatable"></table>
+
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+       DatatableAjax({
+            element: '.datatable',
+            url: '@Url.Action("IndexJson", "Logs")',
+            searchFormElement: '.datatable_search_form',
+            columns: [
+                {
+                    field: '@nameof(LogDTO.Message).ToCamelCase()',
+                    title: '@Translations.Message',
+                },
+                {
+                    field: '@nameof(LogDTO.Level).ToCamelCase()',
+                    title: '@Translations.Level',
+                    textAlign: 'center',
+                    width: 100,
+                    template: function (row) {
+                        var text = row.@nameof(LogDTO.LevelString).ToCamelCase();
+                        var status = {
+                            0: { 'class': 'kt-badge--success' },
+                            1: { 'class': 'kt-badge--info' },
+                            2: { 'class': 'kt-badge--info' },
+                            3: { 'class': 'kt-badge--warning' },
+                            4: { 'class': 'kt-badge--danger' },
+                            5: { 'class': 'kt-badge--danger' },
+                        };
+                        if (typeof status[row.level] === 'undefined') {
+                            return text;
+                        }
+                        return '<span class="kt-badge ' + status[row.level].class + ' kt-badge--inline kt-badge--pill">' + text + '</span>';
+                    },
+                },
+                {
+                    field: '@nameof(LogDTO.CreatedAtString).ToCamelCase()',
+                    title: '@Translations.CreatedAt',
+                    textAlign: 'center',
+                    width: 200
+                },
+                {
+                    template: (row) => DatatableDetailsButton({
+                        url: `@Url.Action("Details", "Logs")/${row.id}`,
+                        modalClass: 'modal-lg'
+                    }),
+                    ...DatatableActionsColumnOptions(),
+                }
+            ]
+        });
+    });
+
+</script>
+
+

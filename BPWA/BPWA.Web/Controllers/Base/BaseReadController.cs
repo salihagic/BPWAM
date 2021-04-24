@@ -87,8 +87,6 @@ namespace BPWA.Controllers
             if (!result.IsSuccess)
                 return Error();
 
-            var items = result.Item;
-
             _sessionSearchModel = sessionSearchModel;
 
             var pagination = sessionSearchModel.Pagination;
@@ -113,7 +111,7 @@ namespace BPWA.Controllers
                     sort = sortDirection,
                     field = sortField
                 },
-                data = items
+                data = result.Item
             });
         }
 
@@ -127,15 +125,13 @@ namespace BPWA.Controllers
             if (!result.IsSuccess)
                 return BadRequest();
 
-            var items = result.Item;
-
             return Ok(new
             {
                 pagination = new
                 {
                     more = searchModel.Pagination.HasMore,
                 },
-                results = items
+                results = result.Item
             });
         }
 
@@ -153,9 +149,7 @@ namespace BPWA.Controllers
             if (!result.IsSuccess)
                 return fullPage ? Error() : _Error();
 
-            var model = result.Item;
-
-            return View(model);
+            return View(result.Item);
         }
 
         #endregion
@@ -230,44 +224,5 @@ namespace BPWA.Controllers
         }
 
         #endregion Session
-
-        #region Helpers
-
-        public Pagination GetPagination()
-        {
-            var query = HttpContext.Request.Form;
-
-            int.TryParse(query["pagination[page]"].ToString(), out var page);
-            int.TryParse(query["pagination[perpage]"].ToString(), out var pageSize);
-            var sortField = query["sort[field]"].ToString();
-            var sortDirection = query["sort[sort]"].ToString();
-
-            if (pageSize == 0)
-                pageSize = 10;
-
-            var pagination = new Pagination
-            {
-                Page = page,
-                Skip = (page - 1) * pageSize,
-                Take = pageSize,
-                ShouldTakeAllRecords = ((page - 1) * pageSize) < 0
-            };
-
-            if (!string.IsNullOrEmpty(sortField))
-            {
-                pagination.OrderFields = new List<OrderField>
-                {
-                    new OrderField
-                    {
-                        Field = sortField,
-                        Direction = sortDirection.ToLower() == "desc" ? SortDirection.DESC : SortDirection.ASC
-                    }
-                };
-            }
-
-            return pagination;
-        }
-
-        #endregion
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BootstrapBreadcrumbs.Core;
 using BPWA.Common.Extensions;
+using BPWA.DAL.Models;
 using BPWA.Web.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -108,5 +109,44 @@ namespace BPWA.Controllers
         }
 
         #endregion Navigation
+
+        #region Helpers
+
+        public Pagination GetPagination()
+        {
+            var query = HttpContext.Request.Form;
+
+            int.TryParse(query["pagination[page]"].ToString(), out var page);
+            int.TryParse(query["pagination[perpage]"].ToString(), out var pageSize);
+            var sortField = query["sort[field]"].ToString();
+            var sortDirection = query["sort[sort]"].ToString();
+
+            if (pageSize == 0)
+                pageSize = 10;
+
+            var pagination = new Pagination
+            {
+                Page = page,
+                Skip = (page - 1) * pageSize,
+                Take = pageSize,
+                ShouldTakeAllRecords = ((page - 1) * pageSize) < 0
+            };
+
+            if (!string.IsNullOrEmpty(sortField))
+            {
+                pagination.OrderFields = new List<OrderField>
+                {
+                    new OrderField
+                    {
+                        Field = sortField,
+                        Direction = sortDirection.ToLower() == "desc" ? SortDirection.DESC : SortDirection.ASC
+                    }
+                };
+            }
+
+            return pagination;
+        }
+
+        #endregion
     }
 }
