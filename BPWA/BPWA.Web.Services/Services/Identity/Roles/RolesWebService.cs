@@ -64,7 +64,6 @@ namespace BPWA.Web.Services.Services
                 //Delete (Hard delete because of Identity generating user claims on login)
                 var roleClaimsToDelete = currentRoleClaims.Where(x => !entity.RoleClaims?.Any(y => y.ClaimValue == x.ClaimValue) ?? true).ToList();
                 DatabaseContext.RoleClaims.RemoveRange(roleClaimsToDelete);
-
                 await DatabaseContext.SaveChangesAsync();
 
                 //Only leave the new ones
@@ -74,7 +73,7 @@ namespace BPWA.Web.Services.Services
             return await base.UpdateEntity(entity);
         }
 
-        public override Task<Result> Delete(Role entity, bool softDelete = true)
+        public override Task<Result> Delete(Role entity)
         {
             var userRoles = DatabaseContext.UserRoles.Where(x => x.RoleId == entity.Id);
             var roleClaims = DatabaseContext.RoleClaims.Where(x => x.RoleId == entity.Id);
@@ -82,7 +81,7 @@ namespace BPWA.Web.Services.Services
             DatabaseContext.RemoveRange(userRoles);
             DatabaseContext.RemoveRange(roleClaims);
 
-            return base.Delete(entity, false);
+            return base.Delete(entity);
         }
     }
 }

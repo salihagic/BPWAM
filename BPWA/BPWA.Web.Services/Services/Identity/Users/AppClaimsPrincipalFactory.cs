@@ -33,13 +33,9 @@ namespace BPWA.Web.Services.Services
             var claimsIdentity = (principal.Identity as ClaimsIdentity);
             var claims = new List<Claim>();
 
-            try
-            {
-                foreach (var claim in claimsIdentity.Claims.ToList())
-                    if (claim.Type == ClaimTypes.Role || claim.Type == AppClaimsHelper.Authorization.Type)
-                        claimsIdentity.RemoveClaim(claim);
-            }
-            catch(Exception e){}
+            foreach (var claim in claimsIdentity.Claims.ToList())
+                if (claim.Type == ClaimTypes.Role || claim.Type == AppClaimsHelper.Authorization.Type)
+                    claimsIdentity.RemoveClaim(claim);
 
             await AddBasicInfo(user, claims);
             await AddRoles(user, claims);
@@ -68,7 +64,6 @@ namespace BPWA.Web.Services.Services
             var roles = await _databaseContext.UserRoles
                .AsNoTracking()
                .Include(x => x.Role.RoleClaims)
-               .Where(x => !x.IsDeleted)
                .Where(x => x.UserId == user.Id)
                .Where(x => (x.Role.CompanyId == null && x.Role.BusinessUnitId == null) ||
                             x.Role.BusinessUnitId == user.CurrentBusinessUnitId ||
@@ -110,7 +105,6 @@ namespace BPWA.Web.Services.Services
         {
             var companyIds = await _databaseContext.CompanyUsers
                                        .Where(x => x.UserId == user.Id)
-                                       .Where(x => !x.IsDeleted)
                                        .Select(x => x.CompanyId)
                                        .ToListAsync();
 
@@ -122,7 +116,6 @@ namespace BPWA.Web.Services.Services
         {
             var businessUnitIds = await _databaseContext.BusinessUnitUsers
                                         .Where(x => x.UserId == user.Id)
-                                        .Where(x => !x.IsDeleted)
                                         .Select(x => x.BusinessUnitId)
                                         .ToListAsync();
 

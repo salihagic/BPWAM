@@ -140,25 +140,18 @@ namespace BPWA.DAL.Database
 
         private void AddTimestamps()
         {
-            var entities = ChangeTracker.Entries().Where(x => x.Entity is IBaseEntity && (x.State == EntityState.Added || x.State == EntityState.Modified));
+            var entities = ChangeTracker.Entries().Where(x => x.Entity is IBaseEntity);
 
             foreach (var entity in entities)
             {
+                var iEntity = (IBaseEntity)entity.Entity;
+
                 if (entity.State == EntityState.Added)
-                {
-                    ((IBaseEntity)entity.Entity).CreatedAtUtc = DateTime.UtcNow;
-                }
+                    iEntity.CreatedAtUtc = DateTime.UtcNow;
                 if (entity.State == EntityState.Modified)
-                {
-                    if (((IBaseEntity)entity.Entity).IsDeleted)
-                    {
-                        ((IBaseEntity)entity.Entity).DeletedAtUtc = DateTime.UtcNow;
-                    }
-                    else
-                    {
-                        ((IBaseEntity)entity.Entity).ModifiedAtUtc = DateTime.UtcNow;
-                    }
-                }
+                    iEntity.ModifiedAtUtc = DateTime.UtcNow;
+                if (entity.State == EntityState.Deleted)
+                    iEntity.DeletedAtUtc = DateTime.UtcNow;
             }
         }
 

@@ -172,7 +172,7 @@ namespace BPWA.DAL.Services
                 return Query;
 
             return Query
-                .WhereIf(searchModel.IsDeleted.HasValue, x => x.IsDeleted == searchModel.IsDeleted.Value)
+
                 .WhereIf(!string.IsNullOrEmpty(searchModel.UserName), x => x.UserName.ToLower().StartsWith(searchModel.UserName.ToLower()))
                 .WhereIf(!string.IsNullOrEmpty(searchModel.Email), x => x.Email.ToLower().StartsWith(searchModel.Email.ToLower()))
                 .WhereIf(!string.IsNullOrEmpty(searchModel.FirstName), x => x.FirstName.ToLower().StartsWith(searchModel.FirstName.ToLower()))
@@ -369,13 +369,6 @@ namespace BPWA.DAL.Services
             }
         }
 
-        protected async Task<string> GenerateRandomPassword()
-        {
-            var password = "";
-
-            return password;
-        }
-
         virtual public async Task<Result<User>> UpdateEntity(User entity)
         {
             try
@@ -391,26 +384,18 @@ namespace BPWA.DAL.Services
             }
         }
 
-        virtual public async Task<Result> Delete(string id, bool softDelete = true)
+        virtual public async Task<Result> Delete(string id)
         {
             var item = await DatabaseContext.Set<User>().FirstOrDefaultAsync(x => x.Id.Equals(id));
 
-            return await Delete(item, softDelete);
+            return await Delete(item);
         }
 
-        virtual public async Task<Result> Delete(User entity, bool softDelete = true)
+        virtual public async Task<Result> Delete(User entity)
         {
             try
             {
-                if (softDelete)
-                {
-                    entity.IsDeleted = true;
-                    await Update(entity);
-                }
-                else
-                {
-                    DatabaseContext.Set<User>().Remove(entity);
-                }
+                DatabaseContext.Set<User>().Remove(entity);
 
                 await DatabaseContext.SaveChangesAsync();
 

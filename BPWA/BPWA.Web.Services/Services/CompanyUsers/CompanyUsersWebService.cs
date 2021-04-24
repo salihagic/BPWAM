@@ -28,19 +28,6 @@ namespace BPWA.Web.Services.Services
                        .ThenInclude(x => x.City);
         }
 
-        //public override IQueryable<CompanyUser> BuildIncludesById(int id, IQueryable<CompanyUser> query)
-        //{
-        //    return base.BuildIncludesById(id, query)
-        //               .Include(x => x.User.City)
-        //               .Include(x => x.CompanyUserRoles)
-        //               .Include(x => x.BusinessUnitUsers.Where(y => !CurrentUser.CurrentBusinessUnitId().HasValue || y.BusinessUnitId == CurrentUser.CurrentBusinessUnitId()))
-        //               .ThenInclude(x => x.BusinessUnit)
-        //               .Include(x => x.BusinessUnitUsers.Where(y => !CurrentUser.CurrentBusinessUnitId().HasValue || y.BusinessUnitId == CurrentUser.CurrentBusinessUnitId()))
-        //               .ThenInclude(x => x.BusinessUnitUserRoles)
-        //               .Include(x => x.UserRoles)
-        //               .ThenInclude(x => x.Role);
-        //}
-
         public override IQueryable<CompanyUser> BuildQueryConditions(IQueryable<CompanyUser> Query, CompanyUserSearchModel searchModel = null)
         {
             return base.BuildQueryConditions(Query, searchModel)

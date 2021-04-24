@@ -149,14 +149,14 @@ namespace BPWA.DAL.Services
             return result;
         }
 
-        public override async Task<Result> Delete(int id, bool softDelete = true)
+        public override async Task<Result> Delete(int id)
         {
             var entityResult = await base.GetEntityById(id);
 
             if (!entityResult.IsSuccess)
                 return Result.Failed("Failed to load translation");
 
-            var result = await base.Delete(id, false);
+            var result = await base.Delete(id);
 
             if (result.IsSuccess)
             {

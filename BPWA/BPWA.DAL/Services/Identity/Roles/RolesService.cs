@@ -87,7 +87,7 @@ namespace BPWA.DAL.Services
                 return Query;
 
             return Query
-                .WhereIf(searchModel.IsDeleted.HasValue, x => x.IsDeleted == searchModel.IsDeleted.Value)
+
                 .WhereIf(!string.IsNullOrEmpty(searchModel.Name), x => x.Name.ToLower().StartsWith(searchModel.Name.ToLower()))
                 .WhereIf(searchModel.Claims.IsNotEmpty(), x => x.RoleClaims.Any(y => searchModel.Claims.Contains(y.ClaimValue) && !y.IsDeleted));
         }
@@ -249,19 +249,11 @@ namespace BPWA.DAL.Services
             }
         }
 
-        virtual public async Task<Result> Delete(Role entity, bool softDelete = true)
+        virtual public async Task<Result> Delete(Role entity)
         {
             try
             {
-                if (softDelete)
-                {
-                    entity.IsDeleted = true;
-                    await Update(entity);
-                }
-                else
-                {
-                    DatabaseContext.Set<Role>().Remove(entity);
-                }
+                DatabaseContext.Set<Role>().Remove(entity);
 
                 await DatabaseContext.SaveChangesAsync();
 
@@ -273,11 +265,11 @@ namespace BPWA.DAL.Services
             }
         }
 
-        virtual public async Task<Result> Delete(string id, bool softDelete = true)
+        virtual public async Task<Result> Delete(string id)
         {
             var item = await DatabaseContext.Set<Role>().FirstOrDefaultAsync(x => x.Id.Equals(id));
 
-            return await Delete(item, softDelete);
+            return await Delete(item);
         }
     }
 }

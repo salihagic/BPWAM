@@ -103,19 +103,11 @@ namespace BPWA.DAL.Services
             }
         }
 
-        virtual public async Task<Result> Delete(TEntity entity, bool softDelete = true)
+        virtual public async Task<Result> Delete(TEntity entity)
         {
             try
             {
-                if (softDelete)
-                {
-                    entity.IsDeleted = true;
-                    await Update(entity);
-                }
-                else
-                {
-                    DatabaseContext.Set<TEntity>().Remove(entity);
-                }
+                DatabaseContext.Set<TEntity>().Remove(entity);
 
                 await DatabaseContext.SaveChangesAsync();
 
@@ -127,11 +119,11 @@ namespace BPWA.DAL.Services
             }
         }
 
-        virtual public async Task<Result> Delete(TId id, bool softDelete = true)
+        virtual public async Task<Result> Delete(TId id)
         {
             var item = await DatabaseContext.Set<TEntity>().FirstOrDefaultAsync(x => x.Id.Equals(id));
 
-            return await Delete(item, softDelete);
+            return await Delete(item);
         }
     }
 }

@@ -48,11 +48,7 @@ namespace BPWA.DAL.Services
             _shouldTranslate = shouldTranslate;
         }
 
-        virtual public IQueryable<TEntity> BuildQueryConditions(IQueryable<TEntity> Query, TSearchModel searchModel = null)
-        {
-            return Query;
-            return Query.WhereIf(searchModel != null, x => x.IsDeleted == searchModel.IsDeleted);
-        }
+        virtual public IQueryable<TEntity> BuildQueryConditions(IQueryable<TEntity> Query, TSearchModel searchModel = null) => Query;
 
         virtual public IQueryable<TEntity> BuildIncludesById(TId id, IQueryable<TEntity> query) => query;
 

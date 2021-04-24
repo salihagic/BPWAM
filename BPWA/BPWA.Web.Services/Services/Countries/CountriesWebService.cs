@@ -109,28 +109,26 @@ namespace BPWA.Web.Services.Services
 
         public override async Task<Result<CountryDTO>> Update(Country entity)
         {
-            var currentCountryCurrencies = await DatabaseContext.CountryCurrencies.Where(x => x.CountryId == entity.Id && !x.IsDeleted).ToListAsync();
+            var currentCountryCurrencies = await DatabaseContext.CountryCurrencies.Where(x => x.CountryId == entity.Id).ToListAsync();
 
             if (currentCountryCurrencies.IsNotEmpty())
             {
                 //Delete
                 var countryCurrenciesToDelete = currentCountryCurrencies.Where(x => !entity.CountryCurrencies?.Any(y => y.CurrencyId == x.CurrencyId) ?? true).ToList();
-                countryCurrenciesToDelete?.ForEach(x => x.IsDeleted = true);
-
+                DatabaseContext.RemoveRange(countryCurrenciesToDelete);
                 await DatabaseContext.SaveChangesAsync();
 
                 //Only leave the new ones
                 entity.CountryCurrencies = entity.CountryCurrencies.Where(x => !currentCountryCurrencies.Any(y => y.CurrencyId == x.CurrencyId)).ToList();
             }
 
-            var currentCountryLanguages = await DatabaseContext.CountryLanguages.Where(x => x.CountryId == entity.Id && !x.IsDeleted).ToListAsync();
+            var currentCountryLanguages = await DatabaseContext.CountryLanguages.Where(x => x.CountryId == entity.Id).ToListAsync();
 
             if (currentCountryLanguages.IsNotEmpty())
             {
                 //Delete
                 var countryLanguagesToDelete = currentCountryLanguages.Where(x => !entity.CountryLanguages?.Any(y => y.LanguageId == x.LanguageId) ?? true).ToList();
-                countryLanguagesToDelete?.ForEach(x => x.IsDeleted = true);
-
+                DatabaseContext.RemoveRange(countryLanguagesToDelete);
                 await DatabaseContext.SaveChangesAsync();
 
                 //Only leave the new ones

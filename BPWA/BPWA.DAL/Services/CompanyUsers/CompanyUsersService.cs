@@ -21,12 +21,10 @@ namespace BPWA.DAL.Services
             if (searchModel == null)
                 return Query;
 
-            return Query
-                .WhereIf(searchModel.IsDeleted.HasValue, x => x.IsDeleted == searchModel.IsDeleted.Value)
-                .WhereIf(!string.IsNullOrEmpty(searchModel.UserName), x => x.User.UserName.ToLower().StartsWith(searchModel.UserName.ToLower()))
-                .WhereIf(!string.IsNullOrEmpty(searchModel.Email), x => x.User.Email.ToLower().StartsWith(searchModel.Email.ToLower()))
-                .WhereIf(!string.IsNullOrEmpty(searchModel.FirstName), x => x.User.FirstName.ToLower().StartsWith(searchModel.FirstName.ToLower()))
-                .WhereIf(!string.IsNullOrEmpty(searchModel.LastName), x => x.User.LastName.ToLower().StartsWith(searchModel.LastName.ToLower()));
+            return Query.WhereIf(!string.IsNullOrEmpty(searchModel.UserName), x => x.User.UserName.ToLower().StartsWith(searchModel.UserName.ToLower()))
+                        .WhereIf(!string.IsNullOrEmpty(searchModel.Email), x => x.User.Email.ToLower().StartsWith(searchModel.Email.ToLower()))
+                        .WhereIf(!string.IsNullOrEmpty(searchModel.FirstName), x => x.User.FirstName.ToLower().StartsWith(searchModel.FirstName.ToLower()))
+                        .WhereIf(!string.IsNullOrEmpty(searchModel.LastName), x => x.User.LastName.ToLower().StartsWith(searchModel.LastName.ToLower()));
         }
     }
 }

@@ -284,7 +284,7 @@ namespace BPWA.Web.Services.Services
                 entity.UserRoles ??= new List<UserRole>();
 
                 var roles = await DatabaseContext.Roles
-                    .Where(x => entity.UserRoles.Select(y => y.RoleId).Contains(x.Id) && !x.IsDeleted)
+                    .Where(x => entity.UserRoles.Select(y => y.RoleId).Contains(x.Id))
                     .ToListAsync();
 
                 #region System roles
@@ -295,7 +295,7 @@ namespace BPWA.Web.Services.Services
 
                     var currentUserRoles = await DatabaseContext.UserRoles
                         .AsNoTracking()
-                        .Where(x => x.UserId == entity.Id && !x.IsDeleted)
+                        .Where(x => x.UserId == entity.Id)
                         .ToListAsync();
 
                     if (currentUserRoles.IsNotEmpty())
@@ -320,7 +320,7 @@ namespace BPWA.Web.Services.Services
 
                     var currentUserCompanyRoles = await DatabaseContext.UserRoles
                         .AsNoTracking()
-                        .Where(x => x.UserId == entity.Id && x.Role.CompanyId == CurrentUser.CurrentCompanyId() && x.Role.BusinessUnitId == null && !x.IsDeleted)
+                        .Where(x => x.UserId == entity.Id && x.Role.CompanyId == CurrentUser.CurrentCompanyId() && x.Role.BusinessUnitId == null)
                         .ToListAsync();
 
                     if (currentUserCompanyRoles != null)
@@ -345,7 +345,7 @@ namespace BPWA.Web.Services.Services
 
                     var currentUserBusinessUnitRoles = await DatabaseContext.UserRoles
                         .AsNoTracking()
-                        .Where(x => x.UserId == entity.Id && x.Role.BusinessUnitId == CurrentUser.CurrentBusinessUnitId() && x.Role.BusinessUnitId == null && !x.IsDeleted)
+                        .Where(x => x.UserId == entity.Id && x.Role.BusinessUnitId == CurrentUser.CurrentBusinessUnitId() && x.Role.BusinessUnitId == null)
                         .ToListAsync();
 
                     if (currentUserBusinessUnitRoles != null)
@@ -365,14 +365,13 @@ namespace BPWA.Web.Services.Services
 
             if (!CurrentUser.CurrentCompanyId().HasValue)
             {
-                var currentCompanyUsers = await DatabaseContext.CompanyUsers.Where(x => x.UserId == entity.Id && !x.IsDeleted).ToListAsync();
+                var currentCompanyUsers = await DatabaseContext.CompanyUsers.Where(x => x.UserId == entity.Id).ToListAsync();
 
                 if (currentCompanyUsers.IsNotEmpty())
                 {
                     //Delete
                     var currentCompanyUsersToDelete = currentCompanyUsers.Where(x => !entity.CompanyUsers?.Any(y => y.CompanyId == x.CompanyId) ?? true).ToList();
-                    currentCompanyUsersToDelete?.ForEach(x => x.IsDeleted = true);
-
+                    DatabaseContext.RemoveRange(currentCompanyUsersToDelete);
                     await DatabaseContext.SaveChangesAsync();
 
                     //Only leave the new ones
@@ -382,15 +381,14 @@ namespace BPWA.Web.Services.Services
             else if (!CurrentUser.CurrentBusinessUnitId().HasValue)
             {
                 var currentBusinessUnitUsers = await DatabaseContext.BusinessUnitUsers
-                    .Where(x => x.UserId == entity.Id && !x.IsDeleted && x.BusinessUnit.CompanyId == CurrentUser.CurrentCompanyId())
+                    .Where(x => x.UserId == entity.Id && x.BusinessUnit.CompanyId == CurrentUser.CurrentCompanyId())
                     .ToListAsync();
 
                 if (currentBusinessUnitUsers.IsNotEmpty())
                 {
                     //Delete
                     var currentBusinessUnitUsersToDelete = currentBusinessUnitUsers.Where(x => !entity.BusinessUnitUsers?.Any(y => y.BusinessUnitId == x.BusinessUnitId) ?? true).ToList();
-                    currentBusinessUnitUsersToDelete?.ForEach(x => x.IsDeleted = true);
-
+                    DatabaseContext.RemoveRange(currentBusinessUnitUsersToDelete);
                     await DatabaseContext.SaveChangesAsync();
 
                     //Only leave the new ones

@@ -1,7 +1,6 @@
 ﻿using BPWA.Core.Entities;
 using BPWA.DAL.Models;
 using System.Threading.Tasks;
-using BPWA.DAL.Models;
 
 namespace BPWA.DAL.Services
 {
@@ -22,7 +21,7 @@ namespace BPWA.DAL.Services
         Task<Result<TEntity>> AddEntity(TEntity entity);
         Task<Result<TDTO>> Update(TEntity entity);
         Task<Result<TEntity>> UpdateEntity(TEntity entity);
-        Task<Result> Delete(TEntity entity, bool softDelete = true);
-        Task<Result> Delete(TId id, bool softDelete = true);
+        Task<Result> Delete(TEntity entity);
+        Task<Result> Delete(TId id);
     }
 }
