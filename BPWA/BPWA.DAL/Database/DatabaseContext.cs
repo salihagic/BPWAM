@@ -1,12 +1,11 @@
-﻿using EntityFramework.DynamicFilters;
-using BPWA.Core.Entities;
+﻿using BPWA.Core.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq.Expressions;
 
 namespace BPWA.DAL.Database
 {
@@ -23,6 +22,10 @@ namespace BPWA.DAL.Database
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<Language> Languages { get; set; }
         public DbSet<Log> Logs { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Group> NotificationGroups { get; set; }
+        public DbSet<GroupUser> NotificationGroupUsers { get; set; }
+        public DbSet<NotificationLog> NotificationLogs { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Translation> Translations { get; set; }
 

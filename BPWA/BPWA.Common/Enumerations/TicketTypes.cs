@@ -2,7 +2,7 @@
 {
     public enum TicketTypes
     {
-        Bug,
+        Bug = 1,
         Feature
     }
 }

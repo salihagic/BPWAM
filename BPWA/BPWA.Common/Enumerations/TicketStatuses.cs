@@ -2,7 +2,7 @@
 {
     public enum TicketStatuses
     {
-        Open,
+        Open = 1,
         Closed,
         Rejected,
         InProgress
