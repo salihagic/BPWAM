@@ -31,6 +31,15 @@
         </div>
         <div class="kt-portlet__head kt-portlet__head--lg">
             <div class="col-md-12 row mt-4">
+                <div class="col-md form-group">
+                    <input asp-for="Title" placeholder="@Translations.Title" class="form-control kt-input">
+                </div>
+                <div class="col-md form-group">
+                    <input asp-for="Description" placeholder="@Translations.Description" class="form-control kt-input">
+                </div>
+                <div class="col-md form-group">
+                    <select asp-for="UserId" class="form-control select2"></select>
+                </div>
             </div>
         </div>
     </form>
@@ -45,6 +54,11 @@
 <script>
 
     $(document).ready(function () {
+
+        Select2AjaxUsers({
+            element: '#@nameof(GroupSearchModel.UserId)',
+        });
+
         DatatableAjax({
             element: '.datatable',
             url: '@Url.Action("IndexJson", "Groups")',

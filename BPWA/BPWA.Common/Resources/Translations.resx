@@ -747,4 +747,43 @@
   <data name="Edit_group" xml:space="preserve">
     <value>Edit group</value>
   </data>
+  <data name="Broadcast" xml:space="preserve">
+    <value>Broadcast</value>
+  </data>
+  <data name="DistributionType" xml:space="preserve">
+    <value>DistributionType</value>
+  </data>
+  <data name="Group" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="Info" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="SingleUser" xml:space="preserve">
+    <value>Single user</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Add_notification" xml:space="preserve">
+    <value>Add notification</value>
+  </data>
+  <data name="Notification_distribution_type" xml:space="preserve">
+    <value>Notification distribution type</value>
+  </data>
+  <data name="Notification_type" xml:space="preserve">
+    <value>Notification type</value>
+  </data>
+  <data name="Select_group" xml:space="preserve">
+    <value>Select group</value>
+  </data>
+  <data name="Select_notification_distribution_type" xml:space="preserve">
+    <value>Select notification distribution type</value>
+  </data>
+  <data name="Select_notification_type" xml:space="preserve">
+    <value>Select notification type</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>User</value>
+  </data>
 </root>

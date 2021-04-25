@@ -8,8 +8,8 @@ namespace BPWA.Web.Services.Models
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public NotificationType NotificationType { get; set; }
-        public NotificationDistributionType NotificationDistributionType { get; set; }
+        public NotificationType? NotificationType { get; set; }
+        public NotificationDistributionType? NotificationDistributionType { get; set; }
         public string UserId { get; set; }
         public string SelectedUser { get; set; }
         public List<int> GroupIds { get; set; }

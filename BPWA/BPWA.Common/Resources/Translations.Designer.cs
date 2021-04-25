@@ -169,6 +169,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add notification.
+        /// </summary>
+        public static string Add_notification {
+            get {
+                return ResourceManager.GetString("Add_notification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add role.
         /// </summary>
         public static string Add_role {
@@ -255,6 +264,15 @@ namespace BPWA.Common.Resources {
         public static string BPWA {
             get {
                 return ResourceManager.GetString("BPWA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Broadcast.
+        /// </summary>
+        public static string Broadcast {
+            get {
+                return ResourceManager.GetString("Broadcast", resourceCulture);
             }
         }
         
@@ -646,6 +664,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DistributionType.
+        /// </summary>
+        public static string DistributionType {
+            get {
+                return ResourceManager.GetString("DistributionType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to change currently selected business unit.
         /// </summary>
         public static string Do_you_want_to_change_currently_selected_business_unit {
@@ -934,6 +961,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Group.
+        /// </summary>
+        public static string Group {
+            get {
+                return ResourceManager.GetString("Group", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Groups.
         /// </summary>
         public static string Groups {
@@ -957,6 +993,15 @@ namespace BPWA.Common.Resources {
         public static string Home {
             get {
                 return ResourceManager.GetString("Home", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Info.
+        /// </summary>
+        public static string Info {
+            get {
+                return ResourceManager.GetString("Info", resourceCulture);
             }
         }
         
@@ -1209,6 +1254,24 @@ namespace BPWA.Common.Resources {
         public static string No_records_found {
             get {
                 return ResourceManager.GetString("No_records_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notification distribution type.
+        /// </summary>
+        public static string Notification_distribution_type {
+            get {
+                return ResourceManager.GetString("Notification_distribution_type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notification type.
+        /// </summary>
+        public static string Notification_type {
+            get {
+                return ResourceManager.GetString("Notification_type", resourceCulture);
             }
         }
         
@@ -1582,11 +1645,38 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select group.
+        /// </summary>
+        public static string Select_group {
+            get {
+                return ResourceManager.GetString("Select_group", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select language.
         /// </summary>
         public static string Select_language {
             get {
                 return ResourceManager.GetString("Select_language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select notification distribution type.
+        /// </summary>
+        public static string Select_notification_distribution_type {
+            get {
+                return ResourceManager.GetString("Select_notification_distribution_type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select notification type.
+        /// </summary>
+        public static string Select_notification_type {
+            get {
+                return ResourceManager.GetString("Select_notification_type", resourceCulture);
             }
         }
         
@@ -1650,6 +1740,15 @@ namespace BPWA.Common.Resources {
         public static string Sign_in {
             get {
                 return ResourceManager.GetString("Sign_in", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Single user.
+        /// </summary>
+        public static string SingleUser {
+            get {
+                return ResourceManager.GetString("SingleUser", resourceCulture);
             }
         }
         
@@ -1798,6 +1897,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string Type {
+            get {
+                return ResourceManager.GetString("Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update role.
         /// </summary>
         public static string Update_role {
@@ -1812,6 +1920,15 @@ namespace BPWA.Common.Resources {
         public static string Update_ticket {
             get {
                 return ResourceManager.GetString("Update_ticket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User.
+        /// </summary>
+        public static string User {
+            get {
+                return ResourceManager.GetString("User", resourceCulture);
             }
         }
         

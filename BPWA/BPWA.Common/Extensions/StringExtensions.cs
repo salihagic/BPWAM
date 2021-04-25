@@ -10,6 +10,8 @@ namespace BPWA.Common.Extensions
             return string.IsNullOrEmpty(s) ? string.Empty : $"{s[0].ToString().ToLower()}{s.Substring(1)}";
         }
 
+        public static bool IsEmpty(this string s) => string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s);
+        public static bool IsNotEmpty(this string s) => !s.IsEmpty();
         public static bool HasValue(this string s) => !string.IsNullOrEmpty(s) && !string.IsNullOrWhiteSpace(s);
 
         public static string Base64Encode(this string s)

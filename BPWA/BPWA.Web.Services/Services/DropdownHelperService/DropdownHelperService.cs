@@ -75,5 +75,25 @@ namespace BPWA.Web.Services.Services
                     Text = x.Name
                 }).ToList();
         }
+
+        public List<SelectListItem> GetNotificationTypes()
+        {
+            return Enum.GetValues(typeof(NotificationType)).Cast<NotificationType>()
+                .Select(x => new SelectListItem
+                {
+                    Value = x.ToString(),
+                    Text = TranslationsHelper.Translate(x.ToString())
+                }).ToList();
+        }
+
+        public List<SelectListItem> GetNotificationDistributionTypes()
+        {
+            return Enum.GetValues(typeof(NotificationDistributionType)).Cast<NotificationDistributionType>()
+                .Select(x => new SelectListItem
+                {
+                    Value = x.ToString(),
+                    Text = TranslationsHelper.Translate(x.ToString())
+                }).ToList();
+        }
     }
 }

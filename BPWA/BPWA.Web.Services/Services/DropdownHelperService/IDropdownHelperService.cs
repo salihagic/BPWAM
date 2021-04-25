@@ -10,5 +10,7 @@ namespace BPWA.Web.Services.Services
         List<SelectListItem> GetTicketTypes();
         List<SelectListItem> GetTicketStatuses();
         List<SelectListItem> GetSystemLanguages();
+        List<SelectListItem> GetNotificationTypes();
+        List<SelectListItem> GetNotificationDistributionTypes();
     }
 }

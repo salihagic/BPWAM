@@ -8,7 +8,7 @@ namespace BPWA.DAL.Mappings
     {
         public NotificationGroupProfile()
         {
-            CreateMap<Group, GroupDTO>();
+            CreateMap<NotificationGroup, NotificationGroupDTO>();
         }
     }
 }

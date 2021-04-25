@@ -5,10 +5,28 @@
     var ticketTypesJson = JsonConvert.SerializeObject(DropdownHelperService.GetTicketTypes().Select(x => new { id = x.Value, text = x.Text }).ToList());
     var ticketStatusesJson = JsonConvert.SerializeObject(DropdownHelperService.GetTicketStatuses().Select(x => new { id = x.Value, text = x.Text }).ToList());
     var systemLanguagesJson = JsonConvert.SerializeObject(DropdownHelperService.GetSystemLanguages().Select(x => new { id = x.Value, text = x.Text }).ToList());
+    var notificationTypesJson = JsonConvert.SerializeObject(DropdownHelperService.GetNotificationTypes().Select(x => new { id = x.Value, text = x.Text }).ToList());
+    var notificationDistributionTypesJson = JsonConvert.SerializeObject(DropdownHelperService.GetNotificationDistributionTypes().Select(x => new { id = x.Value, text = x.Text }).ToList());
 }
 
 <script>
 
+    function Select2NotificationTypes(options) {
+        Select2({
+            data: @Html.Raw(notificationTypesJson),
+            placeholder: '@Translations.Select_notification_type',
+            ...options
+        });
+    }
+    
+    function Select2NotificationDistributionTypes(options) {
+        Select2({
+            data: @Html.Raw(notificationDistributionTypesJson),
+            placeholder: '@Translations.Select_notification_distribution_type',
+            ...options
+        });
+    }
+    
     function Select2SystemLanguages(options) {
         Select2({
             data: @Html.Raw(systemLanguagesJson),
@@ -67,6 +85,21 @@
                 };
             },
             placeholder: '@Translations.Select_business_unit',
+            ...options
+        });
+    }
+    
+    function Select2AjaxGroups(options) {
+        Select2Ajax({
+            element: options.element,
+            url: '@Url.Action("Dropdown", "Groups")',
+            map: (x) => {
+                return {
+                    id: x.id,
+                    text: x.title
+                };
+            },
+            placeholder: '@Translations.Select_group',
             ...options
         });
     }

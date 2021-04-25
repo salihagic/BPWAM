@@ -1,0 +1,118 @@
+﻿@model NotificationAddModel
+@{ Layout = null; }
+
+<form asp-controller="Notifications"
+      asp-action="Add"
+      method="POST"
+      class="kt-form kt-form--fit">
+
+    <div class="modal-header">
+        <h5 class="modal-title">
+            @Translations.Add_notification
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+    </div>
+
+    <div class="modal-body">
+        <div class="col-md-12 row">
+            <div class="col-md-6 form-group">
+                <label>@Translations.Notification_type</label>
+                <select asp-for="NotificationType" id="modal_@nameof(NotificationAddModel.NotificationType)" class="form-control select2">
+                </select>
+                <span asp-validation-for="NotificationType" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 form-group">
+                <label>@Translations.Notification_distribution_type</label>
+                <select asp-for="NotificationDistributionType" id="modal_@nameof(NotificationAddModel.NotificationDistributionType)" class="form-control select2">
+                </select>
+                <span asp-validation-for="NotificationDistributionType" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 form-group">
+                <label>@Translations.User</label>
+                <input asp-for="SelectedUser" type="hidden">
+                <select asp-for="UserId" id="modal_@nameof(NotificationAddModel.UserId)" class="form-control select2">
+                    <option value="@Model.UserId" selected="selected">
+                        @(Model.SelectedUser ?? Translations.Select_user)
+                    </option>
+                </select>
+                <span asp-validation-for="UserId" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 form-group">
+                <label>@Translations.Groups</label>
+                <select asp-for="GroupIds" id="modal_@nameof(NotificationAddModel.GroupIds)" multiple="multiple" class="form-control select2">
+                    @foreach (var item in Model.GroupIdsSelectList)
+                    {
+                        <option value="@item.Value" selected="selected">@item.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="GroupIds" class="text-danger"></span>
+            </div>
+
+            <div class="col-md form-group">
+                <label>@Translations.Title</label>
+                <input asp-for="Title" class="form-control m-input" placeholder="@Translations.Title">
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-12 form-group">
+                <label>@Translations.Description</label>
+                <textarea asp-for="Description" class="form-control m-input" placeholder="@Translations.Description"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">@Translations.Close</button>
+        <button class="modal_submit_continue_button btn btn-primary" type="button">@Translations.Save_and_continue</button>
+        <button class="modal_submit_close_button btn btn-primary" type="button">@Translations.Save</button>
+    </div>
+
+</form>
+
+<script>
+
+    Select2NotificationTypes({
+        element: '#modal_@nameof(NotificationAddModel.NotificationType)'
+    });
+
+    Select2NotificationDistributionTypes({
+        element: '#modal_@nameof(NotificationAddModel.NotificationDistributionType)',
+        onChange: DisableSelectListsByNotificationDistributionType
+    });
+
+    function DisableSelectListsByNotificationDistributionType(element) {
+        $userIdSelect = $('#modal_@nameof(NotificationAddModel.UserId)');
+        $groupIdsSelect = $('#modal_@nameof(NotificationAddModel.GroupIds)');
+
+        $userIdSelect.removeAttr("disabled");
+        $groupIdsSelect.removeAttr("disabled");
+
+        if ($(element).val() != '@NotificationDistributionType.SingleUser') {
+            $userIdSelect.val('');
+            $userIdSelect.trigger('change');
+            $userIdSelect.attr('disabled', 'disabled');
+        }
+        if ($(element).val() != '@NotificationDistributionType.Group') {
+            $groupIdsSelect.val('');
+            $groupIdsSelect.trigger('change');
+            $groupIdsSelect.attr('disabled', 'disabled');
+        }
+    }
+
+    DisableSelectListsByNotificationDistributionType($('#modal_@nameof(NotificationAddModel.NotificationDistributionType)'))
+
+    Select2AjaxUsers({
+        element: '#modal_@nameof(NotificationAddModel.UserId)',
+        onChangeCopyTextTo: '#@nameof(NotificationAddModel.SelectedUser)',
+    });
+
+    Select2AjaxGroups({
+        element: '#modal_@nameof(NotificationAddModel.GroupIds)',
+    });
+
+</script>

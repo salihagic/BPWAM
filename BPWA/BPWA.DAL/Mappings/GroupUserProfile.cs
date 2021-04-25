@@ -4,9 +4,9 @@ using BPWA.DAL.Models;
 
 namespace BPWA.DAL.Mappings
 {
-    public class NotificationGroupUserProfile : Profile
+    public class GroupUserProfile : Profile
     {
-        public NotificationGroupUserProfile()
+        public GroupUserProfile()
         {
             CreateMap<GroupUser, GroupUserDTO>();
         }

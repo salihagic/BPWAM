@@ -1,0 +1,154 @@
+﻿@model NotificationSearchModel
+
+<div class="kt-portlet kt-portlet--mobile col-lg-12">
+    <form method="POST" class="datatable_search_form">
+        
+        <div class="kt-portlet__head kt-portlet__head--lg">
+            <div class="kt-portlet__head-label">
+                <span class="kt-portlet__head-icon">
+                    <i class="kt-font-brand kt-menu__link-icon flaticon2-notification"></i>
+                </span>
+                <h3 class="kt-portlet__head-title">
+                    @Translations.Notifications
+                </h3>
+            </div>
+            <div class="kt-portlet__head-toolbar">
+                <div class="kt-portlet__head-wrapper">
+                    <div class="kt-portlet__head-actions">
+                        <a href="@Url.Action("Add", "Notifications")" class="open_modal_button btn btn-brand btn-elevate btn-icon-sm" type="button">
+                            <i class="la la-plus"></i>
+                            @Translations.New_record
+                        </a>
+                        <button class="btn btn-default datatable_search_form_reset_button">
+                            <span>@Translations.Clear_filters<i class="flaticon-cancel ml-2"></i></span>
+                        </button>
+                        <button class="btn btn-default" type="submit">
+                            <span>@Translations.Search<i class="la la-search ml-2"></i></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="kt-portlet__head kt-portlet__head--lg">
+            <div class="col-md-12 row mt-4">
+                <div class="col-md-4 form-group">
+                    <input asp-for="Title" placeholder="@Translations.Title" class="form-control kt-input">
+                </div>
+                <div class="col-md-4 form-group">
+                    <input asp-for="Description" placeholder="@Translations.Description" class="form-control kt-input">
+                </div>
+                <div class="col-md-4 form-group">
+                    <select asp-for="NotificationType" class="form-control select2"></select>
+                </div>
+                <div class="col-md-4 form-group">
+                    <select asp-for="NotificationDistributionType" class="form-control select2"></select>
+                </div>
+                <div class="col-md-4 form-group">
+                    <select asp-for="UserId" class="form-control select2"></select>
+                </div>
+                <div class="col-md-4 form-group">
+                    <select asp-for="GroupId" class="form-control select2"></select>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="kt-portlet__body">
+
+        <table class="datatable"></table>
+
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        Select2NotificationTypes({
+            element: '#@nameof(NotificationSearchModel.NotificationType)',
+            initialValue: ''
+        });
+
+        Select2NotificationDistributionTypes({
+            element: '#@nameof(NotificationSearchModel.NotificationDistributionType)',
+            initialValue: ''
+        });
+
+        Select2AjaxUsers({
+            element: '#@nameof(NotificationSearchModel.UserId)',
+        });
+
+        Select2AjaxGroups({
+            element: '#@nameof(NotificationSearchModel.GroupId)',
+        });
+
+        DatatableAjax({
+            element: '.datatable',
+            url: '@Url.Action("IndexJson", "Notifications")',
+            searchFormElement: '.datatable_search_form',
+            columns: [
+                {
+                    field: '@nameof(NotificationDTO.Title).ToCamelCase()',
+                    title: '@Translations.Title',
+                },
+                {
+                    field: '@nameof(NotificationDTO.Description).ToCamelCase()',
+                    title: '@Translations.Description',
+                },
+                {
+                    field: '@nameof(NotificationDTO.NotificationType).ToCamelCase()',
+                    title: '@Translations.Notification_type',
+                    textAlign: 'center',
+                    width: 100,
+                    template: function (row) {
+                        var text = row.@nameof(NotificationDTO.NotificationTypeString).ToCamelCase();
+                        var value = row.@nameof(NotificationDTO.NotificationType).ToCamelCase();
+                        var status = {
+                            1: { 'class': 'kt-badge--info' },
+                        };
+                        if (typeof status[value] === 'undefined') {
+                            return text;
+                        }
+                        return '<span class="kt-badge ' + status[value].class + ' kt-badge--inline kt-badge--pill">' + text + '</span>';
+                    },
+                },
+                {
+                    field: '@nameof(NotificationDTO.NotificationDistributionType).ToCamelCase()',
+                    title: '@Translations.Notification_distribution_type',
+                    textAlign: 'center',
+                    width: 100,
+                    template: function (row) {
+                        var text = row.@nameof(NotificationDTO.NotificationDistributionTypeString).ToCamelCase();
+                        var value = row.@nameof(NotificationDTO.NotificationDistributionType).ToCamelCase();
+                        var status = {
+                            1: { 'class': 'kt-badge--info' },
+                            2: { 'class': 'kt-badge--warning' },
+                            3: { 'class': 'kt-badge--danger' },
+                        };
+                        if (typeof status[value] === 'undefined') {
+                            return text;
+                        }
+                        return '<span class="kt-badge ' + status[value].class + ' kt-badge--inline kt-badge--pill">' + text + '</span>';
+                    },
+                },
+                {
+                    template: (row) => DatatableBasicActions({
+                        details: {
+                            url: `@Url.Action("Details", "Notifications")/${row.id}`
+                        },
+                        edit: {
+                            url: `@Url.Action("Edit", "Notifications")/${row.id}`
+                        },
+                        delete: {
+                            url: `@Url.Action("Delete", "Notifications")/${row.id}`
+                        }
+                    }),
+                    ...DatatableActionsColumnOptions(),
+                }
+            ]
+        });
+    });
+
+</script>
+
+

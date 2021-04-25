@@ -1,0 +1,63 @@
+﻿@model NotificationDTO
+@{ Layout = null; }
+
+<div class="modal-header">
+    <h5 class="modal-title">
+        @Translations.Details
+    </h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+
+    <div class="col-md-12 row">
+        <div class="col-md-6 form-group">
+            <label>@Translations.Notification_type</label>
+            <input asp-for="NotificationTypeString" class="form-control m-input" disabled>
+        </div>
+        <div class="col-md-6 form-group">
+            <label>@Translations.Notification_distribution_type</label>
+            <input asp-for="NotificationDistributionTypeString" class="form-control m-input" disabled>
+        </div>
+
+        @if (Model.User != null)
+        {
+            <div class="col-md-12 form-group">
+                <label>@Translations.User</label>
+                <input value="@($"{Model.User.FirstName} {Model.User.LastName}")" class="form-control m-input" disabled>
+            </div>
+        }
+
+        @if (Model.NotificationGroups.IsNotEmpty())
+        {
+            <div class="col-md-12 row">
+                <div class="col-md">
+                    <label>@Translations.Groups</label>
+                </div>
+                <div class="col-md-6"></div>
+                @foreach (var item in Model.NotificationGroups)
+                {
+                    <div class="col-md-6 form-group">
+                        <input value="@item.Group.Title" class="form-control m-input" disabled>
+                    </div>
+                }
+            </div>
+        }
+
+        <div class="col-md-12 form-group">
+            <label>@Translations.Title</label>
+            <input asp-for="Title" class="form-control m-input" disabled>
+        </div>
+
+        <div class="col-md-12 form-group">
+            <label>@Translations.Description</label>
+            <textarea asp-for="Description" class="form-control m-input" disabled></textarea>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Translations.Close</button>
+</div>
