@@ -12,7 +12,7 @@ namespace BPWA.Web.Services.Models
         public NotificationDistributionType NotificationDistributionType { get; set; }
         public string UserId { get; set; }
         public string SelectedUser { get; set; }
-        public List<int> NotificationGroupIds { get; set; }
-        public List<SelectListItem> NotificationGroupIdsSelectList { get; set; }
+        public List<int> GroupIds { get; set; }
+        public List<SelectListItem> GroupIdsSelectList { get; set; }
     }
 }

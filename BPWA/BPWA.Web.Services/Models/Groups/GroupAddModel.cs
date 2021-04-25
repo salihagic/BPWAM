@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BPWA.Web.Services.Models
 {
-    public class NotificationGroupAddModel
+    public class GroupAddModel
     {
         public string Title { get; set; }
         public string Description { get; set; }

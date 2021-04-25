@@ -8,6 +8,7 @@
         bool ShowAdministrationSection();
         bool ShowAuthSection();
         bool ShowGeolocationsSection();
+        bool ShowNotificationsSection();
         
         #endregion Sections
 
@@ -22,9 +23,11 @@
         bool ShowCountriesItem();
         bool ShowCurrenciesItem();
         bool ShowLanguagesItem();
-        bool ShowTranslationsItem();
-        bool ShowTicketsItem();
         bool ShowLogsItem();
+        bool ShowNotificationsItem();
+        bool ShowGroupsItem();
+        bool ShowTicketsItem();
+        bool ShowTranslationsItem();
 
         #endregion Items
 

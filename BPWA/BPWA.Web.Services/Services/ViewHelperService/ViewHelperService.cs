@@ -15,8 +15,8 @@ namespace BPWA.Web.Services.Services
             ShowCompaniesItem(),
             ShowAuthSection(),
             ShowGeolocationsSection(),
-            ShowTicketsItem(),
             ShowLogsItem(),
+            ShowTicketsItem(),
         }.Any(x => x);
 
         public bool ShowAuthSection() => new List<bool>{
@@ -30,6 +30,11 @@ namespace BPWA.Web.Services.Services
             ShowCurrenciesItem(),
             ShowLanguagesItem(),
             ShowTranslationsItem(),
+        }.Any(x => x);
+        
+        public bool ShowNotificationsSection() => new List<bool>{
+            ShowNotificationsItem(),
+            ShowGroupsItem(),
         }.Any(x => x);
 
         #endregion 
@@ -45,10 +50,12 @@ namespace BPWA.Web.Services.Services
         public bool ShowCountriesItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.CountriesManagement);
         public bool ShowCurrenciesItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.CurrenciesManagement);
         public bool ShowLanguagesItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.LanguagesManagement);
-        public bool ShowTranslationsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.TranslationsManagement);
-        public bool ShowTicketsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.TicketsManagement);
         public bool ShowLogsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.LogsRead);
-
+        public bool ShowTicketsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.TicketsManagement);
+        public bool ShowTranslationsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.TranslationsManagement);
+        public bool ShowNotificationsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.NotificationsManagement);
+        public bool ShowGroupsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.GroupsManagement);
+        
         #endregion 
 
         #endregion 

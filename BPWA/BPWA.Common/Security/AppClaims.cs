@@ -20,9 +20,11 @@ namespace BPWA.Common.Security
                 public const string CountriesManagement = nameof(CountriesManagement);
                 public const string CurrenciesManagement = nameof(CurrenciesManagement);
                 public const string LanguagesManagement = nameof(LanguagesManagement);
-                public const string TranslationsManagement = nameof(TranslationsManagement);
-                public const string TicketsManagement = nameof(TicketsManagement);
                 public const string LogsRead = nameof(LogsRead);
+                public const string NotificationsManagement = nameof(NotificationsManagement);
+                public const string GroupsManagement = nameof(GroupsManagement);
+                public const string TicketsManagement = nameof(TicketsManagement);
+                public const string TranslationsManagement = nameof(TranslationsManagement);
             }
 
             public static class Company
