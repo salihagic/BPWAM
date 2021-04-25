@@ -71,6 +71,21 @@
         });
     }
     
+    function Select2AjaxUsers(options) {
+        Select2Ajax({
+            element: options.element,
+            url: '@Url.Action("Dropdown", "Users")',
+            map: (x) => {
+                return {
+                    id: x.id,
+                    text: `${x.firstName} ${x.lastName}`
+                };
+            },
+            placeholder: '@Translations.Select_user',
+            ...options
+        });
+    }
+    
     function Select2AjaxCompanies(options) {
         Select2Ajax({
             element: options.element,

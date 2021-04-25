@@ -732,4 +732,19 @@
   <data name="Search_use_precent_as_a_wildcard_anywhere_in_text" xml:space="preserve">
     <value>Search (Use '%' as a wildcard anywhere in the text)</value>
   </data>
+  <data name="Add_group" xml:space="preserve">
+    <value>Add group</value>
+  </data>
+  <data name="Groups" xml:space="preserve">
+    <value>Groups</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="Select_user" xml:space="preserve">
+    <value>Select user</value>
+  </data>
+  <data name="Edit_group" xml:space="preserve">
+    <value>Edit group</value>
+  </data>
 </root>

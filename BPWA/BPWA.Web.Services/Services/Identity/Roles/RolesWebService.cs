@@ -35,7 +35,7 @@ namespace BPWA.Web.Services.Services
         public override IQueryable<Role> BuildIncludesById(string id, IQueryable<Role> query)
         {
             return base.BuildIncludesById(id, query)
-                       .Include(x => x.RoleClaims.Where(y => !y.IsDeleted))
+                       .Include(x => x.RoleClaims)
                        .Include(x => x.Company)
                        .Include(x => x.BusinessUnit);
         }

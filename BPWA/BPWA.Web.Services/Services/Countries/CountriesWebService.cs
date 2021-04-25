@@ -27,9 +27,9 @@ namespace BPWA.Web.Services.Services
         public override IQueryable<Country> BuildIncludesById(int id, IQueryable<Country> query)
         {
             return base.BuildIncludesById(id, query)
-                       .Include(x => x.CountryCurrencies.Where(y => !y.IsDeleted))
+                       .Include(x => x.CountryCurrencies)
                        .ThenInclude(x => x.Currency)
-                       .Include(x => x.CountryLanguages.Where(y => !y.IsDeleted))
+                       .Include(x => x.CountryLanguages)
                        .ThenInclude(x => x.Language);
         }
 

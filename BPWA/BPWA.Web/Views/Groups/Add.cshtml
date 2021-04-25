@@ -1,0 +1,61 @@
+﻿@model GroupAddModel
+@{ Layout = null; }
+
+<form asp-controller="Groups" 
+      asp-action="Add" 
+      method="POST"
+      class="kt-form kt-form--fit">
+
+    <div class="modal-header">
+        <h5 class="modal-title">
+            @Translations.Add_group
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+    </div>
+    
+    <div class="modal-body">
+
+        <div class="col-md-12 row">
+            <div class="col-md form-group">
+                <label>@Translations.Title</label>
+                <input asp-for="Title" class="form-control m-input" placeholder="@Translations.Title">
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-12 form-group">
+                <label>@Translations.Description</label>
+                <textarea asp-for="Description" class="form-control m-input" placeholder="@Translations.Description"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-md-12 row">
+            <div class="col-md form-group">
+                <label>@Translations.Users</label>
+                <select asp-for="UserIds" id="modal_@nameof(GroupAddModel.UserIds)" multiple="multiple" class="form-control select2">
+                    @foreach (var item in Model.UserIdsSelectList)
+                    {
+                        <option value="@item.Value" selected="selected">@item.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="UserIds" class="text-danger"></span>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">@Translations.Close</button>
+        <button class="modal_submit_continue_button btn btn-primary" type="button">@Translations.Save_and_continue</button>
+        <button class="modal_submit_close_button btn btn-primary" type="button">@Translations.Save</button>
+    </div>
+
+</form>
+
+<script>
+
+    Select2AjaxUsers({
+        element: '#modal_@nameof(GroupAddModel.UserIds)',
+    });
+
+</script>

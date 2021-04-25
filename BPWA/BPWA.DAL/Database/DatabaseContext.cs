@@ -20,11 +20,12 @@ namespace BPWA.DAL.Database
         public DbSet<CountryCurrency> CountryCurrencies { get; set; }
         public DbSet<CountryLanguage> CountryLanguages { get; set; }
         public DbSet<Currency> Currencies { get; set; }
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<GroupUser> GroupUsers { get; set; }
         public DbSet<Language> Languages { get; set; }
         public DbSet<Log> Logs { get; set; }
         public DbSet<Notification> Notifications { get; set; }
-        public DbSet<Group> NotificationGroups { get; set; }
-        public DbSet<GroupUser> NotificationGroupUsers { get; set; }
+        public DbSet<NotificationGroup> NotificationGroups { get; set; }
         public DbSet<NotificationLog> NotificationLogs { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Translation> Translations { get; set; }
