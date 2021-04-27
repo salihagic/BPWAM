@@ -28,7 +28,8 @@ namespace BPWA.Web.Configuration
                     .AddScoped<IUsersWebService, UsersWebService>()
                     .AddScoped<IRolesWebService, RolesWebService>()
                     .AddScoped<IRolesService, RolesService>()
-                    .AddScoped<CurrentUser, CurrentWebUser>()
+                    .AddScoped<ICurrentUser, CurrentUser>()
+                    .AddScoped<ICurrentTimezone, CurrentTimezone>()
                     .AddScoped<IPasswordGeneratorService, PasswordGeneratorService>()
             #endregion 
             #region Other

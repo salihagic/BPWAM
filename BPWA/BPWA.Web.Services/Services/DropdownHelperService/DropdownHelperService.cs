@@ -12,9 +12,9 @@ namespace BPWA.Web.Services.Services
 {
     public class DropdownHelperService : IDropdownHelperService
     {
-        private CurrentUser _currentUser;
+        private ICurrentUser _currentUser;
 
-        public DropdownHelperService(CurrentUser currentUser)
+        public DropdownHelperService(ICurrentUser currentUser)
         {
             _currentUser = currentUser;
         }

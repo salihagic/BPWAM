@@ -10,12 +10,12 @@ namespace BPWA.Web.Services.Services
 {
     public class CompanyUsersWebService : CompanyUsersService, ICompanyUsersWebService
     {
-        private CurrentUser _currentUser;
+        private ICurrentUser _currentUser;
 
         public CompanyUsersWebService(
             DatabaseContext databaseContext,
             IMapper mapper,
-            CurrentUser currentUser
+            ICurrentUser currentUser
             ) : base(databaseContext, mapper)
         {
             _currentUser = currentUser;

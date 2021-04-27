@@ -127,5 +127,7 @@ namespace BPWA.DAL.Services
 
             return await Delete(item);
         }
+
+        virtual public async Task<TEntity> IncludeRelatedEntitiesToDelete(TEntity entity) => entity;
     }
 }

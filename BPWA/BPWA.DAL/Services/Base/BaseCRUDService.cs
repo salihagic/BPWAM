@@ -103,10 +103,14 @@ namespace BPWA.DAL.Services
             }
         }
 
+        virtual public async Task<TEntity> IncludeRelatedEntitiesToDelete(TEntity entity) => entity;
+
         virtual public async Task<Result> Delete(TEntity entity)
         {
             try
             {
+                entity = await IncludeRelatedEntitiesToDelete(entity);
+
                 DatabaseContext.Set<TEntity>().Remove(entity);
 
                 await DatabaseContext.SaveChangesAsync();

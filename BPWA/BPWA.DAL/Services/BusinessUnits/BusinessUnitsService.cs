@@ -9,12 +9,12 @@ namespace BPWA.DAL.Services
 {
     public class BusinessUnitsService : BaseCRUDService<BusinessUnit, BusinessUnitSearchModel, BusinessUnitDTO>, IBusinessUnitsService
     {
-        private CurrentUser _currentUser;
+        private ICurrentUser _currentUser;
 
         public BusinessUnitsService(
             DatabaseContext databaseContext,
             IMapper mapper,
-            CurrentUser currentUser
+            ICurrentUser currentUser
             ) : base(databaseContext, mapper) 
         {
             _currentUser = currentUser;

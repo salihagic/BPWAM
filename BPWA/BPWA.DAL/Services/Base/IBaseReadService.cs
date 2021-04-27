@@ -9,7 +9,7 @@ namespace BPWA.DAL.Services
         IBaseReadService<TEntity, TSearchModel, TDTO, int>
         where TEntity : IBaseEntity, new()
         where TSearchModel : BaseSearchModel, new()
-        where TDTO : BaseDTO
+        where TDTO : BaseDTO, IBaseDTO
     { }
 
     public interface IBaseReadService<TEntity, TSearchModel, TDTO, TId>

@@ -13,13 +13,13 @@ namespace BPWA.Web.Services.Services
 {
     public class RolesWebService : RolesService, IRolesWebService
     {
-        private CurrentUser _currentUser;
+        private ICurrentUser _currentUser;
 
         public RolesWebService(
             DatabaseContext databaseContext,
             IMapper mapper,
             RoleManager<Role> roleManager,
-            CurrentUser currentUser
+            ICurrentUser currentUser
             ) : base(databaseContext, mapper, roleManager)
         {
             _currentUser = currentUser;

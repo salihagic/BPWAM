@@ -3,7 +3,7 @@ using BPWA.Common.Extensions;
 
 namespace BPWA.DAL.Models
 {
-    public class TicketDTO : BaseDTO
+    public class TicketDTO : BaseDTO, IBaseDTO
     {
         public string Title { get; set; }
         public string Description { get; set; }

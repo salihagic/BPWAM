@@ -19,7 +19,7 @@ namespace BPWA.Web.Services.Services
         public NotificationsWebService(
             DatabaseContext databaseContext,
             IMapper mapper,
-            CurrentUser currentUser
+            ICurrentUser currentUser
             ) : base(databaseContext, mapper, currentUser)
         {
         }

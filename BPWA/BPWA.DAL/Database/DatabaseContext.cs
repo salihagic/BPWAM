@@ -1,6 +1,8 @@
 ﻿using BPWA.Core.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -11,6 +13,8 @@ namespace BPWA.DAL.Database
 {
     public class DatabaseContext : IdentityDbContext<User, Role, string, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
     {
+        #region Tables
+
         public DbSet<BusinessUnit> BusinessUnits { get; set; }
         public DbSet<BusinessUnitUser> BusinessUnitUsers { get; set; }
         public DbSet<City> Cities { get; set; }
@@ -29,6 +33,8 @@ namespace BPWA.DAL.Database
         public DbSet<NotificationLog> NotificationLogs { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Translation> Translations { get; set; }
+
+        #endregion
 
         #region Configure Identity entities
 
@@ -79,7 +85,7 @@ namespace BPWA.DAL.Database
             builder.Entity<UserToken>().HasOne(x => x.User).WithMany(x => x.UserTokens).HasForeignKey(x => x.UserId);
         }
 
-        #endregion Configure Identity entities
+        #endregion 
 
         #region Helpers 
 
@@ -109,14 +115,19 @@ namespace BPWA.DAL.Database
                 var parameter = Expression.Parameter(entity.ClrType);
 
                 var propertyMethodInfo = typeof(EF).GetMethod("Property").MakeGenericMethod(typeof(bool));
+
+                #region IsDeleted
+
                 var isDeletedProperty = Expression.Call(propertyMethodInfo, parameter, Expression.Constant("IsDeleted"));
+                BinaryExpression isDeletedCompareExpression = Expression.MakeBinary(ExpressionType.Equal, isDeletedProperty, Expression.Constant(false));
+                var isDeletedLabmda = Expression.Lambda(isDeletedCompareExpression, parameter);
+                builder.Entity(entity.ClrType).HasQueryFilter(isDeletedLabmda);
 
-                BinaryExpression compareExpression = Expression.MakeBinary(ExpressionType.Equal, isDeletedProperty, Expression.Constant(false));
-                var lambda = Expression.Lambda(compareExpression, parameter);
-
-                builder.Entity(entity.ClrType).HasQueryFilter(lambda);
+                #endregion
             }
         }
+
+        #region SaveChanges overrides
 
         public override int SaveChanges()
         {
@@ -155,7 +166,48 @@ namespace BPWA.DAL.Database
                 if (entity.State == EntityState.Modified)
                     iEntity.ModifiedAtUtc = DateTime.UtcNow;
                 if (entity.State == EntityState.Deleted)
+                {
+                    entity.State = EntityState.Modified;
+                    iEntity.IsDeleted = true;
                     iEntity.DeletedAtUtc = DateTime.UtcNow;
+                    HandleCascadeSoftDelete(entity);
+                }
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Works only on included related entities
+        /// </summary>
+        /// <param name="entity"></param>
+        private void HandleCascadeSoftDelete(EntityEntry entity)
+        {
+            foreach (var navigationEntry in entity.Navigations.Where(n => !(n.Metadata as INavigation).IsOnDependent))
+            {
+                if (navigationEntry is CollectionEntry collectionEntry)
+                {
+                    if (collectionEntry.CurrentValue != null)
+                    {
+                        foreach (var dependentEntry in collectionEntry.CurrentValue)
+                        {
+                            if (dependentEntry != null)
+                            {
+                                var idependentEntry = (IBaseEntity)dependentEntry;
+                                idependentEntry.IsDeleted = true;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    var dependentEntry = navigationEntry.CurrentValue;
+                    if (dependentEntry != null)
+                    {
+                        var iNavigationEntry = (IBaseEntity)navigationEntry;
+                        iNavigationEntry.IsDeleted = true;
+                    }
+                }
             }
         }
 

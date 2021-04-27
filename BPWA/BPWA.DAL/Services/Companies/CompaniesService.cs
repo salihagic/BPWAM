@@ -3,18 +3,20 @@ using BPWA.Common.Extensions;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
 using BPWA.DAL.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BPWA.DAL.Services
 {
     public class CompaniesService : BaseCRUDService<Company, CompanySearchModel, CompanyDTO>, ICompaniesService
     {
-        protected CurrentUser CurrentUser { get; }
+        protected ICurrentUser CurrentUser { get; }
 
         public CompaniesService(
             DatabaseContext databaseContext,
             IMapper mapper,
-            CurrentUser currentUser
+            ICurrentUser currentUser
             ) : base(databaseContext, mapper)
         {
             CurrentUser = currentUser;

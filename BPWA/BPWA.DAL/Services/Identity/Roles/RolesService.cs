@@ -253,6 +253,8 @@ namespace BPWA.DAL.Services
         {
             try
             {
+                entity = await IncludeRelatedEntitiesToDelete(entity);
+
                 DatabaseContext.Set<Role>().Remove(entity);
 
                 await DatabaseContext.SaveChangesAsync();
@@ -270,6 +272,14 @@ namespace BPWA.DAL.Services
             var item = await DatabaseContext.Set<Role>().FirstOrDefaultAsync(x => x.Id.Equals(id));
 
             return await Delete(item);
+        }
+
+        public Task<Role> IncludeRelatedEntitiesToDelete(Role entity)
+        {
+            return DatabaseContext.Roles
+                .Include(x => x.RoleClaims)
+                .Include(x => x.UserRoles)
+                .FirstOrDefaultAsync(x => x.Id == entity.Id);
         }
     }
 }

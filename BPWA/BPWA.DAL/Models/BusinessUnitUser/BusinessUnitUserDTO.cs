@@ -1,6 +1,6 @@
 ﻿namespace BPWA.DAL.Models
 {
-    public class BusinessUnitUserDTO : BaseDTO
+    public class BusinessUnitUserDTO : BaseDTO, IBaseDTO
     {
         public int BusinessUnitId { get; set; }
         public string UserId { get; set; }

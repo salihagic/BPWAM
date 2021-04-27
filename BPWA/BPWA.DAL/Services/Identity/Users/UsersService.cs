@@ -24,7 +24,7 @@ namespace BPWA.DAL.Services
         protected IQueryable<User> Query { get; set; }
         protected readonly UserManager<User> UserManager;
         protected readonly SignInManager<User> SignInManager;
-        protected readonly CurrentUser CurrentUser;
+        protected readonly ICurrentUser CurrentUser;
         protected readonly IPasswordGeneratorService PasswordGeneratorService;
         protected readonly IEmailService EmailService;
         protected readonly RouteSettings RouteSettings;
@@ -34,7 +34,7 @@ namespace BPWA.DAL.Services
             IMapper mapper,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            CurrentUser currentUser,
+            ICurrentUser currentUser,
             IPasswordGeneratorService passwordGeneratorService,
             IEmailService emailService,
             RouteSettings routeSettings
@@ -395,6 +395,8 @@ namespace BPWA.DAL.Services
         {
             try
             {
+                entity = await IncludeRelatedEntitiesToDelete(entity);
+
                 DatabaseContext.Set<User>().Remove(entity);
 
                 await DatabaseContext.SaveChangesAsync();
@@ -405,6 +407,15 @@ namespace BPWA.DAL.Services
             {
                 return Result.Failed("Failed to delete entity");
             }
+        }
+
+        public Task<User> IncludeRelatedEntitiesToDelete(User entity)
+        {
+            return DatabaseContext.Users
+                .Include(x => x.CompanyUsers)
+                .Include(x => x.BusinessUnitUsers)
+                .Include(x => x.GroupUsers)
+                .FirstOrDefaultAsync(x => x.Id == entity.Id);
         }
 
         #endregion Base

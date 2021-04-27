@@ -2,7 +2,7 @@
 
 namespace BPWA.DAL.Models
 {
-    public class CountryDTO : BaseDTO
+    public class CountryDTO : BaseDTO, IBaseDTO
     {
         public string Code { get; set; }
         public string Name { get; set; }

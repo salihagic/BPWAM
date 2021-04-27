@@ -26,7 +26,7 @@ namespace BPWA.Web.Services.Services
             DatabaseContext databaseContext,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            CurrentUser currentUser,
+            ICurrentUser currentUser,
             IPasswordGeneratorService passwordGeneratorService,
             IEmailService emailService,
             RouteSettings routeSettings

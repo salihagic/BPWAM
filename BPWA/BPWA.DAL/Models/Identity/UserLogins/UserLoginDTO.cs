@@ -1,6 +1,6 @@
 ﻿namespace BPWA.DAL.Models
 {
-    public class UserLoginDTO : BaseDTO
+    public class UserLoginDTO : BaseDTO, IBaseDTO
     {
         public string UserId { get; set; }
         public string LoginProvider { get; set; }

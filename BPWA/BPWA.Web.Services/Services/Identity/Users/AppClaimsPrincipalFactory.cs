@@ -84,8 +84,11 @@ namespace BPWA.Web.Services.Services
                 var company = await _databaseContext.Companies
                                                     .FirstOrDefaultAsync(x => x.Id == user.CurrentCompanyId);
 
-                claims.Add(new Claim(AppClaims.Meta.CurrentCompanyId, user.CurrentCompanyId.ToString()));
-                claims.Add(new Claim(AppClaims.Meta.CurrentCompanyName, company.Name));
+                if (company != null)
+                {
+                    claims.Add(new Claim(AppClaims.Meta.CurrentCompanyId, user.CurrentCompanyId.ToString()));
+                    claims.Add(new Claim(AppClaims.Meta.CurrentCompanyName, company.Name));
+                }
             }
         }
 
@@ -95,8 +98,11 @@ namespace BPWA.Web.Services.Services
             {
                 var businessUnit = await _databaseContext.BusinessUnits.FirstOrDefaultAsync(x => x.Id == user.CurrentBusinessUnitId);
 
-                claims.Add(new Claim(AppClaims.Meta.CurrentBusinessUnitId, user.CurrentBusinessUnitId.ToString()));
-                claims.Add(new Claim(AppClaims.Meta.CurrentBusinessUnitName, businessUnit.Name));
+                if (businessUnit != null)
+                {
+                    claims.Add(new Claim(AppClaims.Meta.CurrentBusinessUnitId, user.CurrentBusinessUnitId.ToString()));
+                    claims.Add(new Claim(AppClaims.Meta.CurrentBusinessUnitName, businessUnit.Name));
+                }
             }
         }
 

@@ -2,7 +2,7 @@
 
 namespace BPWA.DAL.Models
 {
-    public class RoleDTO : BaseDTO<string>
+    public class RoleDTO : BaseDTO<string>, IBaseDTO<string>
     {
         public string Name { get; set; }
 

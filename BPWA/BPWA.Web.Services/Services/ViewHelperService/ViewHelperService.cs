@@ -110,9 +110,9 @@ namespace BPWA.Web.Services.Services
 
         #endregion
 
-        private CurrentUser _currentUser;
+        private ICurrentUser _currentUser;
 
-        public ViewHelperService(CurrentUser currentUser)
+        public ViewHelperService(ICurrentUser currentUser)
         {
             _currentUser = currentUser;
         }

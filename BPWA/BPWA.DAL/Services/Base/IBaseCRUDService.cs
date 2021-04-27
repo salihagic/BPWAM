@@ -21,6 +21,7 @@ namespace BPWA.DAL.Services
         Task<Result<TEntity>> AddEntity(TEntity entity);
         Task<Result<TDTO>> Update(TEntity entity);
         Task<Result<TEntity>> UpdateEntity(TEntity entity);
+        Task<TEntity> IncludeRelatedEntitiesToDelete(TEntity entity);
         Task<Result> Delete(TEntity entity);
         Task<Result> Delete(TId id);
     }
