@@ -93,7 +93,7 @@ namespace BPWA.DAL.Services
 
                 var notifications = await Query.ToListAsync();
 
-                //await SetSeen(notifications);
+                await SetSeen(notifications);
 
                 var notificationDTOs = Mapper.Map<List<NotificationDTO>>(notifications);
 

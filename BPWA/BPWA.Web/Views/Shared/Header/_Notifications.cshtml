@@ -39,38 +39,13 @@
             <!--end: Head -->
             <div class="tab-content">
                 <div class="tab-pane active show" id="topbar_notifications_notifications" role="tabpanel">
-                    <div id="direct_notifications" class="kt-notification kt-margin-t-10 kt-margin-b-10 kt-scroll ps ps--active-y" data-scroll="true" data-height="300" data-mobile-height="200" style="height: 300px; overflow: hidden;">
-                        
-                        @*<div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; height: 300px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 108px;"></div></div>*@
-                    </div>
+                    <div id="direct_notifications" class="kt-notification kt-margin-t-10 kt-margin-b-10 kt-scroll ps ps--active-y" data-scroll="true" data-height="300" data-mobile-height="200" style="height: 300px; overflow: hidden;"></div>
                 </div>
                 <div class="tab-pane" id="topbar_notifications_events" role="tabpanel">
-                    <div class="kt-notification kt-margin-t-10 kt-margin-b-10 kt-scroll ps" data-scroll="true" data-height="300" data-mobile-height="200" style="height: 300px; overflow: hidden;">
-                        <a href="#" class="kt-notification__item">
-                            <div class="kt-notification__item-icon">
-                                <i class="flaticon2-psd kt-font-success"></i>
-                            </div>
-                            <div class="kt-notification__item-details">
-                                <div class="kt-notification__item-title">
-                                    New report has been received
-                                </div>
-                                <div class="kt-notification__item-time">
-                                    23 hrs ago
-                                </div>
-                            </div>
-                        </a>
-                        <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div>
-                    </div>
+                    <div id="group_notifications" class="kt-notification kt-margin-t-10 kt-margin-b-10 kt-scroll ps ps--active-y" data-scroll="true" data-height="300" data-mobile-height="200" style="height: 300px; overflow: hidden;"></div>
                 </div>
                 <div class="tab-pane" id="topbar_notifications_logs" role="tabpanel">
-                    <div class="kt-grid kt-grid--ver" style="min-height: 200px;">
-                        <div class="kt-grid kt-grid--hor kt-grid__item kt-grid__item--fluid kt-grid__item--middle">
-                            <div class="kt-grid__item kt-grid__item--middle kt-align-center">
-                                All caught up!
-                                <br>No new notifications.
-                            </div>
-                        </div>
-                    </div>
+                    <div id="broadcast_notifications" class="kt-notification kt-margin-t-10 kt-margin-b-10 kt-scroll ps ps--active-y" data-scroll="true" data-height="300" data-mobile-height="200" style="height: 300px; overflow: hidden;"></div>
                 </div>
             </div>
         </form>
@@ -78,6 +53,54 @@
 </div>
 
 <script>
+
+    var directNotificationsSkip = 0;
+    var directNotificationsTake = 5;
+    var groupNotificationsSkip = 0;
+    var groupNotificationsTake = 5;
+    var broadcastNotificationsSkip = 0;
+    var broadcastNotificationsTake = 5;
+
+    LoadNotificationsCount();
+
+    $('#notification_pulse_item').on('click', function (e) {
+        directNotificationsSkip = 0;
+        directNotificationsTake = 5;
+        groupNotificationsSkip = 0;
+        groupNotificationsTake = 5;
+        broadcastNotificationsSkip = 0;
+        broadcastNotificationsTake = 5;
+
+        $('#direct_notifications').html('');
+        $('#group_notifications').html('');
+        $('#broadcast_notifications').html('');
+
+        LoadNotificationsCount();
+        LoadDirectNotifications();
+        LoadGroupNotifications();
+        LoadBroadcastNotifications();
+    });
+
+    $('#direct_notifications').on('scroll', function () {
+        if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+            directNotificationsSkip += directNotificationsTake;
+            LoadDirectNotifications();
+        }
+    });
+    
+    $('#group_notifications').on('scroll', function () {
+        if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+            groupNotificationsSkip += groupNotificationsTake;
+            LoadGroupNotifications();
+        }
+    });
+    
+    $('#broadcast_notifications').on('scroll', function () {
+        if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+            broadcastNotificationsSkip += broadcastNotificationsTake;
+            LoadGroupNotifications();
+        }
+    });
 
     function LoadNotificationsCount() {
         $.ajax({
@@ -98,43 +121,82 @@
             }
         });
     }
-    
+
     function LoadDirectNotifications() {
         $.ajax({
             url: '@Url.Action("GetDirect", "Notifications")',
-            type: 'GET',
+            type: 'POST',
+            data: {
+                'pagination': {
+                    'skip': directNotificationsSkip,
+                    'take': directNotificationsTake
+                }
+            },
             success: (data) => {
 
                 var notifications = data.item;
 
-                console.log(notifications);
-
-                $('#direct_notifications').append(BuildeNotificationItem(notifications[0]));
+                $.each(notifications, function (index, notification) {
+                    $('#direct_notifications').append(BuildNotificationItem(notification));
+                });
             }
         });
     }
 
-    function LoadNotifications() {
-        LoadNotificationsCount();
-        LoadDirectNotifications();
+    function LoadGroupNotifications() {
+        $.ajax({
+            url: '@Url.Action("GetGroup", "Notifications")',
+            type: 'POST',
+            data: {
+                'pagination': {
+                    'skip': groupNotificationsSkip,
+                    'take': groupNotificationsTake
+                }
+            },
+            success: (data) => {
+
+                var notifications = data.item;
+
+                $.each(notifications, function (index, notification) {
+                    $('#group_notifications').append(BuildNotificationItem(notification));
+                });
+            }
+        });
     }
 
-    LoadNotifications();
+    function LoadBroadcastNotifications() {
+        $.ajax({
+            url: '@Url.Action("GetBroadcast", "Notifications")',
+            type: 'POST',
+            data: {
+                'pagination': {
+                    'skip': broadcastNotificationsSkip,
+                    'take': broadcastNotificationsTake
+                }
+            },
+            success: (data) => {
 
-    function BuildeNotificationItem(notification) {
-        return `<a href="#" class="kt-notification__item">
+                var notifications = data.item;
+
+                $.each(notifications, function (index, notification) {
+                    $('#broadcast_notifications').append(BuildNotificationItem(notification));
+                });
+            }
+        });
+    }
+
+    function BuildNotificationItem(notification) {
+        return `<a href="#" class="kt-notification__item ${notification.seen ? 'kt-notification__item--read' : ''}">
                     <div class="kt-notification__item-icon">
-                        <i class="flaticon2-line-chart kt-font-success"></i>
+                        <i class="flaticon-alert kt-font-success"></i>
                     </div>
                     <div class="kt-notification__item-details">
                         <div class="kt-notification__item-title">
                             ${notification.title}
                         </div>
                         <div class="kt-notification__item-time">
-                            ${notification.description}
-                        </div>
-                        <div class="kt-notification__item-time">
-                            2 hrs ago
+                            <div>${notification.description}</div>
+                            <div>${notification.createdAtString}</div>
                         </div>
                     </div>
                 </a>`;

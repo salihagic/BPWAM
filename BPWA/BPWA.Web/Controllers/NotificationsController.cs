@@ -41,23 +41,26 @@ namespace BPWA.Administration.Controllers
             return Ok(count);
         }
 
+        [HttpPost]
         public async Task<IActionResult> GetDirect(NotificationSearchModel searchModel)
         {
-            var notifications = await _notificationsWebService.GetDirectForCurrentUser();
+            var notifications = await _notificationsWebService.GetDirectForCurrentUser(searchModel);
 
             return Ok(notifications);
         }
 
+        [HttpPost]
         public async Task<IActionResult> GetGroup(NotificationSearchModel searchModel)
         {
-            var notifications = await _notificationsWebService.GetGroupForCurrentUser();
+            var notifications = await _notificationsWebService.GetGroupForCurrentUser(searchModel);
 
             return Ok(notifications);
         }
 
+        [HttpPost]
         public async Task<IActionResult> GetBroadcast(NotificationSearchModel searchModel)
         {
-            var notifications = await _notificationsWebService.GetBroadcastForCurrentUser();
+            var notifications = await _notificationsWebService.GetBroadcastForCurrentUser(searchModel);
 
             return Ok(notifications);
         }
