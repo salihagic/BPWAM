@@ -142,7 +142,7 @@ namespace BPWA.DAL.Services
             {
                 Query = Query
                     .Where(x => x.NotificationDistributionType == NotificationDistributionType.Broadcast)
-                    .Include(x => x.NotificationLogs)
+                    .Include(x => x.NotificationLogs.Where(x => x.UserId == CurrentUser.Id()))
                     .OrderByDescending(x => x.CreatedAtUtc);
 
                 if (searchModel?.Pagination != null)

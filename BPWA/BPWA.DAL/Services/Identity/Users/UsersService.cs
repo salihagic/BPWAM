@@ -42,7 +42,7 @@ namespace BPWA.DAL.Services
         {
             DatabaseContext = databaseContext;
             Mapper = mapper;
-            Query = databaseContext.Users.AsQueryable();
+            Query = databaseContext.Users.AsQueryable().AsNoTracking();
             UserManager = userManager;
             SignInManager = signInManager;
             CurrentUser = currentUser;

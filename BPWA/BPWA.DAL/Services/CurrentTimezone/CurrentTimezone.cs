@@ -8,7 +8,7 @@ namespace BPWA.DAL.Services
 {
     public class CurrentTimezone : ICurrentTimezone
     {
-        public string TimezoneId() => User.FindFirstValue(AppClaims.Meta.TimezoneId);
+        public string TimezoneId() => User?.FindFirstValue(AppClaims.Meta.TimezoneId);
         public TimeZoneInfo Timezone() => TimezoneId().IsNotEmpty() ? TimeZoneInfo.FindSystemTimeZoneById(TimezoneId()) : TimeZoneInfo.Utc;
 
         public DateTime? FromUtc(DateTime? dateTime)
@@ -28,7 +28,7 @@ namespace BPWA.DAL.Services
         }
 
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private ClaimsPrincipal User => _httpContextAccessor.HttpContext.User;
+        private ClaimsPrincipal User => _httpContextAccessor.HttpContext?.User;
 
         public CurrentTimezone(IHttpContextAccessor httpContextAccessor)
         {

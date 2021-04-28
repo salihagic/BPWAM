@@ -26,8 +26,10 @@ namespace BPWA.Web.Services.Services
         where TUpdateModel : BaseUpdateModel<TId>, new()
     {
         async Task<Result<TAddModel>> PrepareForAdd(TAddModel model = null) => Result.Success(model ?? new TAddModel());
+        async Task<Result<TDTO>> Add(TAddModel model) => Result.Failed<TDTO>("Not implemented");
         async Task<Result<TEntity>> MapAddModelToEntity(TAddModel model) => Result.Failed<TEntity>("Not implemented");
         async Task<Result<TUpdateModel>> PrepareForUpdate(TUpdateModel model = null) => Result.Success(model ?? new TUpdateModel());
+        async Task<Result<TDTO>> Update(TUpdateModel model) => Result.Failed<TDTO>("Not implemented");
         async Task<Result<TEntity>> MapUpdateModelToEntity(TUpdateModel model) => Result.Failed<TEntity>("Not implemented");
     }
 }
