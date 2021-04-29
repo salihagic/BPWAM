@@ -18,7 +18,7 @@
             ...options
         });
     }
-    
+
     function Select2NotificationDistributionTypes(options) {
         Select2({
             data: @Html.Raw(notificationDistributionTypesJson),
@@ -26,7 +26,7 @@
             ...options
         });
     }
-    
+
     function Select2SystemLanguages(options) {
         Select2({
             data: @Html.Raw(systemLanguagesJson),
@@ -34,7 +34,7 @@
             ...options
         });
     }
-    
+
     function Select2AppClaims(options) {
         Select2({
             data: @Html.Raw(appClaimsJson),
@@ -73,7 +73,7 @@
             ...options
         });
     }
-    
+
     function Select2AjaxCurrentUserBusinessUnits(options) {
         Select2Ajax({
             element: options.element,
@@ -88,7 +88,7 @@
             ...options
         });
     }
-    
+
     function Select2AjaxGroups(options) {
         Select2Ajax({
             element: options.element,
@@ -103,7 +103,7 @@
             ...options
         });
     }
-    
+
     function Select2AjaxUsers(options) {
         Select2Ajax({
             element: options.element,
@@ -118,7 +118,7 @@
             ...options
         });
     }
-    
+
     function Select2AjaxCompanies(options) {
         Select2Ajax({
             element: options.element,
@@ -133,7 +133,7 @@
             ...options
         });
     }
-    
+
     function Select2AjaxBusinessUnits(options) {
         Select2Ajax({
             element: options.element,
@@ -148,7 +148,7 @@
             ...options
         });
     }
-    
+
     function Select2AjaxRoles(options) {
         Select2Ajax({
             element: options.element,
@@ -253,6 +253,11 @@
     }
 
     function Select2Ajax(options) {
+        options.multiple = options.selectedItems != undefined;
+        if (options.selectedItems != undefined && options.selectedItems != '') {
+            options.items = JSON.parse(options.selectedItems);
+        }
+
         $(options.element).select2({
             ajax: {
                 url: options.url,
@@ -279,6 +284,13 @@
         });
 
         $(options.element).change(function (e) {
+            if (options.multiple ?? false) {
+                GenerateResultItems(options);
+            }
+            else {
+                GenerateResultItem(options);
+            }
+
             if (options.onChange != undefined) {
                 options.onChange($(this));
             }
@@ -287,6 +299,66 @@
                 $(options.onChangeCopyTextTo).val($(this).select2('data')[0]['text']);
             }
         });
+
+        if (options.selectedItems != undefined && options.selectedItems != '') {
+            GenerateInitialResultItems(options);
+        }
+    }
+
+    function GenerateResultItem(options) {
+        var resultItemsWrapper = GetOrCreateResultItemsWrapper(options);
+        var sourceName = $(options.element).prop('name');
+
+        $(options.element).select2('data').forEach(function (element, index) {
+            var id = `<input type='hidden' name='${sourceName}DropdownItems.id' value='${element['id']}' />`;
+            var text = `<input type='hidden' name='${sourceName}DropdownItems.text' value='${element['text']}' />`;
+
+            $(resultItemsWrapper).append(id);
+            $(resultItemsWrapper).append(text);
+        });
+    }
+
+    function GenerateInitialResultItems(options) {
+        var resultItemsWrapper = GetOrCreateResultItemsWrapper(options);
+        var sourceName = $(options.element).prop('name');
+
+        options.items.forEach(function (element, index) {
+            var id = `<input type='hidden' name='${sourceName}DropdownItems[${index}].id' value='${element['id']}' />`;
+            var text = `<input type='hidden' name='${sourceName}DropdownItems[${index}].text' value='${element['text']}' />`;
+
+            $(resultItemsWrapper).append(id);
+            $(resultItemsWrapper).append(text);
+
+            $(options.element).append(`<option value="${element['id']}" selected="selected">${element['text']}</option>`);
+        });
+    }
+
+    function GenerateResultItems(options) {
+        var resultItemsWrapper = GetOrCreateResultItemsWrapper(options);
+        var sourceName = $(options.element).prop('name');
+
+        $(options.element).select2('data').forEach(function (element, index) {
+            var id = `<input type='hidden' name='${sourceName}DropdownItems[${index}].id' value='${element['id']}' />`;
+            var text = `<input type='hidden' name='${sourceName}DropdownItems[${index}].text' value='${element['text']}' />`;
+
+            $(resultItemsWrapper).append(id);
+            $(resultItemsWrapper).append(text);
+        });
+    }
+
+    function GetOrCreateResultItemsWrapper(options) {
+        var form = $(options.element).closest('form')[0];
+        var resultItemsWrapperId = `${options.element.replace('#', '')}_result_items_wrapper`;
+        var resultItemsWrapper = $(`#${resultItemsWrapperId}`)[0];
+
+        if (resultItemsWrapper == undefined) {
+            $(form).append(`<div id='${resultItemsWrapperId}' style='display: none;'></div>`);
+            resultItemsWrapper = $(`#${resultItemsWrapperId}`)[0];
+        }
+
+        $(resultItemsWrapper).html('');
+
+        return $(resultItemsWrapper);
     }
 
 </script>

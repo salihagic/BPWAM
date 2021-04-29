@@ -45,7 +45,7 @@ namespace BPWA.DAL.Database
                 await SeedUsers(serviceProvider);
                 if (environment.IsDevelopment())
                     await SeedCompaniesAndBusinessUnits(serviceProvider);
-                //await SeedGeolocations(serviceProvider);
+                await SeedGeolocations(serviceProvider);
             }
         }
 

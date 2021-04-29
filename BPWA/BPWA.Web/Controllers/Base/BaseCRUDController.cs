@@ -82,14 +82,7 @@ namespace BPWA.Controllers
             if (fullPage)
                 BreadcrumbItem(null, new { fullPage });
 
-            var result = await BaseCRUDService.PrepareForAdd();
-
-            if (!result.IsSuccess)
-                return fullPage ? Error() : _Error();
-
-            var model = result.Item;
-
-            return View(model);
+            return View(new TAddModel());
         }
 
         [HttpPost, Transaction]
@@ -97,40 +90,17 @@ namespace BPWA.Controllers
         {
             ViewBag.Title = TranslationsHelper.Translate(CurrentAction);
 
-            async Task<IActionResult> Failed()
-            {
-                var result = await BaseCRUDService.PrepareForAdd(model);
-
-                if (!result.IsSuccess)
-                    return Error();
-
-                return View(result.Item);
-            }
-
             if (!ModelState.IsValid)
-                return await Failed();
+                return View(model);
 
             try
             {
-                var entityResult = await BaseCRUDService.MapAddModelToEntity(model);
-
-                Result<TDTO> result = null;
-
-                if (!entityResult.IsSuccess)
-                {
-                    var entity = Mapper.Map<TEntity>(model);
-                    result = await BaseCRUDService.Add(entity);
-                }
-                else
-                {
-                    var entity = entityResult.Item;
-                    result = await BaseCRUDService.Add(entity);
-                }
+                var result = await BaseCRUDService.Add(model);
 
                 if (!result.IsSuccess)
                 {
                     Toast.AddErrorToastMessage(result.GetErrorMessages().FirstOrDefault());
-                    return await Failed();
+                    return View(model);
                 }
 
                 Toast.AddSuccessToastMessage(Message_add_success);
@@ -142,7 +112,7 @@ namespace BPWA.Controllers
             }
 
 
-            return await Failed();
+            return View(model);
         }
 
         #endregion
@@ -154,23 +124,12 @@ namespace BPWA.Controllers
             if (fullPage)
                 BreadcrumbItem(null, new { id, fullPage });
 
-            var result = await BaseCRUDService.GetEntityById(id, shouldTranslate: false);
+            var modelResult = await BaseCRUDService.PrepareForUpdate(id);
 
-            if (!result.IsSuccess)
+            if (!modelResult.IsSuccess)
                 return fullPage ? Error() : _Error();
 
-            var entity = result.Item;
-
-            var model = Mapper.Map<TUpdateModel>(entity);
-
-            var prepareForUpdateResult = await BaseCRUDService.PrepareForUpdate(model);
-
-            if (!prepareForUpdateResult.IsSuccess)
-                return _Error();
-
-            model = prepareForUpdateResult.Item;
-
-            return View(model);
+            return View(modelResult.Item);
         }
 
         [HttpPost, Transaction]
@@ -178,18 +137,8 @@ namespace BPWA.Controllers
         {
             ViewBag.Title = TranslationsHelper.Translate(CurrentAction);
 
-            async Task<IActionResult> Failed()
-            {
-                var result = await BaseCRUDService.PrepareForUpdate(model);
-
-                if (!result.IsSuccess)
-                    return Error();
-
-                return View(result.Item);
-            }
-
             if (!ModelState.IsValid)
-                return await Failed();
+                return View(model);
 
             try
             {
@@ -217,7 +166,7 @@ namespace BPWA.Controllers
                 if (!result.IsSuccess)
                 {
                     Toast.AddErrorToastMessage(result.GetErrorMessages().FirstOrDefault());
-                    return await Failed();
+                    return View(model);
                 }
 
                 Toast.AddSuccessToastMessage(Message_edit_success);
@@ -228,7 +177,7 @@ namespace BPWA.Controllers
                 Toast.AddErrorToastMessage(Message_edit_error);
             }
 
-            return await Failed();
+            return View(model);
         }
 
         #endregion

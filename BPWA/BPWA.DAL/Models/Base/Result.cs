@@ -61,6 +61,7 @@ namespace BPWA.DAL.Models
         public bool IsSuccess { get; set; }
         public List<ResultError> Errors { get; set; } = new List<ResultError>();
 
+        public string FirstErrorMessage() => GetErrorMessages().FirstOrDefault();
         public List<string> GetErrorMessages() => Errors.Select(s => s.Message).ToList();
 
         #region Static helpers

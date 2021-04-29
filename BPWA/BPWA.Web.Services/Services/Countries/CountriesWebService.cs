@@ -32,82 +32,31 @@ namespace BPWA.Web.Services.Services
                        .ThenInclude(x => x.Language);
         }
 
-        public async Task<Result<CountryAddModel>> PrepareForAdd(CountryAddModel model = null)
+        public async Task<Result<CountryDTO>> Add(CountryAddModel model)
         {
-            model ??= new CountryAddModel();
-
-            if (model.CurrencyIds.IsNotEmpty())
-            {
-                try
-                {
-                    model.CurrencyIdsSelectList = await DatabaseContext.Currencies
-                    .Where(x => model.CurrencyIds.Contains(x.Id))
-                    .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToListAsync();
-                }
-                catch (Exception e)
-                {
-                    return Result.Failed<CountryAddModel>("Could not load currencies");
-                }
-            }
-            if (model.LanguageIds.IsNotEmpty())
-            {
-                try
-                {
-                    model.LanguageIdsSelectList = await DatabaseContext.Languages
-                    .Where(x => model.LanguageIds.Contains(x.Id))
-                    .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToListAsync();
-                }
-                catch (Exception e)
-                {
-                    return Result.Failed<CountryAddModel>("Could not load languages");
-                }
-            }
-
-            model.CurrencyIdsSelectList ??= new List<SelectListItem>();
-            model.LanguageIdsSelectList ??= new List<SelectListItem>();
-
-            return Result.Success(model);
+            return await base.Add(Mapper.Map<Country>(model));
         }
 
-        public async Task<Result<CountryUpdateModel>> PrepareForUpdate(CountryUpdateModel model = null)
+        public async Task<Result<CountryUpdateModel>> PrepareForUpdate(int id)
         {
-            model ??= new CountryUpdateModel();
+            var result = await GetEntityById(id, shouldTranslate: false);
 
-            if (model.CurrencyIds.IsNotEmpty())
-            {
-                try
-                {
-                    model.CurrencyIdsSelectList = await DatabaseContext.Currencies
-                    .Where(x => model.CurrencyIds.Contains(x.Id))
-                    .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToListAsync();
-                }
-                catch (Exception e)
-                {
-                    return Result.Failed<CountryUpdateModel>("Could not load currencies");
-                }
-            }
-            if (model.LanguageIds.IsNotEmpty())
-            {
-                try
-                {
-                    model.LanguageIdsSelectList = await DatabaseContext.Languages
-                    .Where(x => model.LanguageIds.Contains(x.Id))
-                    .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToListAsync();
-                }
-                catch (Exception e)
-                {
-                    return Result.Failed<CountryUpdateModel>("Could not load languages");
-                }
-            }
+            if (!result.IsSuccess)
+                return Result.Failed<CountryUpdateModel>(result.FirstErrorMessage());
 
-            model.CurrencyIdsSelectList ??= new List<SelectListItem>();
-            model.LanguageIdsSelectList ??= new List<SelectListItem>();
-
-            return Result.Success(model);
+            return Result.Success(Mapper.Map<CountryUpdateModel>(result.Item));
         }
 
-        public override async Task<Result<CountryDTO>> Update(Country entity)
+        public async Task<Result<CountryDTO>> Update(CountryUpdateModel model)
         {
+            var result = await GetEntityByIdWithoutIncludes(model.Id, shouldTranslate: false);
+
+            if (!result.IsSuccess)
+                return Result.Failed<CountryDTO>(result.FirstErrorMessage());
+
+            var entity = result.Item;
+            Mapper.Map(model, entity);
+
             var currentCountryCurrencies = await DatabaseContext.CountryCurrencies.Where(x => x.CountryId == entity.Id).ToListAsync();
 
             if (currentCountryCurrencies.IsNotEmpty())

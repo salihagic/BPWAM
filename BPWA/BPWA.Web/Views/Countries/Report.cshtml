@@ -19,27 +19,24 @@
                 </h3>
             </div>
         </div>
-        @if (Model.IsDirty)
-        {
-            <div class="kt-portlet__head kt-portlet__head--lg">
-                <div class="col-md-12 row mt-4">
-                    @if (!string.IsNullOrEmpty(Model.Name))
-                    {
-                        <div class="col-md form-group">
-                            <label>@Translations.Name</label>
-                            <input asp-for="Name" class="form-control kt-input" >
-                        </div>
-                    }
-                    @if (!string.IsNullOrEmpty(Model.Code))
-                    {
-                        <div class="col-md form-group">
-                            <label>@Translations.Code</label>
-                            <input asp-for="Code" class="form-control kt-input" >
-                        </div>
-                    }
-                </div>
+        <div class="kt-portlet__head kt-portlet__head--lg">
+            <div class="col-md-12 row mt-4">
+                @if (!string.IsNullOrEmpty(Model.Name))
+                {
+                    <div class="col-md form-group">
+                        <label>@Translations.Name</label>
+                        <input asp-for="Name" class="form-control kt-input">
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(Model.Code))
+                {
+                    <div class="col-md form-group">
+                        <label>@Translations.Code</label>
+                        <input asp-for="Code" class="form-control kt-input">
+                    </div>
+                }
             </div>
-        }
+        </div>
     </form>
 
     <div class="kt-portlet__body">

@@ -32,12 +32,7 @@
         <div class="col-md-12 row">
             <div class="col-md form-group">
                 <label>@Translations.Currencies</label>
-                <select asp-for="CurrencyIds" id="modal_@nameof(CountryAddModel.CurrencyIds)" multiple="multiple" class="form-control select2">
-                    @foreach (var item in Model.CurrencyIdsSelectList)
-                    {
-                        <option value="@item.Value" selected="selected">@item.Text</option>
-                    }
-                </select>
+                <select asp-for="CurrencyIds" id="modal_@nameof(CountryAddModel.CurrencyIds)" class="form-control select2"></select>
                 <span asp-validation-for="CurrencyIds" class="text-danger"></span>
             </div>
         </div>
@@ -45,12 +40,7 @@
         <div class="col-md-12 row">
             <div class="col-md form-group">
                 <label>@Translations.Languages</label>
-                <select asp-for="LanguageIds" id="modal_@nameof(CountryAddModel.LanguageIds)" multiple="multiple" class="form-control select2">
-                    @foreach (var item in Model.LanguageIdsSelectList)
-                    {
-                        <option value="@item.Value" selected="selected">@item.Text</option>
-                    }
-                </select>
+                <select asp-for="LanguageIds" id="modal_@nameof(CountryAddModel.LanguageIds)" class="form-control select2"></select>
                 <span asp-validation-for="LanguageIds" class="text-danger"></span>
             </div>
         </div>
@@ -69,9 +59,11 @@
 
     Select2AjaxCurrencies({
         element: '#modal_@nameof(CountryAddModel.CurrencyIds)',
+        selectedItems: '@Html.Raw(Model.CurrencyIdsDropdownItems.GetDropdownItemsJson())'
     });
     Select2AjaxLanguages({
         element: '#modal_@nameof(CountryAddModel.LanguageIds)',
+        selectedItems: '@Html.Raw(Model.LanguageIdsDropdownItems.GetDropdownItemsJson())'
     });
 
 </script>
