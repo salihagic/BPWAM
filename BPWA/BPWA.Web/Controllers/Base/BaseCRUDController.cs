@@ -148,7 +148,7 @@ namespace BPWA.Controllers
 
                 if (!entityResult.IsSuccess)
                 {
-                    var getEntityByIdResult = await BaseCRUDService.GetEntityByIdWithoutIncludes(model.Id, shouldTranslate: false);
+                    var getEntityByIdResult = await BaseCRUDService.GetEntityById(model.Id, shouldTranslate: false, includeRelated: false);
 
                     if (!getEntityByIdResult.IsSuccess)
                         return BadRequest(getEntityByIdResult);

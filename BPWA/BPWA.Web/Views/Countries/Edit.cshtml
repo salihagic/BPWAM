@@ -35,9 +35,12 @@
             <div class="col-md form-group">
                 <label>@Translations.Currencies</label>
                 <select asp-for="CurrencyIds" id="modal_@nameof(CountryAddModel.CurrencyIds)" multiple="multiple" class="form-control select2">
-                    @foreach (var item in Model.CurrencyIdsSelectList)
+                    @if (Model.CurrencyIdsSelectList.IsNotEmpty())
                     {
-                        <option value="@item.Value" selected="selected">@item.Text</option>
+                        foreach (var item in Model.CurrencyIdsSelectList)
+                        {
+                            <option value="@item.Value" selected="selected">@item.Text</option>
+                        }
                     }
                 </select>
                 <span asp-validation-for="CurrencyIds" class="text-danger"></span>
@@ -48,9 +51,12 @@
             <div class="col-md form-group">
                 <label>@Translations.Languages</label>
                 <select asp-for="LanguageIds" id="modal_@nameof(CountryAddModel.LanguageIds)" multiple="multiple" class="form-control select2">
-                    @foreach (var item in Model.LanguageIdsSelectList)
+                    @if (Model.LanguageIdsSelectList.IsNotEmpty())
                     {
-                        <option value="@item.Value" selected="selected">@item.Text</option>
+                        foreach (var item in Model.LanguageIdsSelectList)
+                        {
+                            <option value="@item.Value" selected="selected">@item.Text</option>
+                        }
                     }
                 </select>
                 <span asp-validation-for="LanguageIds" class="text-danger"></span>

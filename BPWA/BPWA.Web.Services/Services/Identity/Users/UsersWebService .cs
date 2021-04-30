@@ -61,7 +61,7 @@ namespace BPWA.Web.Services.Services
                 return Result.Failed<AccountUpdateModel>("Failed to load the user");
             }
         }
-        
+
         public async Task<Result> UpdateAccount(AccountUpdateModel model)
         {
             try
@@ -69,7 +69,7 @@ namespace BPWA.Web.Services.Services
                 var user = await DatabaseContext.Users
                     .Include(x => x.City)
                     .FirstOrDefaultAsync(x => x.Id == CurrentUser.Id());
-                
+
                 Mapper.Map(model, user);
 
                 await DatabaseContext.SaveChangesAsync();
@@ -113,9 +113,9 @@ namespace BPWA.Web.Services.Services
                 .WhereIf(CurrentUser.CurrentBusinessUnitId().HasValue, x => x.BusinessUnitUsers.Any(y => y.BusinessUnit.Id == CurrentUser.CurrentBusinessUnitId()));
         }
 
-        public override async Task<Result<User>> GetEntityById(string id, bool shouldTranslate = true)
+        public override async Task<Result<User>> GetEntityById(string id, bool shouldTranslate = true, bool includeRelated = true)
         {
-            var result = await base.GetEntityById(id, shouldTranslate);
+            var result = await base.GetEntityById(id, shouldTranslate, includeRelated);
 
             if (result.IsSuccess)
             {
@@ -405,7 +405,7 @@ namespace BPWA.Web.Services.Services
             //if (!CurrentUser.HasGodMode() && !(CurrentUser.CompanyIds().Count > 1))
             //    return Result.Failed(Translations.There_was_an_error_while_trying_to_change_current_company);
 
-            var currentUserResult = await GetEntityByIdWithoutIncludes(CurrentUser.Id());
+            var currentUserResult = await GetEntityById(CurrentUser.Id(), false, false);
 
             if (!currentUserResult.IsSuccess)
                 return Result.Failed(currentUserResult.GetErrorMessages());
@@ -437,7 +437,7 @@ namespace BPWA.Web.Services.Services
             //if (!CurrentUser.HasGodMode() && !CurrentUser.HasCompanyGodMode() && !(CurrentUser.BusinessUnitIds().Count > 1))
             //    return Result.Failed(Translations.There_was_an_error_while_trying_to_change_current_business_unit);
 
-            var currentUserResult = await GetEntityByIdWithoutIncludes(CurrentUser.Id());
+            var currentUserResult = await GetEntityById(CurrentUser.Id(), false, false);
 
             if (!currentUserResult.IsSuccess)
                 return Result.Failed(currentUserResult.GetErrorMessages());

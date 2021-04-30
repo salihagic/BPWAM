@@ -39,9 +39,9 @@ namespace BPWA.DAL.Services
             TranslationsService = translationsService;
         }
 
-        public override async Task<Result<TEntity>> GetEntityById(TId id, bool shouldTranslate = true)
+        public override async Task<Result<TEntity>> GetEntityById(TId id, bool shouldTranslate = true, bool includeRelated = false)
         {
-            var result = await base.GetEntityById(id);
+            var result = await base.GetEntityById(id, true, includeRelated);
 
             if (result.IsSuccess && shouldTranslate)
                 result.Item = await TranslationsService.Translate(result.Item);
@@ -49,15 +49,15 @@ namespace BPWA.DAL.Services
             return result;
         }
 
-        public override async Task<Result<TEntity>> GetEntityByIdWithoutIncludes(TId id, bool shouldTranslate = true)
-        {
-            var result = await base.GetEntityByIdWithoutIncludes(id);
+        //public override async Task<Result<TEntity>> GetEntityByIdWithoutIncludes(TId id, bool shouldTranslate = true)
+        //{
+        //    var result = await base.GetEntityByIdWithoutIncludes(id);
 
-            if (result.IsSuccess && shouldTranslate)
-                result.Item = await TranslationsService.Translate(result.Item);
+        //    if (result.IsSuccess && shouldTranslate)
+        //        result.Item = await TranslationsService.Translate(result.Item);
 
-            return result;
-        }
+        //    return result;
+        //}
 
         public override async Task<Result<List<TEntity>>> GetEntities(TSearchModel searchModel = null)
         {

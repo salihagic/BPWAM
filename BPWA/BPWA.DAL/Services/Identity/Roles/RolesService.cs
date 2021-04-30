@@ -181,29 +181,14 @@ namespace BPWA.DAL.Services
             }
         }
 
-        virtual public async Task<Result<Role>> GetEntityById(string id, bool shouldTranslate = true)
+        virtual public async Task<Result<Role>> GetEntityById(string id, bool shouldTranslate = true, bool includeRelated = true)
         {
             try
             {
                 var query = DatabaseContext.Set<Role>().Where(x => x.Id.Equals(id));
 
-                query = BuildIncludesById(id, query);
-
-                var item = await query.AsNoTracking().FirstOrDefaultAsync();
-
-                return Result.Success(item);
-            }
-            catch (Exception e)
-            {
-                return Result.Failed<Role>("Failed to load entity");
-            }
-        }
-
-        virtual public async Task<Result<Role>> GetEntityByIdWithoutIncludes(string id, bool shouldTranslate = true)
-        {
-            try
-            {
-                var query = DatabaseContext.Roles.Where(x => x.Id.Equals(id));
+                if (includeRelated)
+                    query = BuildIncludesById(id, query);
 
                 var item = await query.AsNoTracking().FirstOrDefaultAsync();
 
@@ -281,5 +266,6 @@ namespace BPWA.DAL.Services
                 .Include(x => x.UserRoles)
                 .FirstOrDefaultAsync(x => x.Id == entity.Id);
         }
+
     }
 }

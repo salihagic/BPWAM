@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using BPWA.Common.Extensions;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
 using BPWA.DAL.Models;
@@ -48,36 +47,7 @@ namespace BPWA.DAL.Services
             _shouldTranslate = shouldTranslate;
         }
 
-        virtual public IQueryable<TEntity> BuildQueryConditions(IQueryable<TEntity> Query, TSearchModel searchModel = null) => Query;
-
-        virtual public IQueryable<TEntity> BuildIncludesById(TId id, IQueryable<TEntity> query) => query;
-
-        virtual public IQueryable<TEntity> BuildIncludes(IQueryable<TEntity> query) => query;
-
-        virtual public IQueryable<TEntity> BuildQueryOrdering(IQueryable<TEntity> Query, TSearchModel searchModel = null)
-        {
-            if (searchModel?.Pagination?.OrderFields == null)
-                return Query;
-
-            foreach (var orderField in searchModel.Pagination.OrderFields)
-                Query = Query.OrderBy($"{orderField.Field} {orderField.Direction}");
-
-            return Query;
-        }
-
-        virtual public IQueryable<TEntity> BuildQueryPagination(IQueryable<TEntity> Query, TSearchModel searchModel = null)
-        {
-            if (searchModel?.Pagination == null)
-                return Query;
-
-            if (searchModel.Pagination.ShouldTakeAllRecords.GetValueOrDefault())
-                return Query;
-
-            return Query.Skip(searchModel.Pagination.Skip.GetValueOrDefault())
-                        .Take(searchModel.Pagination.Take.GetValueOrDefault());
-        }
-
-        virtual public async Task<Result<List<TDTO>>> Get(TSearchModel searchModel = null)
+        virtual public async Task<Result<List<TDTO>>> Get(TSearchModel searchModel)
         {
             var result = await GetEntities(searchModel);
 
@@ -96,7 +66,7 @@ namespace BPWA.DAL.Services
             }
         }
 
-        virtual public async Task<Result<List<TEntity>>> GetEntities(TSearchModel searchModel = null)
+        virtual public async Task<Result<List<TEntity>>> GetEntities(TSearchModel searchModel)
         {
             try
             {
@@ -139,13 +109,14 @@ namespace BPWA.DAL.Services
             }
         }
 
-        virtual public async Task<Result<TEntity>> GetEntityById(TId id, bool shouldTranslate = true)
+        virtual public async Task<Result<TEntity>> GetEntityById(TId id, bool shouldTranslate = true, bool includeRelated = false)
         {
             try
             {
                 var query = DatabaseContext.Set<TEntity>().Where(x => x.Id.Equals(id));
 
-                query = BuildIncludesById(id, query);
+                if (includeRelated)
+                    query = BuildIncludesById(id, query);
 
                 var item = await query.AsNoTracking().FirstOrDefaultAsync();
 
@@ -157,20 +128,54 @@ namespace BPWA.DAL.Services
             }
         }
 
-        virtual public async Task<Result<TEntity>> GetEntityByIdWithoutIncludes(TId id, bool shouldTranslate = true)
+        //virtual public async Task<Result<TEntity>> GetEntityByIdWithoutIncludes(TId id, bool shouldTranslate = true)
+        //{
+        //    try
+        //    {
+        //        var query = DatabaseContext.Set<TEntity>().Where(x => x.Id.Equals(id));
+
+        //        var item = await query.AsNoTracking().FirstOrDefaultAsync();
+
+        //        return Result.Success(item);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return Result.Failed<TEntity>("Failed to load entity");
+        //    }
+        //}
+
+        #region Helpers
+
+        virtual public IQueryable<TEntity> BuildQueryConditions(IQueryable<TEntity> Query, TSearchModel searchModel) => Query;
+
+        virtual public IQueryable<TEntity> BuildIncludesById(TId id, IQueryable<TEntity> query) => query;
+
+        virtual public IQueryable<TEntity> BuildIncludes(IQueryable<TEntity> query) => query;
+
+        virtual public IQueryable<TEntity> BuildQueryOrdering(IQueryable<TEntity> Query, TSearchModel searchModel)
         {
-            try
-            {
-                var query = DatabaseContext.Set<TEntity>().Where(x => x.Id.Equals(id));
+            if (searchModel?.Pagination?.OrderFields == null)
+                return Query;
 
-                var item = await query.AsNoTracking().FirstOrDefaultAsync();
+            foreach (var orderField in searchModel.Pagination.OrderFields)
+                Query = Query.OrderBy($"{orderField.Field} {orderField.Direction}");
 
-                return Result.Success(item);
-            }
-            catch (Exception e)
-            {
-                return Result.Failed<TEntity>("Failed to load entity");
-            }
+            return Query;
         }
+
+        virtual public IQueryable<TEntity> BuildQueryPagination(IQueryable<TEntity> Query, TSearchModel searchModel)
+        {
+            if (searchModel?.Pagination == null)
+                return Query;
+
+            if (searchModel.Pagination.ShouldTakeAllRecords.GetValueOrDefault())
+                return Query;
+
+            return Query.Skip(searchModel.Pagination.Skip.GetValueOrDefault())
+                        .Take(searchModel.Pagination.Take.GetValueOrDefault());
+        }
+
+        #endregion
     }
 }
+

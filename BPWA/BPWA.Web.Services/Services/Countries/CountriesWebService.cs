@@ -5,10 +5,7 @@ using BPWA.DAL.Database;
 using BPWA.DAL.Models;
 using BPWA.DAL.Services;
 using BPWA.Web.Services.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -49,7 +46,7 @@ namespace BPWA.Web.Services.Services
 
         public async Task<Result<CountryDTO>> Update(CountryUpdateModel model)
         {
-            var result = await GetEntityByIdWithoutIncludes(model.Id, shouldTranslate: false);
+            var result = await GetEntityById(model.Id, shouldTranslate: false);
 
             if (!result.IsSuccess)
                 return Result.Failed<CountryDTO>(result.FirstErrorMessage());
