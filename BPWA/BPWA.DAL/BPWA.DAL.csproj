@@ -32,4 +32,9 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\Base\BaseRead\" />
+    <Folder Include="Services\Base\BaseCRUD\" />
+  </ItemGroup>
+
 </Project>
