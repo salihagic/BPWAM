@@ -9,21 +9,13 @@ namespace BPWA.DAL.Mappings
     {
         public UserProfile()
         {
-            CreateMap<UserAddModel, User>()
-                .ForMember(dest => dest.UserRoles, opt => opt.MapFrom(src => src.RoleIds.Select(x => new UserRole { RoleId = x }).ToList()))
-                .ForMember(dest => dest.CompanyUsers, opt => opt.MapFrom(src => src.CompanyIds.Select(x => new CompanyUser { CompanyId = x }).ToList()))
-                .ForMember(dest => dest.BusinessUnitUsers, opt => opt.MapFrom(src => src.BusinessUnitIds.Select(x => new BusinessUnitUser { BusinessUnitId = x }).ToList()));
-            
+            CreateMap<UserAddModel, User>();
             CreateMap<User, UserUpdateModel>()
-                .ForMember(dest => dest.SelectedCity, opt => opt.MapFrom(src => src.City.Name))
-                .ForMember(dest => dest.RoleIds, opt => opt.MapFrom(src => src.UserRoles.Select(x => x.RoleId).ToList()))
-                .ForMember(dest => dest.CompanyIds, opt => opt.MapFrom(src => src.CompanyUsers.Select(x => x.CompanyId).ToList()))
-                .ForMember(dest => dest.BusinessUnitIds, opt => opt.MapFrom(src => src.BusinessUnitUsers.Select(x => x.BusinessUnitId).ToList()))
-                .ReverseMap()
-                .ForMember(dest => dest.City, opt => opt.Ignore())
-                .ForMember(dest => dest.UserRoles, opt => opt.MapFrom(src => src.RoleIds.Select(x => new UserRole { RoleId = x }).ToList()))
-                .ForMember(dest => dest.CompanyUsers, opt => opt.MapFrom(src => src.CompanyIds.Select(x => new CompanyUser { CompanyId = x }).ToList()))
-                .ForMember(dest => dest.BusinessUnitUsers, opt => opt.MapFrom(src => src.BusinessUnitIds.Select(x => new BusinessUnitUser { BusinessUnitId = x }).ToList()));
+                .ForMember(dest => dest.CityIdDropdownItem, opt => opt.MapFrom(src => new DropdownItem { Id = src.CityId.GetValueOrDefault(), Text = src.City.Name }))
+                .ForMember(dest => dest.RoleIdsDropdownItems, opt => opt.MapFrom(src => src.UserRoles.Select(x => new DropdownItem<string> { Id = x.RoleId, Text = x.Role.Name }).ToList()))
+                .ForMember(dest => dest.CompanyIdsDropdownItems, opt => opt.MapFrom(src => src.CompanyUsers.Select(x => new DropdownItem { Id = x.CompanyId, Text = x.Company.Name }).ToList()))
+                .ForMember(dest => dest.BusinessUnitIdsDropdownItems, opt => opt.MapFrom(src => src.BusinessUnitUsers.Select(x => new DropdownItem { Id = x.BusinessUnitId, Text = x.BusinessUnit.Name }).ToList()))
+                .ReverseMap();
             
             CreateMap<User, AccountUpdateModel>()
                 .ForMember(dest => dest.SelectedCity, opt => opt.MapFrom(src => src.City.Name))

@@ -39,10 +39,7 @@ namespace BPWA.Administration.Controllers
         [HttpPost, Transaction]
         public virtual async Task<IActionResult> SendPasswordResetToken(string userId)
         {
-            var result = await _usersWebService.SendPasswordResetToken(userId);
-
-            if (!result.IsSuccess)
-                return BadRequest();
+            await _usersWebService.SendPasswordResetToken(userId);
 
             return Ok();
         }

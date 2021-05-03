@@ -17,37 +17,25 @@
         <div class="col-md-12 row">
             <div class="col-md-6 form-group">
                 <label>@Translations.Notification_type</label>
-                <select asp-for="NotificationType" id="modal_@nameof(NotificationAddModel.NotificationType)" class="form-control select2">
-                </select>
+                <select asp-for="NotificationType" id="modal_@nameof(NotificationAddModel.NotificationType)" class="form-control select2"></select>
                 <span asp-validation-for="NotificationType" class="text-danger"></span>
             </div>
 
             <div class="col-md-6 form-group">
                 <label>@Translations.Notification_distribution_type</label>
-                <select asp-for="NotificationDistributionType" id="modal_@nameof(NotificationAddModel.NotificationDistributionType)" class="form-control select2">
-                </select>
+                <select asp-for="NotificationDistributionType" id="modal_@nameof(NotificationAddModel.NotificationDistributionType)" class="form-control select2"></select>
                 <span asp-validation-for="NotificationDistributionType" class="text-danger"></span>
             </div>
 
             <div class="col-md-6 form-group">
                 <label>@Translations.User</label>
-                <input asp-for="SelectedUser" type="hidden">
-                <select asp-for="UserId" id="modal_@nameof(NotificationAddModel.UserId)" class="form-control select2">
-                    <option value="@Model.UserId" selected="selected">
-                        @(Model.SelectedUser ?? Translations.Select_user)
-                    </option>
-                </select>
+                <select asp-for="UserId" id="modal_@nameof(NotificationAddModel.UserId)" class="form-control select2"></select>
                 <span asp-validation-for="UserId" class="text-danger"></span>
             </div>
 
             <div class="col-md-6 form-group">
                 <label>@Translations.Groups</label>
-                <select asp-for="GroupIds" id="modal_@nameof(NotificationAddModel.GroupIds)" multiple="multiple" class="form-control select2">
-                    @foreach (var item in Model.GroupIdsSelectList)
-                    {
-                        <option value="@item.Value" selected="selected">@item.Text</option>
-                    }
-                </select>
+                <select asp-for="GroupIds" id="modal_@nameof(NotificationAddModel.GroupIds)" multiple="multiple" class="form-control select2"></select>
                 <span asp-validation-for="GroupIds" class="text-danger"></span>
             </div>
 
@@ -77,12 +65,24 @@
 <script>
 
     Select2NotificationTypes({
-        element: '#modal_@nameof(NotificationAddModel.NotificationType)'
+        element: '#modal_@nameof(NotificationAddModel.NotificationType)',
+        selectedItem: '@Html.Raw(Model.NotificationType.GetDropdownItemJson())'
     });
 
     Select2NotificationDistributionTypes({
         element: '#modal_@nameof(NotificationAddModel.NotificationDistributionType)',
+        selectedItem: '@Html.Raw(Model.NotificationDistributionType.GetDropdownItemJson())',
         onChange: DisableSelectListsByNotificationDistributionType
+    });
+
+    Select2AjaxUsers({
+        element: '#modal_@nameof(NotificationAddModel.UserId)',
+        selectedItem: '@Html.Raw(Model.UserIdDropdownItem.GetDropdownItemJson())'
+    });
+
+    Select2AjaxGroups({
+        element: '#modal_@nameof(NotificationAddModel.GroupIds)',
+        selectedItems: '@Html.Raw(Model.GroupIdsDropdownItems.GetDropdownItemsJson())'
     });
 
     function DisableSelectListsByNotificationDistributionType(element) {
@@ -105,14 +105,5 @@
     }
 
     DisableSelectListsByNotificationDistributionType($('#modal_@nameof(NotificationAddModel.NotificationDistributionType)'))
-
-    Select2AjaxUsers({
-        element: '#modal_@nameof(NotificationAddModel.UserId)',
-        onChangeCopyTextTo: '#@nameof(NotificationAddModel.SelectedUser)',
-    });
-
-    Select2AjaxGroups({
-        element: '#modal_@nameof(NotificationAddModel.GroupIds)',
-    });
 
 </script>

@@ -1,8 +1,7 @@
-﻿@inject IDropdownHelperService dropdownHelperService
+﻿@inject IDropdownHelperService DropdownHelperService
 @model TicketAddModel
 @{ 
     Layout = null;
-    var systemLanguagesJson = JsonConvert.SerializeObject(dropdownHelperService.GetSystemLanguages().Select(x => new { id = x.Value, text = x.Text }).ToList());
 }
 
 <form asp-controller="Tickets"
@@ -34,8 +33,7 @@
             </div>
             <div class="col-md-12 form-group">
                 <label>@Translations.Ticket_type</label>
-                <select asp-for="TicketType" id="modal_@nameof(TicketAddModel.TicketType)" class="form-control select2">
-                </select>
+                <select asp-for="TicketType" id="modal_@nameof(TicketAddModel.TicketType)" class="form-control select2"></select>
                 <span asp-validation-for="TicketType" class="text-danger"></span>
             </div>
             <div class="translatable_form_group col-md-12 form-group">
@@ -65,13 +63,14 @@
 <script>
 
     Select2TicketTypes({
-        element: '#modal_@nameof(TicketAddModel.TicketType)'
+        element: '#modal_@nameof(TicketAddModel.TicketType)',
+        selectedItem: '@Html.Raw(Model.TicketType.GetDropdownItemJson())'
     });
 
     Translatable({
         element: '#@nameof(TicketAddModel.Title)'
     });
-    
+
     Translatable({
         element: '#@nameof(TicketAddModel.Description)'
     });

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BPWA.DAL.Services
 {
-    public class TicketsService 
+    public class TicketsService
         : BaseTranslatableCRUDService<Ticket, TicketSearchModel, TicketDTO>, ITicketsService
     {
         public TicketsService(
@@ -26,15 +26,14 @@ namespace BPWA.DAL.Services
                        .WhereIf(searchModel.TicketStatuses.IsNotEmpty(), x => searchModel.TicketStatuses.Contains(x.TicketStatus));
         }
 
-        public override async Task<Result<Ticket>> AddEntity(Ticket entity)
+        public override async Task<Ticket> AddEntity(Ticket entity)
         {
             var result = await base.AddEntity(entity);
 
-            if (result.IsSuccess)
-                await TranslationsService.Add(new Translation 
-                {
-                    Key = entity.Title,
-                });
+            await TranslationsService.Add(new Translation
+            {
+                Key = entity.Title,
+            });
 
             return result;
         }

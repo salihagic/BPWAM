@@ -3,7 +3,6 @@ using BPWA.Common.Security;
 using BPWA.Controllers;
 using BPWA.Core.Entities;
 using BPWA.DAL.Models;
-using BPWA.Web.Helpers.Filters;
 using BPWA.Web.Services.Models;
 using BPWA.Web.Services.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -34,7 +33,7 @@ namespace BPWA.Administration.Controllers
         [AllowAnonymous]
         public override async Task<IActionResult> Add(bool fullPage = false) => await base.Add(fullPage);
 
-        [HttpPost, AllowAnonymous, Transaction]
-        public override async Task<IActionResult> Add(TicketAddModel model) => await base.Add(model);
+        [HttpPost, AllowAnonymous]
+        public override async Task<IActionResult> Add(TicketAddModel model, bool fullPage = false) => await base.Add(model);
     }
 }

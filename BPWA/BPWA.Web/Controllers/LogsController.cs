@@ -41,10 +41,7 @@ namespace BPWA.Administration.Controllers
 
             var result = await _logsService.Get(searchModel);
 
-            if (!result.IsSuccess)
-                return Error();
-
-            var items = result.Item;
+            var items = result;
 
             var pagination = searchModel.Pagination;
             var orderField = pagination.OrderFields.FirstOrDefault();
@@ -80,10 +77,7 @@ namespace BPWA.Administration.Controllers
         {
             var result = await _logsService.GetById(id);
 
-            if (!result.IsSuccess)
-                return _Error();
-
-            return View(result.Item);
+            return View(result);
         }
 
         #endregion

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -43,6 +44,13 @@ namespace BPWA.DAL.Database
             builder.Entity<Role>().ToTable("Roles");
             builder.Entity<Role>().HasMany(x => x.RoleClaims).WithOne(x => x.Role).HasForeignKey(x => x.RoleId);
             builder.Entity<Role>().HasMany(x => x.UserRoles).WithOne(x => x.Role).HasForeignKey(x => x.RoleId);
+
+            //Removing unique index Name from Roles table and creating new index Name+CompanyId+BusinessUnitId
+            builder.Entity<Role>(builder =>
+            {
+                builder.Metadata.RemoveIndex(new[] { builder.Property(r => r.NormalizedName).Metadata });
+                builder.HasIndex(x => new { x.NormalizedName, x.CompanyId, x.BusinessUnitId }).HasName("RoleNameIndex").IsUnique();
+            });
         }
 
         void ConfigureRoleClaim(ModelBuilder builder)
@@ -163,9 +171,10 @@ namespace BPWA.DAL.Database
 
                 if (entity.State == EntityState.Added)
                     iEntity.CreatedAtUtc = DateTime.UtcNow;
-                if (entity.State == EntityState.Modified)
+                else if (entity.State == EntityState.Modified)
                     iEntity.ModifiedAtUtc = DateTime.UtcNow;
-                if (entity.State == EntityState.Deleted)
+                else if (entity.State == EntityState.Deleted && 
+                    !HardDeleteTypes.Contains(entity.Entity.GetType()))
                 {
                     entity.State = EntityState.Modified;
                     iEntity.IsDeleted = true;
@@ -174,6 +183,12 @@ namespace BPWA.DAL.Database
                 }
             }
         }
+
+        List<Type> HardDeleteTypes => new List<Type>
+        {
+            typeof(UserRole),
+            typeof(Role),
+        };
 
         #endregion
 

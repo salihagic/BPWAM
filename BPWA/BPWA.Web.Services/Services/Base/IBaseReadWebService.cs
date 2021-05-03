@@ -1,23 +1,21 @@
 ﻿using BPWA.Core.Entities;
 using BPWA.DAL.Models;
 using BPWA.DAL.Services;
-using System.Threading.Tasks;
 
 namespace BPWA.Web.Services.Services
 {
     public interface IBaseReadWebService<TEntity, TSearchModel, TDTO> :
         IBaseReadWebService<TEntity, TSearchModel, TDTO, int>
-        where TEntity : IBaseEntity, new()
-        where TSearchModel : BaseSearchModel, new()
-        where TDTO : BaseDTO, new()
+        where TEntity : class, IBaseEntity, new()
+        where TSearchModel : class, IBaseSearchModel, new()
+        where TDTO : class, IBaseDTO, new()
     { }
 
     public interface IBaseReadWebService<TEntity, TSearchModel, TDTO, TId> :
         IBaseReadService<TEntity, TSearchModel, TDTO, TId>
-        where TEntity : IBaseEntity<TId>, new()
-        where TSearchModel : BaseSearchModel, new()
-        where TDTO : BaseDTO<TId>, new()
+        where TEntity : class, IBaseEntity<TId>, new()
+        where TSearchModel : class, IBaseSearchModel, new()
+        where TDTO : class, IBaseDTO<TId>, new()
     {
-        async Task<Result<TSearchModel>> PrepareForGet(TSearchModel searchModel = null) => Result.Success(searchModel ?? new TSearchModel { IsDeleted = false });
     }
 }

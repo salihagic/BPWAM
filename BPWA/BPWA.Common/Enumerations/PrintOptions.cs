@@ -2,7 +2,7 @@
 {
     public enum ReportOptions
     {
-        Pdf = 1,
+        Pdf,
         Excel
     }
 }

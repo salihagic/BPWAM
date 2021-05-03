@@ -47,7 +47,7 @@ namespace BPWA.Web.Services.Services
                        .Include(x => x.BusinessUnit);
         }
 
-        public override async Task<Result<Role>> AddEntity(Role entity)
+        public override async Task<Role> AddEntity(Role entity)
         {
             entity.CompanyId = _currentUser.CurrentCompanyId();
             entity.BusinessUnitId = _currentUser.CurrentBusinessUnitId();
@@ -55,7 +55,7 @@ namespace BPWA.Web.Services.Services
             return await base.AddEntity(entity);
         }
 
-        public override async Task<Result<Role>> UpdateEntity(Role entity)
+        public override async Task<Role> UpdateEntity(Role entity)
         {
             var currentRoleClaims = await DatabaseContext.RoleClaims.Where(x => x.RoleId == entity.Id).ToListAsync();
 
@@ -73,7 +73,7 @@ namespace BPWA.Web.Services.Services
             return await base.UpdateEntity(entity);
         }
 
-        public override Task<Result> Delete(Role entity)
+        public override Task Delete(Role entity)
         {
             var userRoles = DatabaseContext.UserRoles.Where(x => x.RoleId == entity.Id);
             var roleClaims = DatabaseContext.RoleClaims.Where(x => x.RoleId == entity.Id);

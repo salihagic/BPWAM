@@ -30,68 +30,25 @@ namespace BPWA.Web.Services.Services
                        .ThenInclude(x => x.User);
         }
 
-        public async Task<Result<GroupAddModel>> PrepareForAdd(GroupAddModel model = null)
+        public async Task<GroupDTO> Add(GroupAddModel model)
         {
-            model ??= new GroupAddModel();
+            var entity = Mapper.Map<Group>(model);
+            var result = await base.Add(entity);
 
-            if (model.UserIds.IsNotEmpty())
-            {
-                try
-                {
-                    model.UserIdsSelectList = await DatabaseContext.Users
-                    .Where(x => model.UserIds.Contains(x.Id))
-                    .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = $"{x.FirstName} {x.LastName}" }).ToListAsync();
-                }
-                catch (Exception e)
-                {
-                    return Result.Failed<GroupAddModel>("Could not load users");
-                }
-            }
+            await ManageRelatedEntities<GroupUser, string>(result.Id, model.UserIds, x => x.GroupId, x => x.UserId);
 
-            model.UserIdsSelectList ??= new List<SelectListItem>();
-
-            return Result.Success(model);
+            return result;
         }
 
-        public async Task<Result<GroupUpdateModel>> PrepareForUpdate(GroupUpdateModel model = null)
+        public async Task<GroupDTO> Update(GroupUpdateModel model)
         {
-            model ??= new GroupUpdateModel();
+            var entity = await GetEntityById(model.Id, false, false);
+            Mapper.Map(model, entity);
+            var result = await base.Update(entity);
 
-            if (model.UserIds.IsNotEmpty())
-            {
-                try
-                {
-                    model.UserIdsSelectList = await DatabaseContext.Users
-                    .Where(x => model.UserIds.Contains(x.Id))
-                    .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = $"{x.FirstName} {x.LastName}" }).ToListAsync();
-                }
-                catch (Exception e)
-                {
-                    return Result.Failed<GroupUpdateModel>("Could not load currencies");
-                }
-            }
-            
-            model.UserIdsSelectList ??= new List<SelectListItem>();
+            await ManageRelatedEntities<GroupUser, string>(result.Id, model.UserIds, x => x.GroupId, x => x.UserId);
 
-            return Result.Success(model);
-        }
-
-        public override async Task<Result<GroupDTO>> Update(Group entity)
-        {
-            var currentGroupUsers = await DatabaseContext.GroupUsers.Where(x => x.GroupId == entity.Id).ToListAsync();
-
-            if (currentGroupUsers.IsNotEmpty())
-            {
-                //Delete
-                var groupUsersToDelete = currentGroupUsers.Where(x => !entity.GroupUsers?.Any(y => y.UserId == x.UserId) ?? true).ToList();
-                DatabaseContext.RemoveRange(groupUsersToDelete);
-                await DatabaseContext.SaveChangesAsync();
-
-                //Only leave the new ones
-                entity.GroupUsers = entity.GroupUsers.Where(x => !currentGroupUsers.Any(y => y.UserId == x.UserId)).ToList();
-            }
-
-            return await base.Update(entity);
+            return result;
         }
     }
 }

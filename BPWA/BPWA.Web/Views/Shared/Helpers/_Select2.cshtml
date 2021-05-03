@@ -1,19 +1,11 @@
 ﻿@inject IDropdownHelperService DropdownHelperService
-@{
-    Layout = null;
-    var appClaimsJson = JsonConvert.SerializeObject(DropdownHelperService.GetAppClaims().Select(x => new { id = x.Value, text = x.Text }).ToList());
-    var ticketTypesJson = JsonConvert.SerializeObject(DropdownHelperService.GetTicketTypes().Select(x => new { id = x.Value, text = x.Text }).ToList());
-    var ticketStatusesJson = JsonConvert.SerializeObject(DropdownHelperService.GetTicketStatuses().Select(x => new { id = x.Value, text = x.Text }).ToList());
-    var systemLanguagesJson = JsonConvert.SerializeObject(DropdownHelperService.GetSystemLanguages().Select(x => new { id = x.Value, text = x.Text }).ToList());
-    var notificationTypesJson = JsonConvert.SerializeObject(DropdownHelperService.GetNotificationTypes().Select(x => new { id = x.Value, text = x.Text }).ToList());
-    var notificationDistributionTypesJson = JsonConvert.SerializeObject(DropdownHelperService.GetNotificationDistributionTypes().Select(x => new { id = x.Value, text = x.Text }).ToList());
-}
+@{ Layout = null; }
 
 <script>
 
     function Select2NotificationTypes(options) {
         Select2({
-            data: @Html.Raw(notificationTypesJson),
+            data: @Html.Raw(DropdownHelperService.GetNotificationTypes().GetDropdownItemsJson()),
             placeholder: '@Translations.Select_notification_type',
             ...options
         });
@@ -21,7 +13,7 @@
 
     function Select2NotificationDistributionTypes(options) {
         Select2({
-            data: @Html.Raw(notificationDistributionTypesJson),
+            data: @Html.Raw(DropdownHelperService.GetNotificationDistributionTypes().GetDropdownItemsJson()),
             placeholder: '@Translations.Select_notification_distribution_type',
             ...options
         });
@@ -29,7 +21,7 @@
 
     function Select2SystemLanguages(options) {
         Select2({
-            data: @Html.Raw(systemLanguagesJson),
+            data: @Html.Raw(DropdownHelperService.GetSystemLanguages().GetDropdownItemsJson()),
             placeholder: '@Translations.Select_language',
             ...options
         });
@@ -37,7 +29,7 @@
 
     function Select2AppClaims(options) {
         Select2({
-            data: @Html.Raw(appClaimsJson),
+            data: @Html.Raw(DropdownHelperService.GetAppClaims().GetDropdownItemsJson()),
             placeholder: '@Translations.Select_app_claim',
             ...options
         });
@@ -45,7 +37,7 @@
 
     function Select2TicketTypes(options) {
         Select2({
-            data: @Html.Raw(ticketTypesJson),
+            data: @Html.Raw(DropdownHelperService.GetTicketTypes().GetDropdownItemsJson()),
             placeholder: '@Translations.Select_ticket_type',
             ...options
         });
@@ -53,7 +45,7 @@
 
     function Select2TicketStatuses(options) {
         Select2({
-            data: @Html.Raw(ticketStatusesJson),
+            data: @Html.Raw(DropdownHelperService.GetTicketStatuses().GetDropdownItemsJson()),
             placeholder: '@Translations.Select_ticket_status',
             ...options
         });
@@ -232,32 +224,24 @@
     }
 
     function Select2(options) {
-        $(options.element).select2({
-            data: options.data,
-            placeholder: options.placeholder,
-        });
+        $(options.element).select2(options);
+        $(options.element).val('');
+        $(options.element).trigger('change');
 
-        if (options.initialValue != undefined) {
-            $(options.element).val(options.initialValue).trigger('change');
+        Select2Events(options);
+
+        if (options.selectedItems != undefined && options.selectedItems != '') {
+            $(options.element).val(options.selectedItems.map(element => element.id));
+            $(options.element).trigger('change');
         }
-
-        $(options.element).change(function (e) {
-            if (options.onChange != undefined) {
-                options.onChange($(this));
-            }
-
-            if (options.onChangeCopyTextTo != undefined) {
-                $(options.onChangeCopyTextTo).val($(this).select2('data')[0]['text']);
-            }
-        });
+        if (options.selectedItem != undefined && options.selectedItem != '') {
+            console.log(options.selectedItem);
+            $(options.element).val(options.selectedItem.id);
+            $(options.element).trigger('change');
+        }
     }
 
     function Select2Ajax(options) {
-        options.multiple = options.selectedItems != undefined;
-        if (options.selectedItems != undefined && options.selectedItems != '') {
-            options.items = JSON.parse(options.selectedItems);
-        }
-
         $(options.element).select2({
             ajax: {
                 url: options.url,
@@ -283,6 +267,24 @@
             placeholder: options.placeholder,
         });
 
+        Select2Events(options);
+        if (options.selectedItems != undefined && options.selectedItems != '') {
+            GenerateInitialResultItems(options);
+        }
+        if (options.selectedItem != undefined && options.selectedItem != '') {
+            GenerateInitialResultItem(options);
+        }
+    }
+
+    function Select2Events(options) {
+        options.multiple = options.selectedItems != undefined;
+        if (options.selectedItems != undefined && options.selectedItems != '') {
+            options.selectedItems = JSON.parse(options.selectedItems);
+        }
+        if (options.selectedItem != undefined && options.selectedItem != '') {
+            options.selectedItem = JSON.parse(options.selectedItem);
+        }
+
         $(options.element).change(function (e) {
             if (options.multiple ?? false) {
                 GenerateResultItems(options);
@@ -294,15 +296,21 @@
             if (options.onChange != undefined) {
                 options.onChange($(this));
             }
-
-            if (options.onChangeCopyTextTo != undefined) {
-                $(options.onChangeCopyTextTo).val($(this).select2('data')[0]['text']);
-            }
         });
+    }
 
-        if (options.selectedItems != undefined && options.selectedItems != '') {
-            GenerateInitialResultItems(options);
-        }
+    function GenerateInitialResultItem(options) {
+        var element = options.selectedItem;
+        var resultItemsWrapper = GetOrCreateResultItemsWrapper(options);
+        var sourceName = $(options.element).prop('name');
+
+        var id = `<input type='hidden' name='${sourceName}DropdownItem.id' value='${element['id']}' />`;
+        var text = `<input type='hidden' name='${sourceName}DropdownItem.text' value='${element['text']}' />`;
+
+        $(resultItemsWrapper).append(id);
+        $(resultItemsWrapper).append(text);
+
+        $(options.element).append(`<option value="${element['id']}" selected="selected">${element['text']}</option>`);
     }
 
     function GenerateResultItem(options) {
@@ -310,8 +318,8 @@
         var sourceName = $(options.element).prop('name');
 
         $(options.element).select2('data').forEach(function (element, index) {
-            var id = `<input type='hidden' name='${sourceName}DropdownItems.id' value='${element['id']}' />`;
-            var text = `<input type='hidden' name='${sourceName}DropdownItems.text' value='${element['text']}' />`;
+            var id = `<input type='hidden' name='${sourceName}DropdownItem.id' value='${element['id']}' />`;
+            var text = `<input type='hidden' name='${sourceName}DropdownItem.text' value='${element['text']}' />`;
 
             $(resultItemsWrapper).append(id);
             $(resultItemsWrapper).append(text);
@@ -322,7 +330,7 @@
         var resultItemsWrapper = GetOrCreateResultItemsWrapper(options);
         var sourceName = $(options.element).prop('name');
 
-        options.items.forEach(function (element, index) {
+        options.selectedItems.forEach(function (element, index) {
             var id = `<input type='hidden' name='${sourceName}DropdownItems[${index}].id' value='${element['id']}' />`;
             var text = `<input type='hidden' name='${sourceName}DropdownItems[${index}].text' value='${element['text']}' />`;
 

@@ -10,7 +10,7 @@ namespace BPWA.DAL.Mappings
         {
             CreateMap<CityAddModel, City>();
             CreateMap<City, CityUpdateModel>()
-                .ForMember(dest => dest.SelectedCountry, opt => opt.MapFrom(src => src.Country.Name))
+                .ForMember(dest => dest.CountryIdDropdownItem, opt => opt.MapFrom(src => new DropdownItem { Id = src.CountryId, Text = src.Country.Name }))
                 .ReverseMap();
         }
     }

@@ -45,26 +45,26 @@ namespace BPWA.Web.Services.Services
                        .Include(x => x.Company);
         }
 
-        public override async Task<Result<BusinessUnitDTO>> Add(BusinessUnit entity)
+        public override async Task<BusinessUnitDTO> Add(BusinessUnit entity)
         {
             var currentCompany = _currentUser.CurrentCompanyId();
 
             if (!currentCompany.HasValue)
-                return Result.Failed<BusinessUnitDTO>(Translations.No_company_is_selected);
+                throw new Exception(Translations.No_company_is_selected);
 
             entity.CompanyId = currentCompany.GetValueOrDefault();
 
             return await base.Add(entity);
         }
 
-        public override Task<Result<BusinessUnitDTO>> Update(BusinessUnit entity)
+        public override Task<BusinessUnitDTO> Update(BusinessUnit entity)
         {
             entity.CompanyId = _currentUser.CurrentCompanyId() ?? entity.CompanyId;
 
             return base.Update(entity);
         }
 
-        public async Task<Result<List<BusinessUnitDTO>>> GetForCurrentUser()
+        public async Task<List<BusinessUnitDTO>> GetForCurrentUser()
         {
             try
             {
@@ -76,11 +76,11 @@ namespace BPWA.Web.Services.Services
 
                 var businessUnitDTOs = Mapper.Map<List<BusinessUnitDTO>>(businessUnits);
 
-                return Result.Success(businessUnitDTOs);
+                return businessUnitDTOs;
             }
             catch (Exception e)
             {
-                return Result.Failed<List<BusinessUnitDTO>>("Failed to load business units");
+                throw new Exception("Failed to load business units");
             }
         }
     }

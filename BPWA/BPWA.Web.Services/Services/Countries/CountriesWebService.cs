@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using BPWA.Common.Extensions;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
 using BPWA.DAL.Models;
@@ -29,58 +28,27 @@ namespace BPWA.Web.Services.Services
                        .ThenInclude(x => x.Language);
         }
 
-        public async Task<Result<CountryDTO>> Add(CountryAddModel model)
+        public async Task<CountryDTO> Add(CountryAddModel model)
         {
-            return await base.Add(Mapper.Map<Country>(model));
+            var entity = Mapper.Map<Country>(model);
+            var result = await base.Add(entity);
+
+            await ManageRelatedEntities<CountryCurrency>(result.Id, model.CurrencyIds, x => x.CountryId, x => x.CurrencyId);
+            await ManageRelatedEntities<CountryLanguage>(result.Id, model.LanguageIds, x => x.CountryId, x => x.LanguageId);
+
+            return result;
         }
 
-        public async Task<Result<CountryUpdateModel>> PrepareForUpdate(int id)
+        public async Task<CountryDTO> Update(CountryUpdateModel model)
         {
-            var result = await GetEntityById(id, shouldTranslate: false);
-
-            if (!result.IsSuccess)
-                return Result.Failed<CountryUpdateModel>(result.FirstErrorMessage());
-
-            return Result.Success(Mapper.Map<CountryUpdateModel>(result.Item));
-        }
-
-        public async Task<Result<CountryDTO>> Update(CountryUpdateModel model)
-        {
-            var result = await GetEntityById(model.Id, shouldTranslate: false);
-
-            if (!result.IsSuccess)
-                return Result.Failed<CountryDTO>(result.FirstErrorMessage());
-
-            var entity = result.Item;
+            var entity = await GetEntityById(model.Id, false, false);
             Mapper.Map(model, entity);
+            var result = await base.Update(entity);
 
-            var currentCountryCurrencies = await DatabaseContext.CountryCurrencies.Where(x => x.CountryId == entity.Id).ToListAsync();
+            await ManageRelatedEntities<CountryCurrency>(result.Id, model.CurrencyIds, x => x.CountryId, x => x.CurrencyId);
+            await ManageRelatedEntities<CountryLanguage>(result.Id, model.LanguageIds, x => x.CountryId, x => x.LanguageId);
 
-            if (currentCountryCurrencies.IsNotEmpty())
-            {
-                //Delete
-                var countryCurrenciesToDelete = currentCountryCurrencies.Where(x => !entity.CountryCurrencies?.Any(y => y.CurrencyId == x.CurrencyId) ?? true).ToList();
-                DatabaseContext.RemoveRange(countryCurrenciesToDelete);
-                await DatabaseContext.SaveChangesAsync();
-
-                //Only leave the new ones
-                entity.CountryCurrencies = entity.CountryCurrencies.Where(x => !currentCountryCurrencies.Any(y => y.CurrencyId == x.CurrencyId)).ToList();
-            }
-
-            var currentCountryLanguages = await DatabaseContext.CountryLanguages.Where(x => x.CountryId == entity.Id).ToListAsync();
-
-            if (currentCountryLanguages.IsNotEmpty())
-            {
-                //Delete
-                var countryLanguagesToDelete = currentCountryLanguages.Where(x => !entity.CountryLanguages?.Any(y => y.LanguageId == x.LanguageId) ?? true).ToList();
-                DatabaseContext.RemoveRange(countryLanguagesToDelete);
-                await DatabaseContext.SaveChangesAsync();
-
-                //Only leave the new ones
-                entity.CountryLanguages = entity.CountryLanguages.Where(x => !currentCountryLanguages.Any(y => y.LanguageId == x.LanguageId)).ToList();
-            }
-
-            return await base.Update(entity);
+            return result;
         }
     }
 }

@@ -2,6 +2,6 @@
 {
     public enum NotificationType
     {
-        Info = 1
+        Info,
     }
 }

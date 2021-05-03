@@ -1,5 +1,4 @@
 ﻿using BPWA.Common.Enumerations;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 
 namespace BPWA.Web.Services.Models
@@ -11,8 +10,8 @@ namespace BPWA.Web.Services.Models
         public NotificationType? NotificationType { get; set; }
         public NotificationDistributionType? NotificationDistributionType { get; set; }
         public string UserId { get; set; }
-        public string SelectedUser { get; set; }
-        public List<int> GroupIds { get; set; }
-        public List<SelectListItem> GroupIdsSelectList { get; set; }
+        public DropdownItem<string> UserIdDropdownItem { get; set; }
+        public List<DropdownItem> GroupIdsDropdownItems { get; set; }
+        public List<int> GroupIds => GroupIdsDropdownItems.GetIds();
     }
 }

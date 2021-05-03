@@ -82,7 +82,7 @@ namespace BPWA.DAL.Services
             return cacheEntry?.Value;
         }
 
-        public async Task<Result> AddOrUpdateRange(List<Translation> entities)
+        public async Task AddOrUpdateRange(List<Translation> entities)
         {
             foreach (var entity in entities)
             {
@@ -102,78 +102,65 @@ namespace BPWA.DAL.Services
                 await UpdateEntity(entityFromDatabase);
             }
 
-            return Result.Success();
+            return;
         }
 
-        public override async Task<Result<Translation>> AddEntity(Translation entity)
+        public override async Task<Translation> AddEntity(Translation entity)
         {
             entity.KeyHash = entity.Key.GetHashString();
 
             var result = await base.AddEntity(entity);
 
-            if (result.IsSuccess)
+            var translationCacheModel = new TranslationCacheModel
             {
-                var translationCacheModel = new TranslationCacheModel
-                {
-                    Culture = entity.Culture,
-                    Key = entity.Key,
-                    KeyHash = entity.Key.GetHashString(),
-                    Value = entity.Value
-                };
+                Culture = entity.Culture,
+                Key = entity.Key,
+                KeyHash = entity.Key.GetHashString(),
+                Value = entity.Value
+            };
 
-                _memoryCache.Set(translationCacheModel.CacheKey, translationCacheModel);
-            }
+            _memoryCache.Set(translationCacheModel.CacheKey, translationCacheModel);
 
             return result;
         }
 
-        public override async Task<Result<Translation>> UpdateEntity(Translation entity)
+        public override async Task<Translation> UpdateEntity(Translation entity)
         {
             entity.KeyHash = entity.Key.GetHashString();
 
             var result = await base.UpdateEntity(entity);
 
-            if (result.IsSuccess)
-            {
-                var translationCacheModel = new TranslationCacheModel
-                {
-                    Culture = entity.Culture,
-                    Key = entity.Key,
-                    KeyHash = entity.Key.GetHashString(),
-                    Value = entity.Value
-                };
 
-                _memoryCache.Set(translationCacheModel.CacheKey, translationCacheModel);
-            }
+            var translationCacheModel = new TranslationCacheModel
+            {
+                Culture = entity.Culture,
+                Key = entity.Key,
+                KeyHash = entity.Key.GetHashString(),
+                Value = entity.Value
+            };
+
+            _memoryCache.Set(translationCacheModel.CacheKey, translationCacheModel);
 
             return result;
         }
 
-        public override async Task<Result> Delete(int id)
+        public override async Task Delete(int id)
         {
             var entityResult = await base.GetEntityById(id);
 
-            if (!entityResult.IsSuccess)
-                return Result.Failed("Failed to load translation");
+            await base.Delete(id);
 
-            var result = await base.Delete(id);
+            var entity = entityResult;
 
-            if (result.IsSuccess)
+            var translationCacheModel = new TranslationCacheModel
             {
-                var entity = entityResult.Item;
+                Culture = entity.Culture,
+                Key = entity.Key,
+                KeyHash = entity.Key.GetHashString(),
+                Value = entity.Value
+            };
 
-                var translationCacheModel = new TranslationCacheModel
-                {
-                    Culture = entity.Culture,
-                    Key = entity.Key,
-                    KeyHash = entity.Key.GetHashString(),
-                    Value = entity.Value
-                };
-
-                _memoryCache.Remove(translationCacheModel.CacheKey);
-            }
-
-            return result;
+            _memoryCache.Remove(translationCacheModel.CacheKey);
         }
 
         private async Task<Dictionary<string, string>> GetTranslations(List<string> translationKeys)

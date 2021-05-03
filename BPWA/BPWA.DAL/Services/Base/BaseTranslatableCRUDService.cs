@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BPWA.Common.Exceptions;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
 using BPWA.DAL.Models;
@@ -11,9 +12,9 @@ namespace BPWA.DAL.Services
     public class BaseTranslatableCRUDService<TEntity, TSearchModel, TDTO>
         : BaseTranslatableCRUDService<TEntity, TSearchModel, TDTO, int>,
           IBaseCRUDService<TEntity, TSearchModel, TDTO, int>
-        where TEntity : BaseEntity, new()
-        where TSearchModel : BaseSearchModel, new()
-        where TDTO : BaseDTO
+        where TEntity : class, IBaseEntity, new()
+        where TSearchModel : class, IBaseSearchModel, new()
+        where TDTO : class, IBaseDTO
     {
         public BaseTranslatableCRUDService(
             DatabaseContext databaseContext,
@@ -25,9 +26,9 @@ namespace BPWA.DAL.Services
     public class BaseTranslatableCRUDService<TEntity, TSearchModel, TDTO, TId> :
         BaseTranslatableReadService<TEntity, TSearchModel, TDTO, TId>,
         IBaseCRUDService<TEntity, TSearchModel, TDTO, TId>
-        where TEntity : BaseEntity<TId>, new()
-        where TSearchModel : BaseSearchModel, new()
-        where TDTO : BaseDTO<TId>
+        where TEntity : class, IBaseEntity<TId>, new()
+        where TSearchModel : class, IBaseSearchModel, new()
+        where TDTO : class, IBaseDTO<TId>
     {
         public BaseTranslatableCRUDService(
             DatabaseContext databaseContext,
@@ -37,95 +38,62 @@ namespace BPWA.DAL.Services
         {
         }
 
-        virtual public async Task<Result<TDTO>> Add(TEntity entity)
+        virtual public async Task<TDTO> Add(TEntity entity)
         {
-            var result = await AddEntity(entity);
-
-            if (!result.IsSuccess)
-                return Result.Failed<TDTO>(result.GetErrorMessages());
+            var entityResult = await AddEntity(entity);
 
             try
             {
-                var mapped = Mapper.Map<TDTO>(result.Item);
-
-                return Result.Success(mapped);
+                return Mapper.Map<TDTO>(entityResult);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                return Result.Failed<TDTO>("Failed to map Entity to DTO");
+                throw new MappingException(exception);
             }
         }
 
-        virtual public async Task<Result<TEntity>> AddEntity(TEntity entity)
+        virtual public async Task<TEntity> AddEntity(TEntity entity)
         {
-            try
-            {
-                await DatabaseContext.Set<TEntity>().AddAsync(entity);
-                await DatabaseContext.SaveChangesAsync();
+            await DatabaseContext.Set<TEntity>().AddAsync(entity);
+            await DatabaseContext.SaveChangesAsync();
 
-                return Result.Success(entity);
-            }
-            catch (Exception e)
-            {
-                return Result.Failed<TEntity>("Failed to add entity");
-            }
+            return entity;
         }
 
-        virtual public async Task<Result<TDTO>> Update(TEntity entity)
+        virtual public async Task<TDTO> Update(TEntity entity)
         {
-            var result = await UpdateEntity(entity);
-
-            if (!result.IsSuccess)
-                return Result.Failed<TDTO>(result.GetErrorMessages());
+            var entityResult = await UpdateEntity(entity);
 
             try
             {
-                var mapped = Mapper.Map<TDTO>(result.Item);
-
-                return Result.Success(mapped);
+                return Mapper.Map<TDTO>(entityResult);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                return Result.Failed<TDTO>("Failed to map Entity to DTO");
+                throw new MappingException(exception);
             }
         }
 
-        virtual public async Task<Result<TEntity>> UpdateEntity(TEntity entity)
+        virtual public async Task<TEntity> UpdateEntity(TEntity entity)
         {
-            try
-            {
-                DatabaseContext.Set<TEntity>().Update(entity);
-                await DatabaseContext.SaveChangesAsync();
+            DatabaseContext.Set<TEntity>().Update(entity);
+            await DatabaseContext.SaveChangesAsync();
 
-                return Result.Success(entity);
-            }
-            catch (Exception e)
-            {
-                return Result.Failed<TEntity>("Failed to update entity");
-            }
+            return entity;
         }
 
-        virtual public async Task<Result> Delete(TEntity entity)
+        virtual public async Task Delete(TEntity entity)
         {
-            try
-            {
-                DatabaseContext.Set<TEntity>().Remove(entity);
+            DatabaseContext.Set<TEntity>().Remove(entity);
 
-                await DatabaseContext.SaveChangesAsync();
-
-                return Result.Success();
-            }
-            catch (Exception e)
-            {
-                return Result.Failed("Failed to delete entity");
-            }
+            await DatabaseContext.SaveChangesAsync();
         }
 
-        virtual public async Task<Result> Delete(TId id)
+        virtual public async Task Delete(TId id)
         {
             var item = await DatabaseContext.Set<TEntity>().FirstOrDefaultAsync(x => x.Id.Equals(id));
 
-            return await Delete(item);
+            await Delete(item);
         }
 
         virtual public async Task<TEntity> IncludeRelatedEntitiesToDelete(TEntity entity) => entity;

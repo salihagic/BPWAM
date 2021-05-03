@@ -11,6 +11,6 @@ namespace BPWA.Web.Services.Services
         IBaseCRUDWebService<BusinessUnit, BusinessUnitSearchModel, BusinessUnitDTO, BusinessUnitAddModel, BusinessUnitUpdateModel>,
         IBusinessUnitsService
     {
-        Task<Result<List<BusinessUnitDTO>>> GetForCurrentUser();
+        Task<List<BusinessUnitDTO>> GetForCurrentUser();
     }
 }

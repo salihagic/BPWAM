@@ -3,7 +3,7 @@ using BPWA.Common.Extensions;
 using BPWA.Common.Resources;
 using BPWA.Common.Security;
 using BPWA.DAL.Services;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using BPWA.Web.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace BPWA.Web.Services.Services
             _currentUser = currentUser;
         }
 
-        virtual public List<SelectListItem> GetAppClaims()
+        virtual public List<DropdownItem<string>> GetAppClaims()
         {
             var claims = new List<string>();
 
@@ -39,61 +39,83 @@ namespace BPWA.Web.Services.Services
                 claims.AddRange(AppClaimsHelper.Authorization.BusinessUnit.All);
             }
 
-            return claims.Select(x => new SelectListItem
+            return claims.Select(x => new DropdownItem<string>
             {
-                Value = x,
+                Id = x,
                 Text = TranslationsHelper.Translate(x)
             }).ToList();
         }
 
-        public List<SelectListItem> GetTicketStatuses()
+        public List<DropdownItem<string>> GetTicketStatuses()
         {
             return Enum.GetValues(typeof(TicketStatuses)).Cast<TicketStatuses>()
-                .Select(x => new SelectListItem
+                .Select(x => new DropdownItem<string>
                 {
-                    Value = x.ToString(),
+                    Id = x.ToString(),
                     Text = TranslationsHelper.Translate(x.ToString())
                 }).ToList();
         }
 
-        public List<SelectListItem> GetTicketTypes()
+        public List<DropdownItem<string>> GetTicketTypes()
         {
             return Enum.GetValues(typeof(TicketTypes)).Cast<TicketTypes>()
-                .Select(x => new SelectListItem
+                .Select(x => new DropdownItem<string>
                 {
-                    Value = x.ToString(),
+                    Id = x.ToString(),
                     Text = TranslationsHelper.Translate(x.ToString())
                 }).ToList();
         }
 
-        public List<SelectListItem> GetSystemLanguages()
+        public List<DropdownItem<string>> GetSystemLanguages()
         {
             return TranslationOptions.SupportedLanguages
-                .Select(x => new SelectListItem
+                .Select(x => new DropdownItem<string>
                 {
-                    Value = x.CultureInfo.Name,
+                    Id = x.CultureInfo.Name,
                     Text = x.Name
                 }).ToList();
         }
 
-        public List<SelectListItem> GetNotificationTypes()
+        public List<DropdownItem<string>> GetNotificationTypes()
         {
             return Enum.GetValues(typeof(NotificationType)).Cast<NotificationType>()
-                .Select(x => new SelectListItem
+                .Select(x => new DropdownItem<string>
                 {
-                    Value = x.ToString(),
+                    Id = x.ToString(),
                     Text = TranslationsHelper.Translate(x.ToString())
                 }).ToList();
         }
 
-        public List<SelectListItem> GetNotificationDistributionTypes()
+        public List<DropdownItem<string>> GetNotificationDistributionTypes()
         {
             return Enum.GetValues(typeof(NotificationDistributionType)).Cast<NotificationDistributionType>()
-                .Select(x => new SelectListItem
+                .Select(x => new DropdownItem<string>
                 {
-                    Value = x.ToString(),
+                    Id = x.ToString(),
                     Text = TranslationsHelper.Translate(x.ToString())
                 }).ToList();
+        }
+
+
+        public List<DropdownItem<string>> GetNotificationDistributionTypes1()
+        {
+            return GetDropDown(
+                Enum.GetValues(typeof(NotificationDistributionType)).Cast<NotificationDistributionType>().ToList(),
+                item => new DropdownItem<string> { Id = item.ToString(), Text = TranslationsHelper.Translate(item.ToString()) },
+                Translations.Select_notification_distribution_type);
+        }
+
+        public List<DropdownItem<string>> GetDropDown<T>(List<T> list, Func<T, DropdownItem<string>> getObject, string defaultText = "")
+        {
+            var selectList = new List<DropdownItem<string>>();
+
+            if (defaultText.IsNotEmpty())
+                selectList.Add(new DropdownItem<string>() { Id = string.Empty, Text = defaultText });
+
+            foreach (var item in list)
+                selectList.Add(getObject(item));
+
+            return selectList;
         }
     }
 }

@@ -37,20 +37,16 @@ namespace BPWA.Controllers
             {
                 var result = await _usersWebService.SignIn(model.UserName, model.Password);
 
-                if (!result.IsSuccess)
-                {
-                    _toast.AddErrorToastMessage(result.GetErrorMessages().FirstOrDefault());
-                    return View(model);
-                }
-
                 return !string.IsNullOrEmpty(returnUrl) ? LocalRedirect(returnUrl) : RedirectToAction("Index", "Dashboard");
             }
             catch (ValidationException e)
             {
+                _toast.AddErrorToastMessage(e.Message);
                 ModelState.AddErrors(e.Errors);
             }
             catch (Exception e)
             {
+                _toast.AddErrorToastMessage(e.Message);
                 ModelState.AddError(Translations.Invalid_username_or_password);
             }
 

@@ -1,8 +1,15 @@
 ﻿namespace BPWA.Web.Services.Models
 {
-    public class BaseUpdateModel : BaseUpdateModel<int> {}
+    public interface IBaseUpdateModel : IBaseUpdateModel<int> {}
 
-    public class BaseUpdateModel<TId>
+    public class BaseUpdateModel : BaseUpdateModel<int>, IBaseUpdateModel {}
+
+    public interface IBaseUpdateModel<TId>
+    {
+        public TId Id { get; set; }
+    }
+
+    public class BaseUpdateModel<TId> : IBaseUpdateModel<TId>
     {
         public TId Id { get; set; }
     }

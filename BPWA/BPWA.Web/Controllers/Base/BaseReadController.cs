@@ -8,7 +8,7 @@ using BPWA.Web.Services.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,9 +16,9 @@ namespace BPWA.Controllers
 {
     public class BaseReadController<TEntity, TSearchModel, TDTO> :
         BaseReadController<TEntity, TSearchModel, TDTO, int>
-        where TEntity : IBaseEntity<int>, new()
-        where TSearchModel : BaseSearchModel, new()
-        where TDTO : BaseDTO<int>, new()
+        where TEntity : class, IBaseEntity<int>, new()
+        where TSearchModel : class, IBaseSearchModel, new()
+        where TDTO : class, IBaseDTO<int>, new()
     {
         public BaseReadController(
             IBaseReadWebService<TEntity, TSearchModel, TDTO, int> service,
@@ -29,9 +29,9 @@ namespace BPWA.Controllers
 
     public class BaseReadController<TEntity, TSearchModel, TDTO, TId> :
         BaseController
-        where TEntity : IBaseEntity<TId>, new()
-        where TSearchModel : BaseSearchModel, new()
-        where TDTO : BaseDTO<TId>, new()
+        where TEntity : class, IBaseEntity<TId>, new()
+        where TSearchModel : class, IBaseSearchModel, new()
+        where TDTO : class, IBaseDTO<TId>, new()
     {
         #region Props
 
@@ -72,67 +72,75 @@ namespace BPWA.Controllers
             //TODO: Fix form reset on Index pages
             //var searchModel = _sessionSearchModel ?? (await BaseReadService.PrepareForGet()).Item;
 
-            return View((await BaseReadService.PrepareForGet()).Item);
+            return View(new TSearchModel());
         }
 
         public virtual async Task<IActionResult> IndexJson(TSearchModel searchModel)
         {
-            _sessionSearchModel = searchModel;
-            var sessionSearchModel = _sessionSearchModel;
-
-            sessionSearchModel.Pagination = GetPagination();
-
-            var result = await BaseReadService.Get(sessionSearchModel);
-
-            if (!result.IsSuccess)
-                return Error();
-
-            _sessionSearchModel = sessionSearchModel;
-
-            var pagination = sessionSearchModel.Pagination;
-            var orderField = pagination.OrderFields.FirstOrDefault();
-
-            var sortDirection = "";
-            var sortField = "";
-            if (orderField != null)
+            try
             {
-                sortDirection = orderField.Direction.ToString().ToLower();
-                sortField = orderField.Field.ToLower();
-            }
+                _sessionSearchModel = searchModel;
+                var sessionSearchModel = _sessionSearchModel;
 
-            return Ok(new
-            {
-                meta = new
+                sessionSearchModel.Pagination = GetPagination();
+
+                var items = await BaseReadService.Get(sessionSearchModel);
+
+                _sessionSearchModel = sessionSearchModel;
+
+                var pagination = sessionSearchModel.Pagination;
+                var orderField = pagination.OrderFields.FirstOrDefault();
+
+                var sortDirection = "";
+                var sortField = "";
+                if (orderField != null)
                 {
-                    page = pagination.Page,
-                    pages = pagination.TotalNumberOfPages,
-                    perpage = pagination.Take,
-                    total = pagination.TotalNumberOfRecords,
-                    sort = sortDirection,
-                    field = sortField
-                },
-                data = result.Item
-            });
+                    sortDirection = orderField.Direction.ToString().ToLower();
+                    sortField = orderField.Field.ToLower();
+                }
+
+                return Ok(new
+                {
+                    meta = new
+                    {
+                        page = pagination.Page,
+                        pages = pagination.TotalNumberOfPages,
+                        perpage = pagination.Take,
+                        total = pagination.TotalNumberOfRecords,
+                        sort = sortDirection,
+                        field = sortField
+                    },
+                    data = items
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPost]
         public virtual async Task<IActionResult> Dropdown(TSearchModel searchModel)
         {
-            searchModel ??= new TSearchModel();
-
-            var result = await BaseReadService.Get(searchModel);
-
-            if (!result.IsSuccess)
-                return BadRequest();
-
-            return Ok(new
+            try
             {
-                pagination = new
+                searchModel ??= new TSearchModel();
+
+                var items = await BaseReadService.Get(searchModel);
+
+                return Ok(new
                 {
-                    more = searchModel.Pagination.HasMore,
-                },
-                results = result.Item
-            });
+                    pagination = new
+                    {
+                        more = searchModel.Pagination.HasMore,
+                    },
+                    results = items
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         #endregion
@@ -141,15 +149,19 @@ namespace BPWA.Controllers
 
         public virtual async Task<IActionResult> Details(TId id, bool fullPage = false)
         {
-            if (fullPage)
-                BreadcrumbItem(null, new { id, fullPage });
+            try
+            {
+                if (fullPage)
+                    BreadcrumbItem(null, new { id, fullPage });
 
-            var result = await BaseReadService.GetById(id);
+                var result = await BaseReadService.GetById(id);
 
-            if (!result.IsSuccess)
-                return fullPage ? Error() : _Error();
-
-            return View(result.Item);
+                return View(result);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         #endregion
@@ -160,13 +172,7 @@ namespace BPWA.Controllers
         {
             ViewBag.Title = TranslationsHelper.Translate(CurrentController);
 
-            var searchModel = Mapper.Map<TSearchModel>(_sessionSearchModel);
-            var result = await BaseReadService.PrepareForGet(searchModel);
-
-            if (!result.IsSuccess)
-                return Error();
-
-            var model = result.Item;
+            var model = _sessionSearchModel;
 
             if (reportOption == ReportOptions.Pdf)
                 return View(model);
@@ -181,10 +187,7 @@ namespace BPWA.Controllers
             searchModel.Pagination.ShouldTakeAllRecords = true;
             var result = await BaseReadService.Get(searchModel);
 
-            if (!result.IsSuccess)
-                return BadRequest();
-
-            var items = result.Item;
+            var items = result;
 
             var pagination = searchModel.Pagination;
             var orderField = pagination.OrderFields.FirstOrDefault();

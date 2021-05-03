@@ -9,19 +9,17 @@ using BPWA.Web.Services.Services;
 using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
-using BPWA.DAL.Models;
 
 namespace BPWA.Controllers
 {
     public class BaseCRUDController<TEntity, TSearchModel, TDTO, TAddModel, TUpdateModel> :
         BaseCRUDController<TEntity, TSearchModel, TDTO, TAddModel, TUpdateModel, int>
-        where TEntity : IBaseEntity<int>, new()
-        where TSearchModel : BaseSearchModel, new()
-        where TDTO : BaseDTO<int>, new()
+        where TEntity : class, IBaseEntity<int>, new()
+        where TSearchModel : class, IBaseSearchModel, new()
+        where TDTO : class, IBaseDTO<int>, new()
         where TAddModel : class, new()
-        where TUpdateModel : BaseUpdateModel, new()
+        where TUpdateModel : class, IBaseUpdateModel, new()
     {
         public BaseCRUDController(
             IBaseCRUDWebService<TEntity, TSearchModel, TDTO, TAddModel, TUpdateModel, int> service,
@@ -32,11 +30,11 @@ namespace BPWA.Controllers
 
     public class BaseCRUDController<TEntity, TSearchModel, TDTO, TAddModel, TUpdateModel, TId> :
         BaseReadController<TEntity, TSearchModel, TDTO, TId>
-        where TEntity : IBaseEntity<TId>, new()
-        where TSearchModel : BaseSearchModel, new()
-        where TDTO : BaseDTO<TId>, new()
+        where TEntity : class, IBaseEntity<TId>, new()
+        where TSearchModel : class, IBaseSearchModel, new()
+        where TDTO : class, IBaseDTO<TId>, new()
         where TAddModel : class, new()
-        where TUpdateModel : BaseUpdateModel<TId>, new()
+        where TUpdateModel : class, IBaseUpdateModel<TId>, new()
     {
         #region Props
 
@@ -85,8 +83,8 @@ namespace BPWA.Controllers
             return View(new TAddModel());
         }
 
-        [HttpPost, Transaction]
-        public virtual async Task<IActionResult> Add(TAddModel model)
+        [HttpPost]
+        public virtual async Task<IActionResult> Add(TAddModel model, bool fullPage = false)
         {
             ViewBag.Title = TranslationsHelper.Translate(CurrentAction);
 
@@ -95,22 +93,23 @@ namespace BPWA.Controllers
 
             try
             {
-                var result = await BaseCRUDService.Add(model);
-
-                if (!result.IsSuccess)
+                try
                 {
-                    Toast.AddErrorToastMessage(result.GetErrorMessages().FirstOrDefault());
-                    return View(model);
+                    await BaseCRUDService.Add(model);
+                }
+                catch (NotImplementedException)
+                {
+                    var entity = Mapper.Map<TEntity>(model);
+                    await BaseCRUDService.Add(entity);
                 }
 
                 Toast.AddSuccessToastMessage(Message_add_success);
-                return Json(new { success = true });
+                return fullPage ? RedirectToAction("Index") : Json(new { success = true });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Toast.AddErrorToastMessage(Message_add_error);
             }
-
 
             return View(model);
         }
@@ -121,18 +120,32 @@ namespace BPWA.Controllers
 
         public virtual async Task<IActionResult> Edit(TId id, bool fullPage = false)
         {
-            if (fullPage)
-                BreadcrumbItem(null, new { id, fullPage });
+            try
+            {
+                if (fullPage)
+                    BreadcrumbItem(null, new { id, fullPage });
 
-            var modelResult = await BaseCRUDService.PrepareForUpdate(id);
+                TUpdateModel model = null;
 
-            if (!modelResult.IsSuccess)
+                try
+                {
+                    model = await BaseCRUDService.PrepareForUpdate(id);
+                }
+                catch (NotImplementedException)
+                {
+                    var entity = await BaseCRUDService.GetEntityById(id, false, true);
+                    model = Mapper.Map<TUpdateModel>(entity);
+                }
+
+                return View(model);
+            }
+            catch (Exception)
+            {
                 return fullPage ? Error() : _Error();
-
-            return View(modelResult.Item);
+            }
         }
 
-        [HttpPost, Transaction]
+        [HttpPost]
         public virtual async Task<IActionResult> Edit(TUpdateModel model, bool fullPage = false)
         {
             ViewBag.Title = TranslationsHelper.Translate(CurrentAction);
@@ -142,37 +155,21 @@ namespace BPWA.Controllers
 
             try
             {
-                var entityResult = await BaseCRUDService.MapUpdateModelToEntity(model);
-
-                Result<TDTO> result = null;
-
-                if (!entityResult.IsSuccess)
+                try
                 {
-                    var getEntityByIdResult = await BaseCRUDService.GetEntityById(model.Id, shouldTranslate: false, includeRelated: false);
-
-                    if (!getEntityByIdResult.IsSuccess)
-                        return BadRequest(getEntityByIdResult);
-
-                    var entity = getEntityByIdResult.Item;
+                    await BaseCRUDService.Update(model);
+                }
+                catch (NotImplementedException)
+                {
+                    var entity = await BaseCRUDService.GetEntityById(model.Id, false, false);
                     Mapper.Map(model, entity);
-                    result = await BaseCRUDService.Update(entity);
-                }
-                else
-                {
-                    var entity = entityResult.Item;
-                    result = await BaseCRUDService.Update(entity);
-                }
-
-                if (!result.IsSuccess)
-                {
-                    Toast.AddErrorToastMessage(result.GetErrorMessages().FirstOrDefault());
-                    return View(model);
+                    await BaseCRUDService.Update(entity);
                 }
 
                 Toast.AddSuccessToastMessage(Message_edit_success);
                 return fullPage ? RedirectToAction("Index") : Json(new { success = true });
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
                 Toast.AddErrorToastMessage(Message_edit_error);
             }
@@ -184,15 +181,19 @@ namespace BPWA.Controllers
 
         #region Delete
 
-        [HttpDelete, Transaction]
+        [HttpDelete]
         public virtual async Task<IActionResult> Delete(TId id)
         {
-            var result = await BaseCRUDService.Delete(id);
+            try
+            {
+                await BaseCRUDService.Delete(id);
 
-            if (!result.IsSuccess)
+                return Ok();
+            }
+            catch (Exception)
+            {
                 return BadRequest();
-
-            return Ok();
+            }
         }
 
         #endregion

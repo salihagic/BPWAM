@@ -10,12 +10,12 @@ namespace BPWA.Web.Services.Services
         IBaseCRUDWebService<User, UserSearchModel, UserDTO, UserAddModel, UserUpdateModel, string>,
         IUsersService
     {
-        Task<Result<AccountUpdateModel>> PrepareForUpdateAccount();
-        Task<Result> UpdateAccount(AccountUpdateModel model);
-        Task<Result> ToggleCurrentCompany(ToggleCurrentCompanyModel model);
-        Task<Result> ToggleCurrentBusinessUnit(ToggleCurrentBusinessUnitModel model);
-        Task<Result<ResetPasswordModel>> PrepareForResetPassword(string userId, string resetPasswordToken);
-        Task<Result> ResetPassword(ResetPasswordModel model);
+        Task<AccountUpdateModel> PrepareForUpdateAccount();
+        Task UpdateAccount(AccountUpdateModel model);
+        Task ToggleCurrentCompany(ToggleCurrentCompanyModel model);
+        Task ToggleCurrentBusinessUnit(ToggleCurrentBusinessUnitModel model);
+        Task<ResetPasswordModel> PrepareForResetPassword(string userId, string resetPasswordToken);
+        Task ResetPassword(ResetPasswordModel model);
         Task SignOut();
     }
 }

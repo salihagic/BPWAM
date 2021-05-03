@@ -3,35 +3,30 @@ using BPWA.DAL.Models;
 using BPWA.DAL.Services;
 using BPWA.Web.Services.Models;
 using System.Threading.Tasks;
-using BPWA.DAL.Models;
+using System;
 
 namespace BPWA.Web.Services.Services
 {
     public interface IBaseCRUDWebService<TEntity, TSearchModel, TDTO, TAddModel, TUpdateModel> :
         IBaseCRUDWebService<TEntity, TSearchModel, TDTO, TAddModel, TUpdateModel, int>
-        where TEntity : IBaseEntity, new()
-        where TSearchModel : BaseSearchModel, new()
-        where TDTO : BaseDTO, new()
+        where TEntity : class, IBaseEntity, new()
+        where TSearchModel : class, IBaseSearchModel, new()
+        where TDTO : class, IBaseDTO, new()
         where TAddModel : class, new()
-        where TUpdateModel : BaseUpdateModel<int>, new()
+        where TUpdateModel : class, IBaseUpdateModel, new()
     { }
 
     public interface IBaseCRUDWebService<TEntity, TSearchModel, TDTO, TAddModel, TUpdateModel, TId> :
         IBaseCRUDService<TEntity, TSearchModel, TDTO, TId>,
         IBaseReadWebService<TEntity, TSearchModel, TDTO, TId>
-        where TEntity : IBaseEntity<TId>, new()
-        where TSearchModel : BaseSearchModel, new()
-        where TDTO : BaseDTO<TId>, new()
+        where TEntity : class, IBaseEntity<TId>, new()
+        where TSearchModel : class, IBaseSearchModel, new()
+        where TDTO : class, IBaseDTO<TId>, new()
         where TAddModel : class, new()
-        where TUpdateModel : BaseUpdateModel<TId>, new()
+        where TUpdateModel : class, IBaseUpdateModel<TId>, new()
     {
-        virtual async Task<Result<TDTO>> Add(TAddModel model) => Result.Failed<TDTO>("Not implemented");
-        virtual async Task<Result<TUpdateModel>> PrepareForUpdate(TId id) => Result.Failed<TUpdateModel>("Not implemented");
-        virtual async Task<Result<TDTO>> Update(TUpdateModel model) => Result.Failed<TDTO>("Not implemented");
-
-        virtual async Task<Result<TAddModel>> PrepareForAdd(TAddModel model = null) => Result.Success(model ?? new TAddModel());
-        virtual async Task<Result<TEntity>> MapAddModelToEntity(TAddModel model) => Result.Failed<TEntity>("Not implemented");
-        virtual async Task<Result<TUpdateModel>> PrepareForUpdate(TUpdateModel model = null) => Result.Success(model ?? new TUpdateModel());
-        virtual async Task<Result<TEntity>> MapUpdateModelToEntity(TUpdateModel model) => Result.Failed<TEntity>("Not implemented");
+        virtual async Task<TDTO> Add(TAddModel model) => throw new NotImplementedException();
+        virtual async Task<TUpdateModel> PrepareForUpdate(TId id) => throw new NotImplementedException();
+        virtual async Task<TDTO> Update(TUpdateModel model) => throw new NotImplementedException();
     }
 }

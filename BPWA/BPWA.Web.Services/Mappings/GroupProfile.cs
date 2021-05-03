@@ -9,12 +9,10 @@ namespace BPWA.DAL.Mappings
     {
         public GroupProfile()
         {
-            CreateMap<GroupAddModel, Group>()
-                .ForMember(dest => dest.GroupUsers, opt => opt.MapFrom(src => src.UserIds.Select(x => new GroupUser { UserId = x }).ToList()));
+            CreateMap<GroupAddModel, Group>();
             CreateMap<Group, GroupUpdateModel>()
-                .ForMember(dest => dest.UserIds, opt => opt.MapFrom(src => src.GroupUsers.Select(x => x.UserId).ToList()))
-                .ReverseMap()
-                .ForMember(dest => dest.GroupUsers, opt => opt.MapFrom(src => src.UserIds.Select(x => new GroupUser { UserId = x }).ToList()));
+                .ForMember(dest => dest.UserIdsDropdownItems, opt => opt.MapFrom(src => src.GroupUsers.Select(x => new DropdownItem<string> { Id = x.UserId, Text = $"{x.User.FirstName} {x.User.LastName}" }).ToList()))
+                .ReverseMap();
         }
     }
 }

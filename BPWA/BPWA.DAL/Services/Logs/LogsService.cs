@@ -67,47 +67,30 @@ namespace BPWA.DAL.Services
                         .Take(searchModel.Pagination.Take.GetValueOrDefault());
         }
 
-        public async Task<Result<List<LogDTO>>> Get(LogSearchModel searchModel = null)
+        public async Task<List<LogDTO>>  Get(LogSearchModel searchModel = null)
         {
-            try
-            {
-                Query = BuildQueryConditions(Query, searchModel);
-                Query = BuildQueryOrdering(Query, searchModel);
 
-                if (searchModel?.Pagination != null)
-                    searchModel.Pagination.TotalNumberOfRecords = await Query.CountAsync();
+            Query = BuildQueryConditions(Query, searchModel);
+            Query = BuildQueryOrdering(Query, searchModel);
 
-                if (searchModel?.Pagination != null && !searchModel.Pagination.ShouldTakeAllRecords.GetValueOrDefault())
-                    Query = BuildQueryPagination(Query, searchModel);
+            if (searchModel?.Pagination != null)
+                searchModel.Pagination.TotalNumberOfRecords = await Query.CountAsync();
 
-                var items = await Query
-                    .AsNoTracking()
-                    .ProjectTo<LogDTO>(Mapper.ConfigurationProvider)
-                    .ToListAsync();
+            if (searchModel?.Pagination != null && !searchModel.Pagination.ShouldTakeAllRecords.GetValueOrDefault())
+                Query = BuildQueryPagination(Query, searchModel);
 
-                return Result.Success(items);
-            }
-            catch (Exception e)
-            {
-                return Result.Failed<List<LogDTO>>("Failed to load entities");
-            }
+            return await Query
+                .AsNoTracking()
+                .ProjectTo<LogDTO>(Mapper.ConfigurationProvider)
+                .ToListAsync();
         }
 
-        public async Task<Result<LogDTO>> GetById(int id)
+        public async Task<LogDTO> GetById(int id)
         {
-            try
-            {
-                var item = await Query.Where(x => x.Id.Equals(id))
-                    .AsNoTracking()
-                    .ProjectTo<LogDTO>(Mapper.ConfigurationProvider)
-                    .FirstOrDefaultAsync();
-
-                return Result.Success(item);
-            }
-            catch (Exception e)
-            {
-                return Result.Failed<LogDTO>("Failed to load entity");
-            }
+            return await Query.Where(x => x.Id.Equals(id))
+                .AsNoTracking()
+                .ProjectTo<LogDTO>(Mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
         }
     }
 }

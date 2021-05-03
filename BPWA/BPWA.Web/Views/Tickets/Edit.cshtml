@@ -69,12 +69,12 @@
 
     Select2TicketTypes({
         element: '#modal_@nameof(TicketUpdateModel.TicketType)',
-        initialValue: '@Model.TicketType.ToString()',
+        selectedItem: '@Html.Raw(Model.TicketType.GetDropdownItemJson())'
     });
-
+    
     Select2TicketStatuses({
         element: '#modal_@nameof(TicketUpdateModel.TicketStatus)',
-        initialValue: '@Model.TicketStatus.ToString()',
+        selectedItem: '@Html.Raw(Model.TicketStatus.GetDropdownItemJson())'
     });
 
     Translatable({

@@ -7,10 +7,10 @@ namespace BPWA.DAL.Services
 {
     public interface INotificationsService : IBaseCRUDService<Notification, NotificationSearchModel, NotificationDTO>
     {
-        Task<Result<List<NotificationDTO>>> GetForCurrentUser(NotificationSearchModel searchModel = null);
-        Task<Result<List<NotificationDTO>>> GetDirectForCurrentUser(NotificationSearchModel searchModel = null);
-        Task<Result<List<NotificationDTO>>> GetGroupForCurrentUser(NotificationSearchModel searchModel = null);
-        Task<Result<List<NotificationDTO>>> GetBroadcastForCurrentUser(NotificationSearchModel searchModel = null);
-        Task<Result<int>> GetUnseenNotificationsCountForCurrentUser();
+        Task<List<NotificationDTO>>  GetForCurrentUser(NotificationSearchModel searchModel = null);
+        Task<List<NotificationDTO>>  GetDirectForCurrentUser(NotificationSearchModel searchModel = null);
+        Task<List<NotificationDTO>>  GetGroupForCurrentUser(NotificationSearchModel searchModel = null);
+        Task<List<NotificationDTO>>  GetBroadcastForCurrentUser(NotificationSearchModel searchModel = null);
+        Task<int> GetUnseenNotificationsCountForCurrentUser();
     }
 }

@@ -56,10 +56,7 @@ namespace BPWA.Administration.Controllers
         [HttpPost]
         public async Task<IActionResult> AddOrUpdateRange(List<TranslationAddModel> translations)
         {
-            var result = await _translationsWebService.AddOrUpdateRange(translations);
-
-            if (!result.IsSuccess)
-                return BadRequest();
+            await _translationsWebService.AddOrUpdateRange(translations);
 
             return Ok();
         }

@@ -7,9 +7,9 @@ namespace BPWA.Web.Services.Models
     {
         public string Code { get; set; }
         public string Name { get; set; }
-        public List<int> CurrencyIds { get; set; }
-        public List<SelectListItem> CurrencyIdsSelectList { get; set; }
-        public List<int> LanguageIds { get; set; }
-        public List<SelectListItem> LanguageIdsSelectList { get; set; }
+        public List<DropdownItem> CurrencyIdsDropdownItems { get; set; }
+        public List<int> CurrencyIds => CurrencyIdsDropdownItems.GetIds();
+        public List<DropdownItem> LanguageIdsDropdownItems { get; set; }
+        public List<int> LanguageIds => LanguageIdsDropdownItems.GetIds();
     }
 }

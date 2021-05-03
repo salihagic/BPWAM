@@ -22,7 +22,7 @@ namespace BPWA.Web.Services.Services
         {
         }
 
-        public async Task<Result> AddOrUpdateRange(List<TranslationAddModel> models)
+        public async Task AddOrUpdateRange(List<TranslationAddModel> models)
         {
             models = models.Where(x => x.Key.HasValue() && x.Value.HasValue()).ToList();
 
@@ -30,7 +30,7 @@ namespace BPWA.Web.Services.Services
 
             await AddOrUpdateRange(entities);
 
-            return Result.Success();
+            return ;
         }
     }
 }

@@ -46,10 +46,7 @@ namespace BPWA.Controllers
 
             var result = await _usersWebService.PrepareForUpdateAccount();
 
-            if (!result.IsSuccess)
-                return Error();
-
-            return View(result.Item);
+            return View(result);
         }
 
         [HttpPost, Transaction]
@@ -62,13 +59,7 @@ namespace BPWA.Controllers
 
             try
             {
-                var result = await _usersWebService.UpdateAccount(model);
-
-                if (!result.IsSuccess)
-                {
-                    _toast.AddErrorToastMessage(result.GetErrorMessages().FirstOrDefault());
-                    return View(model);
-                }
+                await _usersWebService.UpdateAccount(model);
 
                 _toast.AddSuccessToastMessage("Successfully edited my profile");
                 return RedirectToAction(nameof(Edit));
@@ -93,28 +84,29 @@ namespace BPWA.Controllers
         {
             var result = await _companiesWebService.GetForCurrentUser();
 
-            if (!result.IsSuccess)
-                return BadRequest();
-
             return Ok(new
             {
                 pagination = new
                 {
                     more = false,
                 },
-                results = result.Item
+                results = result
             });
         }
 
         [HttpPost]
         public async Task<IActionResult> ToggleCurrentCompany(ToggleCurrentCompanyModel model, string returnUrl = "")
         {
-            var result = await _usersWebService.ToggleCurrentCompany(model);
-
-            if (result.IsSuccess)
+            try
+            {
+                await _usersWebService.ToggleCurrentCompany(model);
                 _toast.AddSuccessToastMessage(Translations.Successfully_changed_current_company);
-            else
+
+            }
+            catch (Exception)
+            {
                 _toast.AddErrorToastMessage(Translations.There_was_an_error_while_trying_to_change_current_company);
+            }
 
             return !string.IsNullOrEmpty(returnUrl) ? LocalRedirect(returnUrl) : RedirectToAction("Index", "Dashboard");
         }
@@ -130,28 +122,28 @@ namespace BPWA.Controllers
         {
             var result = await _businessUnitsWebService.GetForCurrentUser();
 
-            if (!result.IsSuccess)
-                return BadRequest();
-
             return Ok(new
             {
                 pagination = new
                 {
                     more = false,
                 },
-                results = result.Item
+                results = result
             });
         }
 
         [HttpPost]
         public async Task<IActionResult> ToggleCurrentBusinessUnit(ToggleCurrentBusinessUnitModel model, string returnUrl = "")
         {
-            var result = await _usersWebService.ToggleCurrentBusinessUnit(model);
-
-            if (result.IsSuccess)
+            try
+            {
+                await _usersWebService.ToggleCurrentBusinessUnit(model);
                 _toast.AddSuccessToastMessage(Translations.Successfully_changed_current_business_unit);
-            else
+            }
+            catch (Exception)
+            {
                 _toast.AddErrorToastMessage(Translations.There_was_an_error_while_trying_to_change_current_business_unit);
+            }
 
             return !string.IsNullOrEmpty(returnUrl) ? LocalRedirect(returnUrl) : RedirectToAction("Index", "Dashboard");
         }
@@ -165,10 +157,7 @@ namespace BPWA.Controllers
         {
             var result = await _usersWebService.PrepareForResetPassword(userId, token);
 
-            if (!result.IsSuccess)
-                return _Error();
-
-            var model = result.Item;
+            var model = result;
 
             return View(model);
         }
@@ -186,13 +175,7 @@ namespace BPWA.Controllers
 
             try
             {
-                var result = await _usersWebService.ResetPassword(model);
-
-                if (!result.IsSuccess)
-                {
-                    _toast.AddErrorToastMessage(result.GetErrorMessages().FirstOrDefault());
-                    return await Failed();
-                }
+                await _usersWebService.ResetPassword(model);
 
                 _toast.AddSuccessToastMessage(Translations.Successfully_changed_password);
                 return RedirectToAction("Login", "Authentication");

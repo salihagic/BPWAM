@@ -41,7 +41,7 @@ namespace BPWA.DAL.Services
                        .WhereIf(searchModel?.GroupId.HasValue, x => x.NotificationGroups.Any(y => y.GroupId == searchModel.GroupId));
         }
 
-        public async Task<Result<List<NotificationDTO>>> GetForCurrentUser(NotificationSearchModel searchModel = null)
+        public async Task<List<NotificationDTO>> GetForCurrentUser(NotificationSearchModel searchModel = null)
         {
             try
             {
@@ -66,15 +66,15 @@ namespace BPWA.DAL.Services
 
                 var notificationDTOs = Mapper.Map<List<NotificationDTO>>(notifications);
 
-                return Result.Success(notificationDTOs);
+                return notificationDTOs;
             }
             catch (Exception e)
             {
-                return Result.Failed<List<NotificationDTO>>("Failed to load notifications");
+                throw new Exception("Failed to load notifications");
             }
         }
 
-        public async Task<Result<List<NotificationDTO>>> GetDirectForCurrentUser(NotificationSearchModel searchModel = null)
+        public async Task<List<NotificationDTO>> GetDirectForCurrentUser(NotificationSearchModel searchModel = null)
         {
             try
             {
@@ -97,15 +97,15 @@ namespace BPWA.DAL.Services
 
                 var notificationDTOs = Mapper.Map<List<NotificationDTO>>(notifications);
 
-                return Result.Success(notificationDTOs);
+                return notificationDTOs;
             }
             catch (Exception e)
             {
-                return Result.Failed<List<NotificationDTO>>("Failed to load notifications");
+                throw new Exception("Failed to load notifications");
             }
         }
 
-        public async Task<Result<List<NotificationDTO>>> GetGroupForCurrentUser(NotificationSearchModel searchModel = null)
+        public async Task<List<NotificationDTO>> GetGroupForCurrentUser(NotificationSearchModel searchModel = null)
         {
             try
             {
@@ -128,15 +128,15 @@ namespace BPWA.DAL.Services
 
                 var notificationDTOs = Mapper.Map<List<NotificationDTO>>(notifications);
 
-                return Result.Success(notificationDTOs);
+                return notificationDTOs;
             }
             catch (Exception e)
             {
-                return Result.Failed<List<NotificationDTO>>("Failed to load notifications");
+                throw new Exception("Failed to load notifications");
             }
         }
 
-        public async Task<Result<List<NotificationDTO>>> GetBroadcastForCurrentUser(NotificationSearchModel searchModel = null)
+        public async Task<List<NotificationDTO>> GetBroadcastForCurrentUser(NotificationSearchModel searchModel = null)
         {
             try
             {
@@ -159,11 +159,11 @@ namespace BPWA.DAL.Services
 
                 var notificationDTOs = Mapper.Map<List<NotificationDTO>>(notifications);
 
-                return Result.Success(notificationDTOs);
+                return notificationDTOs;
             }
             catch (Exception e)
             {
-                return Result.Failed<List<NotificationDTO>>("Failed to load notifications");
+                throw new Exception("Failed to load notifications");
             }
         }
 
@@ -181,7 +181,7 @@ namespace BPWA.DAL.Services
             }
         }
 
-        public async Task<Result<int>> GetUnseenNotificationsCountForCurrentUser()
+        public async Task<int> GetUnseenNotificationsCountForCurrentUser()
         {
             try
             {
@@ -189,34 +189,28 @@ namespace BPWA.DAL.Services
                 .Where(x => x.UserId == CurrentUser.Id() && !x.Seen)
                 .CountAsync();
 
-                return Result.Success(count);
+                return count;
             }
             catch (Exception e)
             {
-                return Result.Failed<int>("Failed to load notifications count");
+                throw new Exception("Failed to load notifications count");
             }
         }
 
-        public override async Task<Result<Notification>> AddEntity(Notification entity)
+        public override async Task<Notification> AddEntity(Notification entity)
         {
             var result = await base.AddEntity(entity);
 
-            if (result.IsSuccess)
-            {
-                await UpdateNotificationLogs(result.Item);
-            }
+            await UpdateNotificationLogs(result);
 
             return result;
         }
-        
-        public override async Task<Result<Notification>> UpdateEntity(Notification entity)
+
+        public override async Task<Notification> UpdateEntity(Notification entity)
         {
             var result = await base.UpdateEntity(entity);
 
-            if (result.IsSuccess)
-            {
-                await UpdateNotificationLogs(result.Item);
-            }
+            await UpdateNotificationLogs(result);
 
             return result;
         }

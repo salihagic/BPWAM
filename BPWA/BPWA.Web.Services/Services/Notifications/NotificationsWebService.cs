@@ -1,14 +1,10 @@
 ﻿using AutoMapper;
-using BPWA.Common.Extensions;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
 using BPWA.DAL.Models;
 using BPWA.DAL.Services;
 using BPWA.Web.Services.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -32,68 +28,25 @@ namespace BPWA.Web.Services.Services
                        .ThenInclude(x => x.Group);
         }
 
-        public async Task<Result<NotificationAddModel>> PrepareForAdd(NotificationAddModel model = null)
+        public async Task<NotificationDTO> Add(NotificationAddModel model)
         {
-            model ??= new NotificationAddModel();
+            var entity = Mapper.Map<Notification>(model);
+            var result = await base.Add(entity);
 
-            if (model.GroupIds.IsNotEmpty())
-            {
-                try
-                {
-                    model.GroupIdsSelectList = await DatabaseContext.Currencies
-                    .Where(x => model.GroupIds.Contains(x.Id))
-                    .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToListAsync();
-                }
-                catch (Exception e) 
-                {
-                    return Result.Failed<NotificationAddModel>("Could not load groups");
-                }
-            }
-            
-            model.GroupIdsSelectList ??= new List<SelectListItem>();
+            await ManageRelatedEntities<NotificationGroup>(result.Id, model.GroupIds, x => x.NotificationId, x => x.GroupId);
 
-            return Result.Success(model);
+            return result;
         }
 
-        public async Task<Result<NotificationUpdateModel>> PrepareForUpdate(NotificationUpdateModel model = null)
+        public async Task<NotificationDTO> Update(NotificationUpdateModel model)
         {
-            model ??= new NotificationUpdateModel();
+            var entity = await GetEntityById(model.Id, false, false);
+            Mapper.Map(model, entity);
+            var result = await base.Update(entity);
 
-            if (model.GroupIds.IsNotEmpty())
-            {
-                try
-                {
-                    model.GroupIdsSelectList = await DatabaseContext.Groups
-                    .Where(x => model.GroupIds.Contains(x.Id))
-                    .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Title }).ToListAsync();
-                }
-                catch (Exception e)
-                {
-                    return Result.Failed<NotificationUpdateModel>("Could not load groups");
-                }
-            }
+            await ManageRelatedEntities<NotificationGroup>(result.Id, model.GroupIds, x => x.NotificationId, x => x.GroupId);
 
-            model.GroupIdsSelectList ??= new List<SelectListItem>();
-
-            return Result.Success(model);
-        }
-
-        public override async Task<Result<NotificationDTO>> Update(Notification entity)
-        {
-            var currentNotificationGroups = await DatabaseContext.NotificationGroups.Where(x => x.NotificationId == entity.Id).ToListAsync();
-
-            if (currentNotificationGroups.IsNotEmpty())
-            {
-                //Delete
-                var notificationGroupsToDelete = currentNotificationGroups.Where(x => !entity.NotificationGroups?.Any(y => y.GroupId == x.GroupId) ?? true).ToList();
-                DatabaseContext.RemoveRange(notificationGroupsToDelete);
-                await DatabaseContext.SaveChangesAsync();
-
-                //Only leave the new ones
-                entity.NotificationGroups = entity.NotificationGroups.Where(x => !currentNotificationGroups.Any(y => y.GroupId == x.GroupId)).ToList();
-            }
-
-            return await base.Update(entity);
+            return result;
         }
     }
 }

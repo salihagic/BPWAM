@@ -24,12 +24,7 @@
 
             <div class="col-md form-group">
                 <label>@Translations.Country</label>
-                <input asp-for="SelectedCountry" type="hidden">
-                <select asp-for="CountryId" id="modal_@nameof(CityAddModel.CountryId)" class="form-control select2">
-                    <option value="@Model.CountryId" selected="selected">
-                        @(Model.SelectedCountry ?? Translations.Select_country)
-                    </option>
-                </select>
+                <select asp-for="CountryId" id="modal_@nameof(CityAddModel.CountryId)" class="form-control select2"></select>
                 <span asp-validation-for="CountryId" class="text-danger"></span>
             </div>
         </div>
@@ -48,7 +43,7 @@
 
     Select2AjaxCountries({
         element: '#modal_@nameof(CityAddModel.CountryId)',
-        onChangeCopyTextTo: '#@nameof(CityAddModel.SelectedCountry)',
+        selectedItem: '@Html.Raw(Model.CountryIdDropdownItem.GetDropdownItemJson())'
     });
 
 </script>

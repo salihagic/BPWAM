@@ -2,7 +2,7 @@
 {
     public enum NotificationDistributionType
     {
-        SingleUser = 1,
+        SingleUser,
         Group,
         Broadcast
     }

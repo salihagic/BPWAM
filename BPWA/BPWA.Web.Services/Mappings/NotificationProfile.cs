@@ -9,13 +9,11 @@ namespace BPWA.DAL.Mappings
     {
         public NotificationProfile()
         {
-            CreateMap<NotificationAddModel, Notification>()
-                .ForMember(dest => dest.NotificationGroups, opt => opt.MapFrom(src => src.GroupIds.Select(x => new NotificationGroup { GroupId = x }).ToList()));
+            CreateMap<NotificationAddModel, Notification>();
             CreateMap<Notification, NotificationUpdateModel>()
-                .ForMember(dest => dest.SelectedUser, opt => opt.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}"))
-                .ForMember(dest => dest.GroupIds, opt => opt.MapFrom(src => src.NotificationGroups.Select(x => x.GroupId).ToList()))
-                .ReverseMap()
-                .ForMember(dest => dest.NotificationGroups, opt => opt.MapFrom(src => src.GroupIds.Select(x => new NotificationGroup { GroupId = x }).ToList()));
+                .ForMember(dest => dest.UserIdDropdownItem, opt => opt.MapFrom(src => new DropdownItem<string> { Id = src.UserId, Text = $"{src.User.FirstName} {src.User.LastName}" }))
+                .ForMember(dest => dest.GroupIdsDropdownItems, opt => opt.MapFrom(src => src.NotificationGroups.Select(x => new DropdownItem { Id = x.GroupId, Text = x.Group.Title }).ToList()))
+                .ReverseMap();
         }
     }
 }

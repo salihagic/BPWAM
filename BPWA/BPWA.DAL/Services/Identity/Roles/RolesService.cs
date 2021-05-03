@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace BPWA.DAL.Services
 {
@@ -44,31 +46,28 @@ namespace BPWA.DAL.Services
             return role;
         }
 
-        virtual public async Task<Result<RoleDTO>> Add(Role entity)
+        virtual public async Task<RoleDTO> Add(Role entity)
         {
             var result = await AddEntity(entity);
 
-            if (!result.IsSuccess)
-                return Result.Failed<RoleDTO>(result.GetErrorMessages());
-
             try
             {
-                var mapped = Mapper.Map<RoleDTO>(result.Item);
+                var mapped = Mapper.Map<RoleDTO>(result);
 
-                return Result.Success(mapped);
+                return mapped;
             }
             catch (Exception e)
             {
-                return Result.Failed<RoleDTO>("Failed to map Entity to DTO");
+                throw new Exception("Failed to map Entity to DTO");
             }
         }
 
-        virtual public async Task<Result<Role>> AddEntity(Role entity)
+        virtual public async Task<Role> AddEntity(Role entity)
         {
             var exists = await RoleManager.RoleExistsAsync(entity.Name);
 
             if (exists)
-                return Result.Failed<Role>("Role already exists");
+                throw new Exception("Role already exists");
 
             if (entity.Id == null)
                 entity.Id = Guid.NewGuid().ToString();
@@ -76,9 +75,9 @@ namespace BPWA.DAL.Services
             var identityResult = await RoleManager.CreateAsync(entity);
 
             if (!identityResult.Succeeded)
-                return Result.Failed<Role>(identityResult.Errors.First().Description);
+                throw new Exception(identityResult.Errors.First().Description);
 
-            return Result.Success(entity);
+            return entity;
         }
 
         virtual public IQueryable<Role> BuildQueryConditions(IQueryable<Role> Query, RoleSearchModel searchModel = null)
@@ -119,26 +118,23 @@ namespace BPWA.DAL.Services
                         .Take(searchModel.Pagination.Take.GetValueOrDefault());
         }
 
-        virtual public async Task<Result<List<RoleDTO>>> Get(RoleSearchModel searchModel = null)
+        virtual public async Task<List<RoleDTO>> Get(RoleSearchModel searchModel = null)
         {
             var result = await GetEntities(searchModel);
 
-            if (!result.IsSuccess)
-                return Result.Failed<List<RoleDTO>>(result.GetErrorMessages());
-
             try
             {
-                var mapped = Mapper.Map<List<RoleDTO>>(result.Item);
+                var mapped = Mapper.Map<List<RoleDTO>>(result);
 
-                return Result.Success(mapped);
+                return mapped;
             }
             catch (Exception e)
             {
-                return Result.Failed<List<RoleDTO>>("Failed to map Entity to DTO");
+                throw new Exception("Failed to map Entity to DTO");
             }
         }
 
-        virtual public async Task<Result<List<Role>>> GetEntities(RoleSearchModel searchModel = null)
+        virtual public async Task<List<Role>> GetEntities(RoleSearchModel searchModel = null)
         {
             try
             {
@@ -154,34 +150,31 @@ namespace BPWA.DAL.Services
 
                 var items = await Query.AsNoTracking().ToListAsync();
 
-                return Result.Success(items);
+                return items;
             }
             catch (Exception e)
             {
-                return Result.Failed<List<Role>>("Failed to load entities");
+                throw new Exception("Failed to load entities");
             }
         }
 
-        virtual public async Task<Result<RoleDTO>> GetById(string id)
+        virtual public async Task<RoleDTO> GetById(string id, bool shouldTranslate = true, bool includeRelated = true)
         {
-            var result = await GetEntityById(id);
-
-            if (!result.IsSuccess)
-                return Result.Failed<RoleDTO>(result.GetErrorMessages());
+            var result = await GetEntityById(id, shouldTranslate, includeRelated);
 
             try
             {
-                var mapped = Mapper.Map<RoleDTO>(result.Item);
+                var mapped = Mapper.Map<RoleDTO>(result);
 
-                return Result.Success(mapped);
+                return mapped;
             }
             catch (Exception e)
             {
-                return Result.Failed<RoleDTO>("Failed to map Entity to DTO");
+                throw new Exception("Failed to map Entity to DTO");
             }
         }
 
-        virtual public async Task<Result<Role>> GetEntityById(string id, bool shouldTranslate = true, bool includeRelated = true)
+        virtual public async Task<Role> GetEntityById(string id, bool shouldTranslate = true, bool includeRelated = true)
         {
             try
             {
@@ -192,71 +185,59 @@ namespace BPWA.DAL.Services
 
                 var item = await query.AsNoTracking().FirstOrDefaultAsync();
 
-                return Result.Success(item);
+                return item;
             }
             catch (Exception e)
             {
-                return Result.Failed<Role>("Failed to load entity");
+                throw new Exception("Failed to load entity");
             }
         }
 
-        virtual public async Task<Result<RoleDTO>> Update(Role entity)
+        virtual public async Task<RoleDTO> Update(Role entity)
         {
             var result = await UpdateEntity(entity);
 
-            if (!result.IsSuccess)
-                return Result.Failed<RoleDTO>(result.GetErrorMessages());
-
             try
             {
-                var mapped = Mapper.Map<RoleDTO>(result.Item);
+                var mapped = Mapper.Map<RoleDTO>(result);
 
-                return Result.Success(mapped);
+                return mapped;
             }
             catch (Exception e)
             {
-                return Result.Failed<RoleDTO>("Failed to map Entity to DTO");
+                throw new Exception("Failed to map Entity to DTO");
             }
         }
 
-        virtual public async Task<Result<Role>> UpdateEntity(Role entity)
+        virtual public async Task<Role> UpdateEntity(Role entity)
         {
             try
             {
                 DatabaseContext.Set<Role>().Update(entity);
                 await DatabaseContext.SaveChangesAsync();
 
-                return Result.Success(entity);
+                return entity;
             }
             catch (Exception e)
             {
-                return Result.Failed<Role>("Failed to update an item");
+                throw new Exception("Failed to update an item");
             }
         }
 
-        virtual public async Task<Result> Delete(Role entity)
+        virtual public async Task Delete(Role entity)
         {
-            try
-            {
-                entity = await IncludeRelatedEntitiesToDelete(entity);
+            entity = await IncludeRelatedEntitiesToDelete(entity);
 
-                DatabaseContext.Set<Role>().Remove(entity);
+            DatabaseContext.Set<Role>().Remove(entity);
 
-                await DatabaseContext.SaveChangesAsync();
-
-                return Result.Success();
-            }
-            catch (Exception e)
-            {
-                return Result.Failed("Failed to delete entity");
-            }
+            await DatabaseContext.SaveChangesAsync();
         }
 
-        virtual public async Task<Result> Delete(string id)
+        virtual public async Task Delete(string id)
         {
             var item = await DatabaseContext.Set<Role>().FirstOrDefaultAsync(x => x.Id.Equals(id));
 
-            return await Delete(item);
+            await Delete(item);
         }
 
         public Task<Role> IncludeRelatedEntitiesToDelete(Role entity)
@@ -267,5 +248,117 @@ namespace BPWA.DAL.Services
                 .FirstOrDefaultAsync(x => x.Id == entity.Id);
         }
 
+        #region Helpers 
+
+        /// <summary>
+        /// Adds new related entities to n-n table and removes removed related entities from n-n table
+        /// </summary>
+        /// <typeparam name="TConnectionEntity"></typeparam>
+        /// <param name="entityKey"></param>
+        /// <param name="itemIds"></param>
+        /// <param name="entityKeySelector"></param>
+        /// <param name="relatedEntityKeySelector"></param>
+        /// <returns></returns>
+        protected async Task ManageRelatedEntities<TConnectionEntity>(
+            int entityKey,
+            List<int> itemIds,
+            Expression<Func<TConnectionEntity, int>> entityKeySelector,
+            Expression<Func<TConnectionEntity, int>> relatedEntityKeySelector
+            )
+            where TConnectionEntity : class, IBaseEntity, new()
+        {
+            await ManageRelatedEntities<TConnectionEntity, int, int>(entityKey, itemIds, entityKeySelector, relatedEntityKeySelector);
+        }
+
+        /// <summary>
+        /// Adds new related entities to n-n table and removes removed related entities from n-n table
+        /// </summary>
+        /// <typeparam name="TConnectionEntity"></typeparam>
+        /// <typeparam name="TRelatedEntityKey"></typeparam>
+        /// <param name="entityKey"></param>
+        /// <param name="itemIds"></param>
+        /// <param name="entityKeySelector"></param>
+        /// <param name="relatedEntityKeySelector"></param>
+        /// <returns></returns>
+        protected async Task ManageRelatedEntities<TConnectionEntity, TRelatedEntityKey>(
+            int entityKey,
+            List<TRelatedEntityKey> itemIds,
+            Expression<Func<TConnectionEntity, int>> entityKeySelector,
+            Expression<Func<TConnectionEntity, TRelatedEntityKey>> relatedEntityKeySelector
+            )
+            where TConnectionEntity : class, IBaseEntity<int>, new()
+        {
+            await ManageRelatedEntities<TConnectionEntity, int, TRelatedEntityKey>(entityKey, itemIds, entityKeySelector, relatedEntityKeySelector);
+        }
+
+        /// <summary>
+        /// Adds new related entities to n-n table and removes removed related entities from n-n table
+        /// </summary>
+        /// <typeparam name="TConnectionEntity"></typeparam>
+        /// <typeparam name="TEntityKey"></typeparam>
+        /// <typeparam name="TRelatedEntityKey"></typeparam>
+        /// <param name="entityKey"></param>
+        /// <param name="itemIds"></param>
+        /// <param name="entityKeySelector"></param>
+        /// <param name="relatedEntityKeySelector"></param>
+        /// <returns></returns>
+        protected async Task ManageRelatedEntities<TConnectionEntity, TEntityKey, TRelatedEntityKey>(
+            TEntityKey entityKey,
+            List<TRelatedEntityKey> itemIds,
+            Expression<Func<TConnectionEntity, TEntityKey>> entityKeySelector,
+            Expression<Func<TConnectionEntity, TRelatedEntityKey>> relatedEntityKeySelector
+            )
+            where TConnectionEntity : class, IBaseEntity<int>, new()
+        {
+            var dbSet = DatabaseContext.Set<TConnectionEntity>();
+
+            ParameterExpression parameter = Expression.Parameter(typeof(TConnectionEntity));
+            var predicate = Expression.Lambda<Func<TConnectionEntity, bool>>(
+                Expression.Equal(
+                    Expression.Invoke(entityKeySelector, parameter),
+                    Expression.Constant(entityKey)),
+                    parameter);
+
+            var currentRelatedItems = await dbSet
+                .Where(predicate)
+                .ToListAsync();
+
+            //Delete
+            var relatedItemsToDelete = currentRelatedItems.Where(x => !itemIds?.Any(y => y.Equals(x.Id)) ?? true).ToList();
+            dbSet.RemoveRange(relatedItemsToDelete);
+
+            //Add new ones
+            var relatedItemIdsToAdd = itemIds
+                .Where(x => !currentRelatedItems.Any(y => y.Id.Equals(x)))
+                .ToList();
+
+            var toAdd = new List<TConnectionEntity>();
+
+            if (relatedItemIdsToAdd.IsNotEmpty())
+            {
+                foreach (var itemId in relatedItemIdsToAdd)
+                {
+                    var relatedEntity = new TConnectionEntity();
+
+                    //Set entity Id
+                    var entityKeyPropertyName = ((entityKeySelector.Body as MemberExpression).Member as PropertyInfo).Name;
+                    var entityKeyProperty = relatedEntity.GetType().GetProperty(entityKeyPropertyName);
+                    entityKeyProperty.SetValue(relatedEntity, entityKey);
+
+                    //Set related entity Id
+                    var relatedEntityKeyPropertyName = ((relatedEntityKeySelector.Body as MemberExpression).Member as PropertyInfo).Name;
+                    var relatedEntityKeyProperty = relatedEntity.GetType().GetProperty(relatedEntityKeyPropertyName);
+                    relatedEntityKeyProperty.SetValue(relatedEntity, itemId);
+
+                    toAdd.Add(relatedEntity);
+                }
+            }
+
+            await dbSet.AddRangeAsync(toAdd);
+
+            await DatabaseContext.SaveChangesAsync();
+        }
+
+        #endregion
     }
 }

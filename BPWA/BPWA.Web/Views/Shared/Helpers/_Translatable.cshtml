@@ -1,7 +1,6 @@
 ﻿@inject IDropdownHelperService DropdownHelperService
 @{
     Layout = null;
-    var systemLanguagesJson = JsonConvert.SerializeObject(DropdownHelperService.GetSystemLanguages().Select(x => new { id = x.Value, text = x.Text }).ToList());
 }
 
 <script>
@@ -24,7 +23,7 @@
         $(formGroup).append(translationsWrapper);
 
         //Append translation inputs for currents input translations wrapper
-        @(Html.Raw(systemLanguagesJson)).forEach(function (item, index) {
+        @(Html.Raw(DropdownHelperService.GetSystemLanguages().GetDropdownItemsJson())).forEach(function (item, index) {
 
             var languageCulture = item.id;
             var languageName = item.text;

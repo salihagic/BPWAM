@@ -39,45 +39,30 @@
             </div>
             <div class="col-md-12 form-group">
                 <label>@Translations.City</label>
-                <input asp-for="SelectedCity" type="hidden">
-                <select asp-for="CityId" id="modal_@nameof(UserAddModel.CityId)" class="form-control select2">
-                    <option value="@Model.CityId" selected="selected">
-                        @(Model.SelectedCity ?? Translations.Select_city)
-                    </option>
-                </select>
+                <select asp-for="CityId" id="modal_@nameof(UserAddModel.CityId)" class="form-control select2"></select>
                 <span asp-validation-for="CityId" class="text-danger"></span>
             </div>
             <div class="col-md-12 form-group">
                 <label>@Translations.Roles</label>
-                <select asp-for="RoleIds" id="modal_@nameof(UserAddModel.RoleIds)" multiple="multiple" class="form-control select2">
-                    @foreach (var item in Model.RoleIdsSelectList)
-                    {
-        <option value="@item.Value" selected="selected">@item.Text</option>}
-                </select>
+                <select asp-for="RoleIds" id="modal_@nameof(UserAddModel.RoleIds)" multiple="multiple" class="form-control select2"></select>
                 <span asp-validation-for="RoleIds" class="text-danger"></span>
             </div>
             @if (!currentUser.CurrentCompanyId().HasValue)
             {
-<div class="col-md-12 form-group">
-    <label>@Translations.Companies</label>
-    <select asp-for="CompanyIds" id="modal_@nameof(UserAddModel.CompanyIds)" multiple="multiple" class="form-control select2">
-        @foreach (var item in Model.CompanyIdsSelectList)
-        {
-<option value="@item.Value" selected="selected">@item.Text</option>}
-    </select>
-    <span asp-validation-for="CompanyIds" class="text-danger"></span>
-</div>            }
+                <div class="col-md-12 form-group">
+                    <label>@Translations.Companies</label>
+                    <select asp-for="CompanyIds" id="modal_@nameof(UserAddModel.CompanyIds)" multiple="multiple" class="form-control select2"></select>
+                    <span asp-validation-for="CompanyIds" class="text-danger"></span>
+                </div>            
+            }
             @if (!currentUser.CurrentBusinessUnitId().HasValue)
             {
-<div class="col-md-12 form-group">
-    <label>@Translations.BusinessUnits</label>
-    <select asp-for="BusinessUnitIds" id="modal_@nameof(UserAddModel.BusinessUnitIds)" multiple="multiple" class="form-control select2">
-        @foreach (var item in Model.BusinessUnitIdsSelectList)
-        {
-<option value="@item.Value" selected="selected">@item.Text</option>}
-    </select>
-    <span asp-validation-for="BusinessUnitIds" class="text-danger"></span>
-</div>            }
+                <div class="col-md-12 form-group">
+                    <label>@Translations.BusinessUnits</label>
+                    <select asp-for="BusinessUnitIds" id="modal_@nameof(UserAddModel.BusinessUnitIds)" multiple="multiple" class="form-control select2"></select>
+                    <span asp-validation-for="BusinessUnitIds" class="text-danger"></span>
+                </div>      
+            }
         </div>
 
     </div>
@@ -94,16 +79,19 @@
 
     Select2AjaxCities({
         element: '#modal_@nameof(UserAddModel.CityId)',
-        onChangeCopyTextTo: '#@nameof(UserAddModel.SelectedCity)',
+        selectedItem: '@Html.Raw(Model.CityIdDropdownItem.GetDropdownItemJson())'
     });
     Select2AjaxRoles({
         element: '#modal_@nameof(UserAddModel.RoleIds)',
+        selectedItems: '@Html.Raw(Model.RoleIdsDropdownItems.GetDropdownItemsJson())'
     });
     Select2AjaxCompanies({
         element: '#modal_@nameof(UserAddModel.CompanyIds)',
+        selectedItems: '@Html.Raw(Model.CompanyIdsDropdownItems.GetDropdownItemsJson())'
     });
     Select2AjaxBusinessUnits({
         element: '#modal_@nameof(UserAddModel.BusinessUnitIds)',
+        selectedItems: '@Html.Raw(Model.BusinessUnitIdsDropdownItems.GetDropdownItemsJson())'
     });
 
 </script>

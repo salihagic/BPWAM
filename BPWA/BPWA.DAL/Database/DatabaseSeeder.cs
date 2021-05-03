@@ -45,7 +45,7 @@ namespace BPWA.DAL.Database
                 await SeedUsers(serviceProvider);
                 if (environment.IsDevelopment())
                     await SeedCompaniesAndBusinessUnits(serviceProvider);
-                await SeedGeolocations(serviceProvider);
+                //await SeedGeolocations(serviceProvider);
             }
         }
 
@@ -381,6 +381,7 @@ namespace BPWA.DAL.Database
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = superAdminRoleName,
+                    NormalizedName = superAdminRoleName.ToUpper(),
                     RoleClaims = new List<RoleClaim>
                     {
                         new RoleClaim
@@ -405,6 +406,7 @@ namespace BPWA.DAL.Database
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = companyAdminRoleName,
+                    NormalizedName = companyAdminRoleName.ToUpper(),
                     RoleClaims = new List<RoleClaim>
                     {
                         new RoleClaim
@@ -425,6 +427,7 @@ namespace BPWA.DAL.Database
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = businessUnitAdminRoleName,
+                    NormalizedName = businessUnitAdminRoleName.ToUpper(),
                     RoleClaims = new List<RoleClaim>
                     {
                         new RoleClaim
@@ -458,7 +461,7 @@ namespace BPWA.DAL.Database
                     Email = "super.admin@BPWA.com"
                 }, "demo");
 
-                await usersService.AddToRole(user.Item, superAdminRoleName);
+                await usersService.AddToRole(user, superAdminRoleName);
             }
 
             #endregion 

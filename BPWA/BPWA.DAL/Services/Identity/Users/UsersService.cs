@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BPWA.Common.Configuration;
+using BPWA.Common.Exceptions;
 using BPWA.Common.Extensions;
 using BPWA.Common.Resources;
 using BPWA.Common.Services;
@@ -12,8 +13,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Net;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Net;
 
 namespace BPWA.DAL.Services
 {
@@ -51,77 +54,71 @@ namespace BPWA.DAL.Services
             RouteSettings = routeSettings;
         }
 
-        public async Task<Result<User>> AddEntity(User entity, string password)
+        public async Task<User> AddEntity(User entity, string password)
         {
             var result = await UserManager.CreateAsync(entity, password);
 
             if (!result.Succeeded)
-                return Result.Failed<User>(result.Errors.Select(x => x.Description).ToList());
+                throw new ValidationException(result.Errors.Select(x => x.Description).ToArray());
 
-            return Result.Success(entity);
+            return entity;
         }
 
-        public async Task<Result<UserDTO>> AddToRole(User entity, string roleName)
+        public async Task<UserDTO> AddToRole(User entity, string roleName)
         {
             var result = await UserManager.AddToRoleAsync(entity, roleName);
 
             if (!result.Succeeded)
-                return Result.Failed<UserDTO>(result.Errors.Select(x => x.Description).ToList());
+                throw new ValidationException(result.Errors.Select(x => x.Description).ToArray());
 
             var userDTO = Mapper.Map<UserDTO>(entity);
 
-            return Result.Success(userDTO);
+            return userDTO;
         }
 
-        public async Task<Result<User>> GetEntityByUserNameOrEmail(string userName)
+        public async Task<User> GetEntityByUserNameOrEmail(string userName)
         {
             try
             {
                 var user = (await UserManager.FindByNameAsync(userName)) ?? (await UserManager.FindByEmailAsync(userName));
 
                 if (user == null)
-                    return Result.Failed<User>(Translations.User_name_or_email_invalid);
+                    throw new Exception(Translations.User_name_or_email_invalid);
 
-                return Result.Success(user);
+                return user;
             }
             catch (Exception e)
             {
-                return Result.Failed<User>(Translations.User_name_or_email_invalid);
+                throw new Exception(Translations.User_name_or_email_invalid);
             }
         }
 
-        public async Task<Result<UserDTO>> SignIn(string userName, string password)
+        public async Task<UserDTO> SignIn(string userName, string password)
         {
             var userResult = await GetEntityByUserNameOrEmail(userName);
 
-            if (!userResult.IsSuccess)
-                return Result.Failed<UserDTO>(userResult.GetErrorMessages());
-
-            var result = await SignInManager.PasswordSignInAsync(userResult.Item, password, true, false);
+            var result = await SignInManager.PasswordSignInAsync(userResult, password, true, false);
 
             if (!result.Succeeded)
             {
                 if (result.IsLockedOut)
-                    return Result.Failed<UserDTO>(Translations.Account_locked_out);
+                    throw new Exception(Translations.Account_locked_out);
                 else if (result.IsNotAllowed)
-                    return Result.Failed<UserDTO>(Translations.Login_not_allowed);
+                    throw new Exception(Translations.Login_not_allowed);
                 else if (result.RequiresTwoFactor)
-                    return Result.Failed<UserDTO>(Translations.Login_required_two_factor);
+                    throw new Exception(Translations.Login_required_two_factor);
                 else
-                    return Result.Failed<UserDTO>(Translations.User_name_or_email_invalid);
+                    throw new Exception(Translations.User_name_or_email_invalid);
             }
 
-            var userDTO = Mapper.Map<UserDTO>(userResult.Item);
+            var userDTO = Mapper.Map<UserDTO>(userResult);
 
-            return Result.Success(userDTO);
+            return userDTO;
         }
 
-        public async Task<Result> UpdateTimezoneForCurrentUser(int timezoneUtcOffsetInMinutes)
+        public async Task UpdateTimezoneForCurrentUser(int timezoneUtcOffsetInMinutes)
         {
             var userResult = await GetEntityById(CurrentUser.Id());
-
-            if (!userResult.IsSuccess)
-                return Result.Failed(Translations.User_not_found);
 
             var timezoneInfo = TimeZoneInfo.GetSystemTimeZones()
                                                .Where(x => x.BaseUtcOffset == (new TimeSpan(0, timezoneUtcOffsetInMinutes, 0)))
@@ -129,24 +126,17 @@ namespace BPWA.DAL.Services
 
             if (timezoneInfo != null)
             {
-                userResult.Item.TimezoneId = timezoneInfo.Id;
-                var result = await Update(userResult.Item);
-
-                if (!result.IsSuccess)
-                    return Result.Failed(result.GetErrorMessages());
-
-                return Result.Success();
+                userResult.TimezoneId = timezoneInfo.Id;
+                var result = await Update(userResult);
             }
-
-            return Result.Failed(Translations.Failed_to_update_timezone);
         }
 
-        public async Task<Result> SendPasswordResetToken(string userId)
+        public async Task SendPasswordResetToken(string userId)
         {
             var user = await UserManager.FindByIdAsync(userId);
 
             if (user == null)
-                return Result.Failed("Failed to load user");
+                throw new Exception("Failed to load user");
 
             var token = await UserManager.GeneratePasswordResetTokenAsync(user);
 
@@ -156,7 +146,7 @@ namespace BPWA.DAL.Services
                                       "Change your password",
                                       $"You requested a reset of your password.\n\n\nClick on the following link to set your new password: {passwordResetUrl}");
 
-            return Result.Success();
+            return;
         }
 
         protected string GeneratePasswordResetUrl(User user, string token)
@@ -210,26 +200,23 @@ namespace BPWA.DAL.Services
                         .Take(searchModel.Pagination.Take.GetValueOrDefault());
         }
 
-        virtual public async Task<Result<List<UserDTO>>> Get(UserSearchModel searchModel = null)
+        virtual public async Task<List<UserDTO>> Get(UserSearchModel searchModel = null)
         {
             var result = await GetEntities(searchModel);
 
-            if (!result.IsSuccess)
-                return Result.Failed<List<UserDTO>>(result.GetErrorMessages());
-
             try
             {
-                var mapped = Mapper.Map<List<UserDTO>>(result.Item);
+                var mapped = Mapper.Map<List<UserDTO>>(result);
 
-                return Result.Success(mapped);
+                return mapped;
             }
             catch (Exception e)
             {
-                return Result.Failed<List<UserDTO>>("Failed to map Entity to DTO");
+                throw new Exception("Failed to map Entity to DTO");
             }
         }
 
-        virtual public async Task<Result<List<User>>> GetEntities(UserSearchModel searchModel = null)
+        virtual public async Task<List<User>> GetEntities(UserSearchModel searchModel = null)
         {
             try
             {
@@ -245,34 +232,31 @@ namespace BPWA.DAL.Services
 
                 var items = await Query.AsNoTracking().ToListAsync();
 
-                return Result.Success(items);
+                return items;
             }
             catch (Exception e)
             {
-                return Result.Failed<List<User>>("Failed to load entities");
+                throw new Exception("Failed to load entities");
             }
         }
 
-        virtual public async Task<Result<UserDTO>> GetById(string id)
+        virtual public async Task<UserDTO> GetById(string id, bool shouldTranslate = true, bool includeRelated = true)
         {
-            var result = await GetEntityById(id, true, true);
-
-            if (!result.IsSuccess)
-                return Result.Failed<UserDTO>(result.GetErrorMessages());
+            var result = await GetEntityById(id, shouldTranslate, includeRelated);
 
             try
             {
-                var mapped = Mapper.Map<UserDTO>(result.Item);
+                var mapped = Mapper.Map<UserDTO>(result);
 
-                return Result.Success(mapped);
+                return mapped;
             }
             catch (Exception e)
             {
-                return Result.Failed<UserDTO>("Failed to map Entity to DTO");
+                throw new Exception("Failed to map Entity to DTO");
             }
         }
 
-        virtual public async Task<Result<User>> GetEntityById(string id, bool shouldTranslate = true, bool includeRelated = true)
+        virtual public async Task<User> GetEntityById(string id, bool shouldTranslate = true, bool includeRelated = true)
         {
             try
             {
@@ -283,34 +267,31 @@ namespace BPWA.DAL.Services
 
                 var item = await query.AsNoTracking().FirstOrDefaultAsync();
 
-                return Result.Success(item);
+                return item;
             }
             catch (Exception e)
             {
-                return Result.Failed<User>("Failed to load entity");
+                throw new Exception("Failed to load entity");
             }
         }
 
-        virtual public async Task<Result<UserDTO>> Add(User entity)
+        virtual public async Task<UserDTO> Add(User entity)
         {
             var result = await AddEntity(entity);
 
-            if (!result.IsSuccess)
-                return Result.Failed<UserDTO>(result.GetErrorMessages());
-
             try
             {
-                var mapped = Mapper.Map<UserDTO>(result.Item);
+                var mapped = Mapper.Map<UserDTO>(result);
 
-                return Result.Success(mapped);
+                return mapped;
             }
             catch (Exception e)
             {
-                return Result.Failed<UserDTO>("Failed to map Entity to DTO");
+                throw new Exception("Failed to map Entity to DTO");
             }
         }
 
-        virtual public async Task<Result<User>> AddEntity(User entity)
+        virtual public async Task<User> AddEntity(User entity)
         {
             try
             {
@@ -320,78 +301,63 @@ namespace BPWA.DAL.Services
 
                 var result = await AddEntity(entity, password);
 
-                if (result.IsSuccess)
-                {
-                    await EmailService.Send(entity.Email,
-                                      "Your account info",
-                                      $"UserName: {entity.UserName}\nPassword: {password}");
-                }
+                await EmailService.Send(entity.Email,
+                                  "Your account info",
+                                  $"UserName: {entity.UserName}\nPassword: {password}");
 
                 return result;
             }
             catch (Exception e)
             {
-                return Result.Failed<User>("Failed to add entity");
+                throw new Exception("Failed to add entity");
             }
         }
 
-        virtual public async Task<Result<UserDTO>> Update(User entity)
+        virtual public async Task<UserDTO> Update(User entity)
         {
             var result = await UpdateEntity(entity);
 
-            if (!result.IsSuccess)
-                return Result.Failed<UserDTO>(result.GetErrorMessages());
-
             try
             {
-                var mapped = Mapper.Map<UserDTO>(result.Item);
+                var mapped = Mapper.Map<UserDTO>(result);
 
-                return Result.Success(mapped);
+                return mapped;
             }
             catch (Exception e)
             {
-                return Result.Failed<UserDTO>("Failed to map Entity to DTO");
+                throw new Exception("Failed to map Entity to DTO");
             }
         }
 
-        virtual public async Task<Result<User>> UpdateEntity(User entity)
+        virtual public async Task<User> UpdateEntity(User entity)
         {
             try
             {
                 DatabaseContext.Users.Update(entity);
                 await DatabaseContext.SaveChangesAsync();
 
-                return Result.Success(entity);
+                return entity;
             }
             catch (Exception e)
             {
-                return Result.Failed<User>("Failed to update entity");
+                throw new Exception("Failed to update entity");
             }
         }
 
-        virtual public async Task<Result> Delete(string id)
+        virtual public async Task Delete(string id)
         {
             var item = await DatabaseContext.Set<User>().FirstOrDefaultAsync(x => x.Id.Equals(id));
 
-            return await Delete(item);
+            await Delete(item);
         }
 
-        virtual public async Task<Result> Delete(User entity)
+        virtual public async Task Delete(User entity)
         {
-            try
-            {
-                entity = await IncludeRelatedEntitiesToDelete(entity);
+            entity = await IncludeRelatedEntitiesToDelete(entity);
 
-                DatabaseContext.Set<User>().Remove(entity);
+            DatabaseContext.Set<User>().Remove(entity);
 
-                await DatabaseContext.SaveChangesAsync();
-
-                return Result.Success();
-            }
-            catch (Exception e)
-            {
-                return Result.Failed("Failed to delete entity");
-            }
+            await DatabaseContext.SaveChangesAsync();
         }
 
         public Task<User> IncludeRelatedEntitiesToDelete(User entity)
@@ -404,5 +370,118 @@ namespace BPWA.DAL.Services
         }
 
         #endregion Base
+
+        #region Helpers 
+
+        /// <summary>
+        /// Adds new related entities to n-n table and removes removed related entities from n-n table
+        /// </summary>
+        /// <typeparam name="TConnectionEntity"></typeparam>
+        /// <param name="entityKey"></param>
+        /// <param name="itemIds"></param>
+        /// <param name="entityKeySelector"></param>
+        /// <param name="relatedEntityKeySelector"></param>
+        /// <returns></returns>
+        protected async Task ManageRelatedEntities<TConnectionEntity>(
+            int entityKey,
+            List<int> itemIds,
+            Expression<Func<TConnectionEntity, int>> entityKeySelector,
+            Expression<Func<TConnectionEntity, int>> relatedEntityKeySelector
+            )
+            where TConnectionEntity : class, IBaseEntity, new()
+        {
+            await ManageRelatedEntities<TConnectionEntity, int, int>(entityKey, itemIds, entityKeySelector, relatedEntityKeySelector);
+        }
+
+        /// <summary>
+        /// Adds new related entities to n-n table and removes removed related entities from n-n table
+        /// </summary>
+        /// <typeparam name="TConnectionEntity"></typeparam>
+        /// <typeparam name="TRelatedEntityKey"></typeparam>
+        /// <param name="entityKey"></param>
+        /// <param name="itemIds"></param>
+        /// <param name="entityKeySelector"></param>
+        /// <param name="relatedEntityKeySelector"></param>
+        /// <returns></returns>
+        protected async Task ManageRelatedEntities<TConnectionEntity, TRelatedEntityKey>(
+            int entityKey,
+            List<TRelatedEntityKey> itemIds,
+            Expression<Func<TConnectionEntity, int>> entityKeySelector,
+            Expression<Func<TConnectionEntity, TRelatedEntityKey>> relatedEntityKeySelector
+            )
+            where TConnectionEntity : class, IBaseEntity<int>, new()
+        {
+            await ManageRelatedEntities<TConnectionEntity, int, TRelatedEntityKey>(entityKey, itemIds, entityKeySelector, relatedEntityKeySelector);
+        }
+
+        /// <summary>
+        /// Adds new related entities to n-n table and removes removed related entities from n-n table
+        /// </summary>
+        /// <typeparam name="TConnectionEntity"></typeparam>
+        /// <typeparam name="TEntityKey"></typeparam>
+        /// <typeparam name="TRelatedEntityKey"></typeparam>
+        /// <param name="entityKey"></param>
+        /// <param name="itemIds"></param>
+        /// <param name="entityKeySelector"></param>
+        /// <param name="relatedEntityKeySelector"></param>
+        /// <returns></returns>
+        protected async Task ManageRelatedEntities<TConnectionEntity, TEntityKey, TRelatedEntityKey>(
+            TEntityKey entityKey,
+            List<TRelatedEntityKey> itemIds,
+            Expression<Func<TConnectionEntity, TEntityKey>> entityKeySelector,
+            Expression<Func<TConnectionEntity, TRelatedEntityKey>> relatedEntityKeySelector
+            )
+            where TConnectionEntity : class, IBaseEntity<int>, new()
+        {
+            var dbSet = DatabaseContext.Set<TConnectionEntity>();
+
+            ParameterExpression parameter = Expression.Parameter(typeof(TConnectionEntity));
+            var predicate = Expression.Lambda<Func<TConnectionEntity, bool>>(
+                Expression.Equal(
+                    Expression.Invoke(entityKeySelector, parameter),
+                    Expression.Constant(entityKey)),
+                    parameter);
+
+            var currentRelatedItems = await dbSet
+                .Where(predicate)
+                .ToListAsync();
+
+            //Delete
+            var relatedItemsToDelete = currentRelatedItems.Where(x => !itemIds?.Any(y => y.Equals(x.Id)) ?? true).ToList();
+            dbSet.RemoveRange(relatedItemsToDelete);
+
+            //Add new ones
+            var relatedItemIdsToAdd = itemIds
+                .Where(x => !currentRelatedItems.Any(y => y.Id.Equals(x)))
+                .ToList();
+
+            var toAdd = new List<TConnectionEntity>();
+
+            if (relatedItemIdsToAdd.IsNotEmpty())
+            {
+                foreach (var itemId in relatedItemIdsToAdd)
+                {
+                    var relatedEntity = new TConnectionEntity();
+
+                    //Set entity Id
+                    var entityKeyPropertyName = ((entityKeySelector.Body as MemberExpression).Member as PropertyInfo).Name;
+                    var entityKeyProperty = relatedEntity.GetType().GetProperty(entityKeyPropertyName);
+                    entityKeyProperty.SetValue(relatedEntity, entityKey);
+
+                    //Set related entity Id
+                    var relatedEntityKeyPropertyName = ((relatedEntityKeySelector.Body as MemberExpression).Member as PropertyInfo).Name;
+                    var relatedEntityKeyProperty = relatedEntity.GetType().GetProperty(relatedEntityKeyPropertyName);
+                    relatedEntityKeyProperty.SetValue(relatedEntity, itemId);
+
+                    toAdd.Add(relatedEntity);
+                }
+            }
+
+            await dbSet.AddRangeAsync(toAdd);
+
+            await DatabaseContext.SaveChangesAsync();
+        }
+
+        #endregion
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BPWA.Common.Exceptions;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
 using BPWA.DAL.Models;
@@ -14,9 +15,9 @@ namespace BPWA.DAL.Services
     public class BaseReadService<TEntity, TSearchModel, TDTO>
         : BaseReadService<TEntity, TSearchModel, TDTO, int>,
           IBaseReadService<TEntity, TSearchModel, TDTO, int>
-        where TEntity : BaseEntity, new()
-        where TSearchModel : BaseSearchModel, new()
-        where TDTO : BaseDTO
+        where TEntity : class, IBaseEntity, new()
+        where TSearchModel : class, IBaseSearchModel, new()
+        where TDTO : class, IBaseDTO
     {
         public BaseReadService(
             DatabaseContext databaseContext,
@@ -26,123 +27,76 @@ namespace BPWA.DAL.Services
 
     public class BaseReadService<TEntity, TSearchModel, TDTO, TId> :
         IBaseReadService<TEntity, TSearchModel, TDTO, TId>
-        where TEntity : BaseEntity<TId>, new()
-        where TSearchModel : BaseSearchModel, new()
-        where TDTO : BaseDTO<TId>
+        where TEntity : class, IBaseEntity<TId>, new()
+        where TSearchModel : class, IBaseSearchModel, new()
+        where TDTO : class, IBaseDTO<TId>
     {
         protected DatabaseContext DatabaseContext { get; set; }
         protected IQueryable<TEntity> Query { get; set; }
         protected IMapper Mapper { get; set; }
-        public bool _shouldTranslate { get; set; }
 
         public BaseReadService(
             DatabaseContext databaseContext,
-            IMapper mapper,
-            bool shouldTranslate = false
+            IMapper mapper
             )
         {
             DatabaseContext = databaseContext;
-            Mapper = mapper;
             Query = databaseContext.Set<TEntity>().AsQueryable();
-            _shouldTranslate = shouldTranslate;
+            Mapper = mapper;
         }
 
-        virtual public async Task<Result<List<TDTO>>> Get(TSearchModel searchModel)
+        virtual public async Task<List<TDTO>>  Get(TSearchModel searchModel)
         {
-            var result = await GetEntities(searchModel);
-
-            if (!result.IsSuccess)
-                return Result.Failed<List<TDTO>>(result.GetErrorMessages());
+            var entities = await GetEntities(searchModel);
 
             try
             {
-                var mapped = Mapper.Map<List<TDTO>>(result.Item);
-
-                return Result.Success(mapped);
+                return Mapper.Map<List<TDTO>>(entities);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                return Result.Failed<List<TDTO>>("Failed to map Entity to DTO");
+                throw new MappingException(exception);
             }
         }
 
-        virtual public async Task<Result<List<TEntity>>> GetEntities(TSearchModel searchModel)
+        virtual public async Task<List<TEntity>>  GetEntities(TSearchModel searchModel)
         {
-            try
-            {
-                Query = BuildQueryConditions(Query, searchModel);
-                Query = BuildIncludes(Query);
-                Query = BuildQueryOrdering(Query, searchModel);
+            Query = BuildQueryConditions(Query, searchModel);
+            Query = BuildIncludes(Query);
+            Query = BuildQueryOrdering(Query, searchModel);
 
-                if (searchModel?.Pagination != null)
-                    searchModel.Pagination.TotalNumberOfRecords = await Query.CountAsync();
+            if (searchModel?.Pagination != null)
+                searchModel.Pagination.TotalNumberOfRecords = await Query.CountAsync();
 
-                if (searchModel?.Pagination != null && !searchModel.Pagination.ShouldTakeAllRecords.GetValueOrDefault())
-                    Query = BuildQueryPagination(Query, searchModel);
+            if (searchModel?.Pagination != null && !searchModel.Pagination.ShouldTakeAllRecords.GetValueOrDefault())
+                Query = BuildQueryPagination(Query, searchModel);
 
-                var items = await Query.AsNoTracking().ToListAsync();
-
-                return Result.Success(items);
-            }
-            catch (Exception e)
-            {
-                return Result.Failed<List<TEntity>>("Failed to load entities");
-            }
+            return await Query.AsNoTracking().ToListAsync();
         }
 
-        virtual public async Task<Result<TDTO>> GetById(TId id)
+        virtual public async Task<TDTO> GetById(TId id, bool shouldTranslate = true, bool includeRelated = true)
         {
-            var result = await GetEntityById(id);
-
-            if (!result.IsSuccess)
-                return Result.Failed<TDTO>(result.GetErrorMessages());
+            var entity = await GetEntityById(id, shouldTranslate, includeRelated);
 
             try
             {
-                var mapped = Mapper.Map<TDTO>(result.Item);
-
-                return Result.Success(mapped);
+                return Mapper.Map<TDTO>(entity);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                return Result.Failed<TDTO>("Failed to map Entity to DTO");
+                throw new MappingException(exception);
             }
         }
 
-        virtual public async Task<Result<TEntity>> GetEntityById(TId id, bool shouldTranslate = true, bool includeRelated = false)
+        virtual public async Task<TEntity> GetEntityById(TId id, bool shouldTranslate = true, bool includeRelated = false)
         {
-            try
-            {
-                var query = DatabaseContext.Set<TEntity>().Where(x => x.Id.Equals(id));
+            var query = DatabaseContext.Set<TEntity>().Where(x => x.Id.Equals(id));
 
-                if (includeRelated)
-                    query = BuildIncludesById(id, query);
+            if (includeRelated)
+                query = BuildIncludesById(id, query);
 
-                var item = await query.AsNoTracking().FirstOrDefaultAsync();
-
-                return Result.Success(item);
-            }
-            catch (Exception e)
-            {
-                return Result.Failed<TEntity>("Failed to load entity");
-            }
+            return await query.AsNoTracking().FirstOrDefaultAsync();
         }
-
-        //virtual public async Task<Result<TEntity>> GetEntityByIdWithoutIncludes(TId id, bool shouldTranslate = true)
-        //{
-        //    try
-        //    {
-        //        var query = DatabaseContext.Set<TEntity>().Where(x => x.Id.Equals(id));
-
-        //        var item = await query.AsNoTracking().FirstOrDefaultAsync();
-
-        //        return Result.Success(item);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return Result.Failed<TEntity>("Failed to load entity");
-        //    }
-        //}
 
         #region Helpers
 

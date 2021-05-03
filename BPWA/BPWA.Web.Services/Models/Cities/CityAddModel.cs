@@ -6,7 +6,6 @@
         public double Longitude { get; set; }
         public double Latitude { get; set; }
         public int? CountryId { get; set; }
-
-        public string SelectedCountry { get; set; }
+        public DropdownItem CountryIdDropdownItem { get; set; }
     }
 }

@@ -34,15 +34,7 @@
         <div class="col-md-12 row">
             <div class="col-md form-group">
                 <label>@Translations.Currencies</label>
-                <select asp-for="CurrencyIds" id="modal_@nameof(CountryAddModel.CurrencyIds)" multiple="multiple" class="form-control select2">
-                    @if (Model.CurrencyIdsSelectList.IsNotEmpty())
-                    {
-                        foreach (var item in Model.CurrencyIdsSelectList)
-                        {
-                            <option value="@item.Value" selected="selected">@item.Text</option>
-                        }
-                    }
-                </select>
+                <select asp-for="CurrencyIds" id="modal_@nameof(CountryAddModel.CurrencyIds)" multiple="multiple" class="form-control select2"></select>
                 <span asp-validation-for="CurrencyIds" class="text-danger"></span>
             </div>
         </div>
@@ -50,15 +42,7 @@
         <div class="col-md-12 row">
             <div class="col-md form-group">
                 <label>@Translations.Languages</label>
-                <select asp-for="LanguageIds" id="modal_@nameof(CountryAddModel.LanguageIds)" multiple="multiple" class="form-control select2">
-                    @if (Model.LanguageIdsSelectList.IsNotEmpty())
-                    {
-                        foreach (var item in Model.LanguageIdsSelectList)
-                        {
-                            <option value="@item.Value" selected="selected">@item.Text</option>
-                        }
-                    }
-                </select>
+                <select asp-for="LanguageIds" id="modal_@nameof(CountryAddModel.LanguageIds)" multiple="multiple" class="form-control select2"></select>
                 <span asp-validation-for="LanguageIds" class="text-danger"></span>
             </div>
         </div>
@@ -75,10 +59,12 @@
 <script>
 
     Select2AjaxCurrencies({
-        element: '#modal_@nameof(CountryAddModel.CurrencyIds)',
+        element: '#modal_@nameof(CountryUpdateModel.CurrencyIds)',
+        selectedItems: '@Html.Raw(Model.CurrencyIdsDropdownItems.GetDropdownItemsJson())'
     });
     Select2AjaxLanguages({
-        element: '#modal_@nameof(CountryAddModel.LanguageIds)',
+        element: '#modal_@nameof(CountryUpdateModel.LanguageIds)',
+        selectedItems: '@Html.Raw(Model.LanguageIdsDropdownItems.GetDropdownItemsJson())'
     });
 
 </script>

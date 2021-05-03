@@ -6,7 +6,7 @@ namespace BPWA.DAL.Services
 {
     public interface ILogsService
     {
-        Task<Result<List<LogDTO>>> Get(LogSearchModel searchModel = null);
-        Task<Result<LogDTO>> GetById(int id);
+        Task<List<LogDTO>>  Get(LogSearchModel searchModel = null);
+        Task<LogDTO> GetById(int id);
     }
 }

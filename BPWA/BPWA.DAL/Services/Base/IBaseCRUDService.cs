@@ -6,23 +6,23 @@ namespace BPWA.DAL.Services
 {
     public interface IBaseCRUDService<TEntity, TSearchModel, TDTO> :
         IBaseCRUDService<TEntity, TSearchModel, TDTO, int>
-        where TEntity : IBaseEntity, new()
-        where TSearchModel : BaseSearchModel, new()
-        where TDTO : BaseDTO
+        where TEntity : class, IBaseEntity, new()
+        where TSearchModel : class, IBaseSearchModel, new()
+        where TDTO : class, IBaseDTO
     { }
 
     public interface IBaseCRUDService<TEntity, TSearchModel, TDTO, TId> :
         IBaseReadService<TEntity, TSearchModel, TDTO, TId>
-        where TEntity : IBaseEntity<TId>, new()
-        where TSearchModel : BaseSearchModel, new()
-        where TDTO : BaseDTO<TId>
+        where TEntity : class, IBaseEntity<TId>, new()
+        where TSearchModel : class, IBaseSearchModel, new()
+        where TDTO : class, IBaseDTO<TId>
     {
-        Task<Result<TDTO>> Add(TEntity entity);
-        Task<Result<TEntity>> AddEntity(TEntity entity);
-        Task<Result<TDTO>> Update(TEntity entity);
-        Task<Result<TEntity>> UpdateEntity(TEntity entity);
+        Task<TDTO> Add(TEntity entity);
+        Task<TEntity> AddEntity(TEntity entity);
+        Task<TDTO> Update(TEntity entity);
+        Task<TEntity> UpdateEntity(TEntity entity);
         Task<TEntity> IncludeRelatedEntitiesToDelete(TEntity entity);
-        Task<Result> Delete(TEntity entity);
-        Task<Result> Delete(TId id);
+        Task Delete(TEntity entity);
+        Task Delete(TId id);
     }
 }
