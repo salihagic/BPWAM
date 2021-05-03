@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using BPWA.DAL.Models;
 
 namespace BPWA.DAL.Database
 {
@@ -373,7 +374,7 @@ namespace BPWA.DAL.Database
 
             #region Superadmin
 
-            var superadminRole = await rolesService.GetEntityWithClaimsByName(superAdminRoleName);
+            var superadminRole = (await rolesService.GetEntities(new RoleSearchModel { Name = superAdminRoleName }))?.FirstOrDefault();
 
             if (superadminRole == null)
             {

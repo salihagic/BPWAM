@@ -1,5 +1,6 @@
 ﻿using BPWA.Core.Entities;
 using BPWA.DAL.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -97,15 +98,16 @@ namespace BPWA.DAL.Database
                 builder.HasIndex(x => new { x.NormalizedName, x.CompanyId, x.BusinessUnitId }).HasName("RoleNameIndex").IsUnique();
             });
 
+            //EF does not allow this for now (https://docs.microsoft.com/en-us/ef/core/querying/filters)
             //builder.Entity<Role>()
             //    .HasQueryFilter(x =>
             //    //Administration
-            //    (!_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue && x.CompanyId == null && x.BusinessUnitId == null) ||
+            //    (!_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue) ||
             //    //Company
             //    (_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue && x.CompanyId == _currentCompany.Id() && x.BusinessUnitId == null) ||
             //    //Business unit
-            //    (_currentCompany.Id().HasValue && _currentBusinessUnit.Id().HasValue && x.CompanyId == _currentCompany.Id() && x.BusinessUnitId == _currentBusinessUnit.Id())
-            //    );
+            //    (_currentCompany.Id().HasValue && _currentBusinessUnit.Id().HasValue && x.CompanyId == null && x.BusinessUnitId == _currentBusinessUnit.Id())
+            //    && !x.IsDeleted);
         }
 
         void ConfigureRoleClaim(ModelBuilder builder)
@@ -121,6 +123,17 @@ namespace BPWA.DAL.Database
             builder.Entity<User>().HasMany(x => x.UserClaims).WithOne(x => x.User).HasForeignKey(x => x.UserId);
             builder.Entity<User>().HasMany(x => x.UserLogins).WithOne(x => x.User).HasForeignKey(x => x.UserId);
             builder.Entity<User>().HasMany(x => x.UserTokens).WithOne(x => x.User).HasForeignKey(x => x.UserId);
+
+            //EF does not allow this for now (https://docs.microsoft.com/en-us/ef/core/querying/filters)
+            //builder.Entity<User>()
+            //    .HasQueryFilter(x =>
+            //    //Administration
+            //    (!_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue) ||
+            //    //Company
+            //    (_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue && (x.CompanyUsers.Any(y => y.CompanyId == _currentCompany.Id()) || x.BusinessUnitUsers.Any(y => y.BusinessUnit.CompanyId == _currentCompany.Id()))) ||
+            //    //Business unit
+            //    (_currentCompany.Id().HasValue && _currentBusinessUnit.Id().HasValue && x.BusinessUnitUsers.Any(y => y.BusinessUnit.Id == _currentBusinessUnit.Id()))
+            //    && !x.IsDeleted);
         }
 
         void ConfigureUserClaim(ModelBuilder builder)
@@ -140,6 +153,17 @@ namespace BPWA.DAL.Database
             builder.Entity<UserRole>().ToTable("UserRoles");
             builder.Entity<UserRole>().HasOne(x => x.User).WithMany(x => x.UserRoles).HasForeignKey(x => x.UserId);
             builder.Entity<UserRole>().HasOne(x => x.Role).WithMany(x => x.UserRoles).HasForeignKey(x => x.RoleId);
+
+            //EF does not allow this for now (https://docs.microsoft.com/en-us/ef/core/querying/filters)
+            //builder.Entity<UserRole>()
+            //    .HasQueryFilter(x =>
+            //    //Administration
+            //    (!_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue) ||
+            //    //Company
+            //    (_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue && x.Role.CompanyId == _currentCompany.Id() && x.Role.BusinessUnitId == null) ||
+            //    //Business unit
+            //    (_currentCompany.Id().HasValue && _currentBusinessUnit.Id().HasValue && x.Role.CompanyId == null && x.Role.BusinessUnitId == _currentBusinessUnit.Id())
+            //    && !x.IsDeleted);
         }
 
         void ConfigureUserToken(ModelBuilder builder)
