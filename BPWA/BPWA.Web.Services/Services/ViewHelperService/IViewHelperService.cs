@@ -5,6 +5,7 @@
         #region Administration
 
         #region Sections
+
         bool ShowAdministrationSection();
         bool ShowAuthSection();
         bool ShowGeolocationsSection();
@@ -39,6 +40,7 @@
 
         bool ShowCompanySection();
         bool ShowCompanyAuthSection();
+        bool ShowCompanyNotificationsSection();
 
         #endregion 
 
@@ -47,6 +49,8 @@
         bool ShowBusinessUnitsItem();
         bool ShowCompanyRolesItem();
         bool ShowCompanyUsersItem();
+        bool ShowCompanyNotificationsItem();
+        bool ShowCompanyGroupsItem();
 
         #endregion
 
@@ -58,6 +62,7 @@
 
         bool ShowBusinessUnitSection();
         bool ShowBusinessUnitAuthSection();
+        bool ShowBusinessUnitNotificationsSection();
 
         #endregion 
 
@@ -65,6 +70,8 @@
 
         bool ShowBusinessUnitRolesItem();
         bool ShowBusinessUnitUsersItem();
+        bool ShowBusinessUnitNotificationsItem();
+        bool ShowBusinessUnitGroupsItem();
 
         #endregion
 

@@ -2,7 +2,6 @@
 using BPWA.Common.Configuration;
 using BPWA.Common.Extensions;
 using BPWA.Common.Resources;
-using BPWA.Common.Security;
 using BPWA.Common.Services;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
@@ -150,8 +149,15 @@ namespace BPWA.Web.Services.Services
             var result = await base.Update(entity);
 
             await ManageRelatedEntities<UserRole, string, string>(result.Id, model.RoleIds, x => x.UserId, x => x.RoleId);
-            await ManageRelatedEntities<CompanyUser, string, int>(result.Id, model.CompanyIds, x => x.UserId, x => x.CompanyId);
-            await ManageRelatedEntities<BusinessUnitUser, string, int>(result.Id, model.BusinessUnitIds, x => x.UserId, x => x.BusinessUnitId);
+
+            if (!CurrentUser.CurrentCompanyId().HasValue)
+            {
+                await ManageRelatedEntities<CompanyUser, string, int>(result.Id, model.CompanyIds, x => x.UserId, x => x.CompanyId);
+            }
+            if (!CurrentUser.CurrentBusinessUnitId().HasValue)
+            {
+                await ManageRelatedEntities<BusinessUnitUser, string, int>(result.Id, model.BusinessUnitIds, x => x.UserId, x => x.BusinessUnitId);
+            }
 
             return result;
         }

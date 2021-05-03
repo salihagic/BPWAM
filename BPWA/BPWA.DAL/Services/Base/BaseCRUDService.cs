@@ -105,45 +105,30 @@ namespace BPWA.DAL.Services
 
         #region Helpers 
 
-        /// <summary>
-        /// Adds new related entities to n-n table and removes removed related entities from n-n table
-        /// </summary>
-        /// <typeparam name="TConnectionEntity"></typeparam>
-        /// <param name="entityKey"></param>
-        /// <param name="itemIds"></param>
-        /// <param name="entityKeySelector"></param>
-        /// <param name="relatedEntityKeySelector"></param>
-        /// <returns></returns>
         protected async Task ManageRelatedEntities<TConnectionEntity>(
             int entityKey,
             List<int> itemIds,
             Expression<Func<TConnectionEntity, int>> entityKeySelector,
-            Expression<Func<TConnectionEntity, int>> relatedEntityKeySelector
+            Expression<Func<TConnectionEntity, int>> relatedEntityKeySelector,
+            Expression<Func<TConnectionEntity, bool>> currentRelatedItemsPredicate = null,
+            bool ignoreQueryFilters = false
             )
             where TConnectionEntity : class, IBaseEntity, new()
         {
-            await ManageRelatedEntities<TConnectionEntity, int, int>(entityKey, itemIds, entityKeySelector, relatedEntityKeySelector);
+            await ManageRelatedEntities<TConnectionEntity, int, int>(entityKey, itemIds, entityKeySelector, relatedEntityKeySelector, currentRelatedItemsPredicate, ignoreQueryFilters);
         }
 
-        /// <summary>
-        /// Adds new related entities to n-n table and removes removed related entities from n-n table
-        /// </summary>
-        /// <typeparam name="TConnectionEntity"></typeparam>
-        /// <typeparam name="TRelatedEntityKey"></typeparam>
-        /// <param name="entityKey"></param>
-        /// <param name="itemIds"></param>
-        /// <param name="entityKeySelector"></param>
-        /// <param name="relatedEntityKeySelector"></param>
-        /// <returns></returns>
         protected async Task ManageRelatedEntities<TConnectionEntity, TRelatedEntityKey>(
             int entityKey,
             List<TRelatedEntityKey> itemIds,
             Expression<Func<TConnectionEntity, int>> entityKeySelector,
-            Expression<Func<TConnectionEntity, TRelatedEntityKey>> relatedEntityKeySelector
+            Expression<Func<TConnectionEntity, TRelatedEntityKey>> relatedEntityKeySelector,
+            Expression<Func<TConnectionEntity, bool>> currentRelatedItemsPredicate = null,
+            bool ignoreQueryFilters = false
             )
             where TConnectionEntity : class, IBaseEntity<int>, new()
         {
-            await ManageRelatedEntities<TConnectionEntity, int, TRelatedEntityKey>(entityKey, itemIds, entityKeySelector, relatedEntityKeySelector);
+            await ManageRelatedEntities<TConnectionEntity, int, TRelatedEntityKey>(entityKey, itemIds, entityKeySelector, relatedEntityKeySelector, currentRelatedItemsPredicate, ignoreQueryFilters);
         }
 
         /// <summary>
@@ -161,31 +146,43 @@ namespace BPWA.DAL.Services
             TEntityKey entityKey,
             List<TRelatedEntityKey> itemIds,
             Expression<Func<TConnectionEntity, TEntityKey>> entityKeySelector,
-            Expression<Func<TConnectionEntity, TRelatedEntityKey>> relatedEntityKeySelector
+            Expression<Func<TConnectionEntity, TRelatedEntityKey>> relatedEntityKeySelector,
+            Expression<Func<TConnectionEntity, bool>> currentRelatedItemsPredicate = null,
+            bool ignoreQueryFilters = false
             )
             where TConnectionEntity : class, IBaseEntity<int>, new()
         {
             var dbSet = DatabaseContext.Set<TConnectionEntity>();
+            List<TConnectionEntity> currentRelatedItems = null;
+            var query = dbSet.AsQueryable();
 
-            ParameterExpression parameter = Expression.Parameter(typeof(TConnectionEntity));
-            var predicate = Expression.Lambda<Func<TConnectionEntity, bool>>(
-                Expression.Equal(
-                    Expression.Invoke(entityKeySelector, parameter),
-                    Expression.Constant(entityKey)),
-                    parameter);
+            if (ignoreQueryFilters)
+            {
+                query = query.IgnoreQueryFilters();
+            }
 
-            var currentRelatedItems = await dbSet
-                .Where(predicate)
-                .ToListAsync();
+            if (currentRelatedItemsPredicate != null)
+            {
+                currentRelatedItems = await query.Where(currentRelatedItemsPredicate).ToListAsync();
+            }
+            else
+            {
+                ParameterExpression parameter = Expression.Parameter(typeof(TConnectionEntity));
+                var predicate = Expression.Lambda<Func<TConnectionEntity, bool>>(
+                    Expression.Equal(
+                        Expression.Invoke(entityKeySelector, parameter),
+                        Expression.Constant(entityKey)),
+                        parameter);
+
+                currentRelatedItems = await query.Where(predicate).ToListAsync();
+            }
 
             //Delete
-            var relatedItemsToDelete = currentRelatedItems.Where(x => !itemIds?.Any(y => y.Equals(x.Id)) ?? true).ToList();
+            var relatedItemsToDelete = currentRelatedItems.Where(x => !itemIds?.Any(y => relatedEntityKeySelector.Compile().Invoke(x).Equals(y)) ?? true).ToList();
             dbSet.RemoveRange(relatedItemsToDelete);
 
             //Add new ones
-            var relatedItemIdsToAdd = itemIds
-                .Where(x => !currentRelatedItems.Any(y => y.Id.Equals(x)))
-                .ToList();
+            var relatedItemIdsToAdd = itemIds.Where(x => !currentRelatedItems.Any(y => relatedEntityKeySelector.Compile().Invoke(y).Equals(x))).ToList();
 
             var toAdd = new List<TConnectionEntity>();
 

@@ -53,12 +53,12 @@ namespace BPWA.Web.Services.Services
         public bool ShowLogsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.LogsRead);
         public bool ShowTicketsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.TicketsManagement);
         public bool ShowTranslationsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.TranslationsManagement);
-        public bool ShowNotificationsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.NotificationsManagement);
-        public bool ShowGroupsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.GroupsManagement);
-        
-        #endregion 
+        public bool ShowNotificationsItem() => (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.NotificationsManagement) || _currentUser.HasGodMode()) && !_currentUser.CurrentCompanyId().HasValue && !_currentUser.CurrentBusinessUnitId().HasValue;
+        public bool ShowGroupsItem() => (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.GroupsManagement) || _currentUser.HasGodMode()) && !_currentUser.CurrentCompanyId().HasValue && !_currentUser.CurrentBusinessUnitId().HasValue;
 
-        #endregion 
+        #endregion
+
+        #endregion
 
         #region Company
 
@@ -74,6 +74,11 @@ namespace BPWA.Web.Services.Services
             ShowCompanyUsersItem(),
         }.Any(x => x);
 
+        public bool ShowCompanyNotificationsSection() => new List<bool>{
+            ShowCompanyNotificationsItem(),
+            ShowCompanyGroupsItem(),
+        }.Any(x => x);
+
         #endregion 
 
         #region Items
@@ -81,6 +86,8 @@ namespace BPWA.Web.Services.Services
         public bool ShowBusinessUnitsItem() => _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.BusinessUnitsManagement) || _currentUser.HasCompanyGodMode();
         public bool ShowCompanyRolesItem() => (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.CompanyRolesManagement) || _currentUser.HasCompanyGodMode()) && _currentUser.CurrentCompanyId().HasValue && !_currentUser.CurrentBusinessUnitId().HasValue;
         public bool ShowCompanyUsersItem() => (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.CompanyUsersManagement) || _currentUser.HasCompanyGodMode()) && _currentUser.CurrentCompanyId().HasValue && !_currentUser.CurrentBusinessUnitId().HasValue;
+        public bool ShowCompanyNotificationsItem() => (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.CompanyNotificationsManagement) || _currentUser.HasCompanyGodMode()) && _currentUser.CurrentCompanyId().HasValue && !_currentUser.CurrentBusinessUnitId().HasValue;
+        public bool ShowCompanyGroupsItem() => (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.CompanyGroupsManagement) || _currentUser.HasCompanyGodMode()) && _currentUser.CurrentCompanyId().HasValue && !_currentUser.CurrentBusinessUnitId().HasValue;
 
         #endregion
 
@@ -99,12 +106,19 @@ namespace BPWA.Web.Services.Services
             ShowBusinessUnitUsersItem(),
         }.Any(x => x);
 
+        public bool ShowBusinessUnitNotificationsSection() => new List<bool>{
+            ShowBusinessUnitNotificationsItem(),
+            ShowBusinessUnitGroupsItem(),
+        }.Any(x => x);
+
         #endregion 
 
         #region Items
 
         public bool ShowBusinessUnitRolesItem() => (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.BusinessUnit.BusinessUnitRolesManagement) || _currentUser.HasBusinessUnitGodMode()) && _currentUser.CurrentBusinessUnitId().HasValue;
         public bool ShowBusinessUnitUsersItem() => (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.BusinessUnit.BusinessUnitUsersManagement) || _currentUser.HasBusinessUnitGodMode()) && _currentUser.CurrentBusinessUnitId().HasValue;
+        public bool ShowBusinessUnitNotificationsItem() => (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.BusinessUnit.BusinessUnitNotificationsManagement) || _currentUser.HasBusinessUnitGodMode()) && _currentUser.CurrentBusinessUnitId().HasValue;
+        public bool ShowBusinessUnitGroupsItem() => (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.BusinessUnit.BusinessUnitGroupsManagement) || _currentUser.HasBusinessUnitGodMode()) && _currentUser.CurrentBusinessUnitId().HasValue;
 
         #endregion
 

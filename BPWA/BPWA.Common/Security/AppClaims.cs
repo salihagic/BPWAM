@@ -33,6 +33,8 @@ namespace BPWA.Common.Security
                 public const string CompanyRolesManagement = nameof(CompanyRolesManagement);
                 public const string BusinessUnitsManagement = nameof(BusinessUnitsManagement);
                 public const string CompanyUsersManagement = nameof(CompanyUsersManagement);
+                public const string CompanyNotificationsManagement = nameof(CompanyNotificationsManagement);
+                public const string CompanyGroupsManagement = nameof(CompanyGroupsManagement);
             }
 
             public static class BusinessUnit
@@ -40,6 +42,8 @@ namespace BPWA.Common.Security
                 public const string BusinessUnitGodMode = nameof(BusinessUnitGodMode);
                 public const string BusinessUnitRolesManagement = nameof(BusinessUnitRolesManagement);
                 public const string BusinessUnitUsersManagement = nameof(BusinessUnitUsersManagement);
+                public const string BusinessUnitNotificationsManagement = nameof(BusinessUnitNotificationsManagement);
+                public const string BusinessUnitGroupsManagement = nameof(BusinessUnitGroupsManagement);
             }
         }
 

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using BPWA.Common.Extensions;
 using BPWA.Common.Resources;
 using BPWA.Core.Entities;
@@ -27,11 +26,11 @@ namespace BPWA.Web.Services.Services
             _currentUser = currentUser;
         }
 
-        public override IQueryable<BusinessUnit> BuildQueryConditions(IQueryable<BusinessUnit> query, BusinessUnitSearchModel searchModel = null)
-        {
-            return base.BuildQueryConditions(query, searchModel)
-                       .WhereIf(_currentUser.CurrentCompanyId().HasValue, x => x.CompanyId == _currentUser.CurrentCompanyId());
-        }
+        //public override IQueryable<BusinessUnit> BuildQueryConditions(IQueryable<BusinessUnit> query, BusinessUnitSearchModel searchModel = null)
+        //{
+        //    return base.BuildQueryConditions(query, searchModel)
+        //               .WhereIf(_currentUser.CurrentCompanyId().HasValue, x => x.CompanyId == _currentUser.CurrentCompanyId());
+        //}
 
         public override IQueryable<BusinessUnit> BuildIncludes(IQueryable<BusinessUnit> query)
         {

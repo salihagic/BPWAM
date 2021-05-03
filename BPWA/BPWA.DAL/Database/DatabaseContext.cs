@@ -1,4 +1,5 @@
 ﻿using BPWA.Core.Entities;
+using BPWA.DAL.Services;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -37,7 +38,51 @@ namespace BPWA.DAL.Database
 
         #endregion
 
-        #region Configure Identity entities
+        #region Configuration
+
+        void ConfigureBusinessUnit(ModelBuilder builder)
+        {
+            builder.Entity<BusinessUnit>()
+                .HasQueryFilter(x =>
+                (!_currentCompany.Id().HasValue || x.CompanyId == _currentCompany.Id())
+                && !x.IsDeleted);
+        }
+
+        void ConfigureBusinessUnitUser(ModelBuilder builder) { }
+
+        void ConfigureCity(ModelBuilder builder) { }
+
+        void ConfigureCompany(ModelBuilder builder) { }
+
+        void ConfigureCompanyUser(ModelBuilder builder) { }
+
+        void ConfigureCountry(ModelBuilder builder) { }
+
+        void ConfigureCountryCurrency(ModelBuilder builder) { }
+
+        void ConfigureCountryLanguage(ModelBuilder builder) { }
+
+        void ConfigureCurrency(ModelBuilder builder) { }
+
+        void ConfigureGroup(ModelBuilder builder) { }
+
+        void ConfigureGroupUser(ModelBuilder builder) { }
+
+        void ConfigureLanguage(ModelBuilder builder) { }
+
+        void ConfigureLog(ModelBuilder builder) { }
+
+        void ConfigureNotification(ModelBuilder builder) { }
+
+        void ConfigureNotificationGroup(ModelBuilder builder) { }
+
+        void ConfigureNotificationLog(ModelBuilder builder) { }
+
+        void ConfigureTicket(ModelBuilder builder) { }
+
+        void ConfigureTranslation(ModelBuilder builder) { }
+
+        #region Identity
 
         void ConfigureRole(ModelBuilder builder)
         {
@@ -51,6 +96,16 @@ namespace BPWA.DAL.Database
                 builder.Metadata.RemoveIndex(new[] { builder.Property(r => r.NormalizedName).Metadata });
                 builder.HasIndex(x => new { x.NormalizedName, x.CompanyId, x.BusinessUnitId }).HasName("RoleNameIndex").IsUnique();
             });
+
+            //builder.Entity<Role>()
+            //    .HasQueryFilter(x =>
+            //    //Administration
+            //    (!_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue && x.CompanyId == null && x.BusinessUnitId == null) ||
+            //    //Company
+            //    (_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue && x.CompanyId == _currentCompany.Id() && x.BusinessUnitId == null) ||
+            //    //Business unit
+            //    (_currentCompany.Id().HasValue && _currentBusinessUnit.Id().HasValue && x.CompanyId == _currentCompany.Id() && x.BusinessUnitId == _currentBusinessUnit.Id())
+            //    );
         }
 
         void ConfigureRoleClaim(ModelBuilder builder)
@@ -93,17 +148,53 @@ namespace BPWA.DAL.Database
             builder.Entity<UserToken>().HasOne(x => x.User).WithMany(x => x.UserTokens).HasForeignKey(x => x.UserId);
         }
 
+        #endregion Identity
+
         #endregion 
 
         #region Helpers 
 
-        public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
+        private ICurrentCompany _currentCompany;
+        private ICurrentBusinessUnit _currentBusinessUnit;
+
+        public DatabaseContext(
+            DbContextOptions<DatabaseContext> options,
+            ICurrentCompany currentCompany,
+            ICurrentBusinessUnit currentBusinessUnit
+            ) : base(options)
+        {
+            _currentCompany = currentCompany;
+            _currentBusinessUnit = currentBusinessUnit;
+        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
             SetIsDeletedFilters(builder);
+
+            #region Configure specific models
+
+            ConfigureBusinessUnit(builder);
+            ConfigureBusinessUnitUser(builder);
+            ConfigureCity(builder);
+            ConfigureCompany(builder);
+            ConfigureCompanyUser(builder);
+            ConfigureCountry(builder);
+            ConfigureCountryCurrency(builder);
+            ConfigureCountryLanguage(builder);
+            ConfigureCurrency(builder);
+            ConfigureGroup(builder);
+            ConfigureGroupUser(builder);
+            ConfigureLanguage(builder);
+            ConfigureLog(builder);
+            ConfigureNotification(builder);
+            ConfigureNotificationGroup(builder);
+            ConfigureNotificationLog(builder);
+            ConfigureTicket(builder);
+            ConfigureTranslation(builder);
+
+            #region Identity
 
             ConfigureRole(builder);
             ConfigureRoleClaim(builder);
@@ -112,8 +203,21 @@ namespace BPWA.DAL.Database
             ConfigureUserLogin(builder);
             ConfigureUserRole(builder);
             ConfigureUserToken(builder);
+
+            #endregion
+
+            #endregion
         }
 
+        /// <summary>
+        /// This method sets the x.IsDeleted == false filter to every query 
+        /// on the entity that implements IBaseEntity interface
+        /// Although this method sets the query filter, if you explicitly want
+        /// to add new filters like CompanyId or BussinessUnitId, you will
+        /// have to set IsDeleted filter by yourself for that entity
+        /// see more: https://github.com/dotnet/efcore/issues/10275
+        /// </summary>
+        /// <param name="builder"></param>
         void SetIsDeletedFilters(ModelBuilder builder)
         {
             var entities = builder.Model.GetEntityTypes().Where(x => typeof(IBaseEntity).IsAssignableFrom(x.ClrType));
@@ -173,7 +277,7 @@ namespace BPWA.DAL.Database
                     iEntity.CreatedAtUtc = DateTime.UtcNow;
                 else if (entity.State == EntityState.Modified)
                     iEntity.ModifiedAtUtc = DateTime.UtcNow;
-                else if (entity.State == EntityState.Deleted && 
+                else if (entity.State == EntityState.Deleted &&
                     !HardDeleteTypes.Contains(entity.Entity.GetType()))
                 {
                     entity.State = EntityState.Modified;

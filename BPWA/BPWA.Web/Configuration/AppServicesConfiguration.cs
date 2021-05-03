@@ -27,13 +27,15 @@ namespace BPWA.Web.Configuration
                     .AddScoped<IUsersWebService, UsersWebService>()
                     .AddScoped<IRolesWebService, RolesWebService>()
                     .AddScoped<IRolesService, RolesService>()
-                    .AddScoped<ICurrentUser, CurrentUser>()
-                    .AddScoped<ICurrentTimezone, CurrentTimezone>()
-                    .AddScoped<IPasswordGeneratorService, PasswordGeneratorService>()
             #endregion 
-            #region Other
+            #region Helpers
+                    .AddScoped<ICurrentBusinessUnit, CurrentBusinessUnit>()
+                    .AddScoped<ICurrentCompany, CurrentCompany>()
+                    .AddScoped<ICurrentTimezone, CurrentTimezone>()
+                    .AddScoped<ICurrentUser, CurrentUser>()
                     .AddScoped<IDropdownHelperService, DropdownHelperService>()
                     .AddScoped<IViewHelperService, ViewHelperService>()
+                    .AddScoped<IPasswordGeneratorService, PasswordGeneratorService>()
                     .AddScoped<IEmailService, EmailService>();
             #endregion 
 
