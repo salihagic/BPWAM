@@ -14,7 +14,7 @@ namespace BPWA.DAL.Services
 {
     public class NotificationsService : BaseCRUDService<Notification, NotificationSearchModel, NotificationDTO>, INotificationsService
     {
-        protected ICurrentUser CurrentUser { get; }
+        protected ICurrentUser _currentUser { get; }
 
         public NotificationsService(
             DatabaseContext databaseContext,
@@ -22,7 +22,7 @@ namespace BPWA.DAL.Services
             ICurrentUser currentUser
             ) : base(databaseContext, mapper)
         {
-            CurrentUser = currentUser;
+            _currentUser = currentUser;
         }
 
         public override IQueryable<Notification> BuildQueryConditions(IQueryable<Notification> Query, NotificationSearchModel searchModel = null)
@@ -46,8 +46,8 @@ namespace BPWA.DAL.Services
             try
             {
                 Query = Query
-                    .Where(x => (x.NotificationDistributionType == NotificationDistributionType.SingleUser && x.UserId == CurrentUser.Id()) ||
-                                (x.NotificationDistributionType == NotificationDistributionType.Group && x.NotificationGroups.Any(y => y.Group.GroupUsers.Any(z => z.UserId == CurrentUser.Id()))) ||
+                    .Where(x => (x.NotificationDistributionType == NotificationDistributionType.SingleUser && x.UserId == _currentUser.Id()) ||
+                                (x.NotificationDistributionType == NotificationDistributionType.Group && x.NotificationGroups.Any(y => y.Group.GroupUsers.Any(z => z.UserId == _currentUser.Id()))) ||
                                 (x.NotificationDistributionType == NotificationDistributionType.Broadcast))
                     .Include(x => x.NotificationLogs)
                     .OrderByDescending(x => x.CreatedAtUtc);
@@ -79,7 +79,7 @@ namespace BPWA.DAL.Services
             try
             {
                 Query = Query
-                    .Where(x => x.NotificationDistributionType == NotificationDistributionType.SingleUser && x.UserId == CurrentUser.Id())
+                    .Where(x => x.NotificationDistributionType == NotificationDistributionType.SingleUser && x.UserId == _currentUser.Id())
                     .Include(x => x.NotificationLogs)
                     .OrderByDescending(x => x.CreatedAtUtc);
 
@@ -110,7 +110,7 @@ namespace BPWA.DAL.Services
             try
             {
                 Query = Query
-                    .Where(x => x.NotificationDistributionType == NotificationDistributionType.Group && x.NotificationGroups.Any(y => y.Group.GroupUsers.Any(z => z.UserId == CurrentUser.Id())))
+                    .Where(x => x.NotificationDistributionType == NotificationDistributionType.Group && x.NotificationGroups.Any(y => y.Group.GroupUsers.Any(z => z.UserId == _currentUser.Id())))
                     .Include(x => x.NotificationLogs)
                     .OrderByDescending(x => x.CreatedAtUtc);
 
@@ -142,7 +142,7 @@ namespace BPWA.DAL.Services
             {
                 Query = Query
                     .Where(x => x.NotificationDistributionType == NotificationDistributionType.Broadcast)
-                    .Include(x => x.NotificationLogs.Where(x => x.UserId == CurrentUser.Id()))
+                    .Include(x => x.NotificationLogs.Where(x => x.UserId == _currentUser.Id()))
                     .OrderByDescending(x => x.CreatedAtUtc);
 
                 if (searchModel?.Pagination != null)
@@ -173,7 +173,7 @@ namespace BPWA.DAL.Services
             {
                 foreach (var notification in notifications)
                 {
-                    notification.Seen = notification.NotificationLogs.FirstOrDefault(x => x.NotificationId == notification.Id && x.UserId == CurrentUser.Id())?.Seen ?? false;
+                    notification.Seen = notification.NotificationLogs.FirstOrDefault(x => x.NotificationId == notification.Id && x.UserId == _currentUser.Id())?.Seen ?? false;
                     notification.NotificationLogs.ForEach(x => x.Seen = true);
                 }
 
@@ -186,7 +186,7 @@ namespace BPWA.DAL.Services
             try
             {
                 var count = await DatabaseContext.NotificationLogs
-                .Where(x => x.UserId == CurrentUser.Id() && !x.Seen)
+                .Where(x => x.UserId == _currentUser.Id() && !x.Seen)
                 .CountAsync();
 
                 return count;

@@ -106,10 +106,7 @@
         $.ajax({
             url: '@Url.Action("GetUnseenNotificationsCountForCurrentUser", "Notifications")',
             type: 'GET',
-            success: (data) => {
-
-                var count = data.item;
-
+            success: (count) => {
                 if (count != undefined && count > 0) {
                     $('#notification_pulse_item').addClass('kt-pulse kt-pulse--brand');
                     $('#notifications_count_wrapper').show();
@@ -132,10 +129,7 @@
                     'take': directNotificationsTake
                 }
             },
-            success: (data) => {
-
-                var notifications = data.item;
-
+            success: (notifications) => {
                 $.each(notifications, function (index, notification) {
                     $('#direct_notifications').append(BuildNotificationItem(notification));
                 });
@@ -153,10 +147,7 @@
                     'take': groupNotificationsTake
                 }
             },
-            success: (data) => {
-
-                var notifications = data.item;
-
+            success: (notifications) => {
                 $.each(notifications, function (index, notification) {
                     $('#group_notifications').append(BuildNotificationItem(notification));
                 });
@@ -174,10 +165,7 @@
                     'take': broadcastNotificationsTake
                 }
             },
-            success: (data) => {
-
-                var notifications = data.item;
-
+            success: (notifications) => {
                 $.each(notifications, function (index, notification) {
                     $('#broadcast_notifications').append(BuildNotificationItem(notification));
                 });

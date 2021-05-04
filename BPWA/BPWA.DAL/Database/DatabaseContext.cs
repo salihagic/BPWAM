@@ -109,6 +109,7 @@ namespace BPWA.DAL.Database
             });
 
             //EF does not allow this for now (https://docs.microsoft.com/en-us/ef/core/querying/filters)
+            builder.Entity<Role>().HasQueryFilter(x => !x.IsDeleted);
             //builder.Entity<Role>()
             //    .HasQueryFilter(x =>
             //    //Administration

@@ -102,7 +102,7 @@
                         var text = row.@nameof(NotificationDTO.NotificationTypeString).ToCamelCase();
                         var value = row.@nameof(NotificationDTO.NotificationType).ToCamelCase();
                         var status = {
-                            1: { 'class': 'kt-badge--info' },
+                            0: { 'class': 'kt-badge--info' },
                         };
                         if (typeof status[value] === 'undefined') {
                             return text;
@@ -119,9 +119,9 @@
                         var text = row.@nameof(NotificationDTO.NotificationDistributionTypeString).ToCamelCase();
                         var value = row.@nameof(NotificationDTO.NotificationDistributionType).ToCamelCase();
                         var status = {
-                            1: { 'class': 'kt-badge--info' },
-                            2: { 'class': 'kt-badge--warning' },
-                            3: { 'class': 'kt-badge--danger' },
+                            0: { 'class': 'kt-badge--info' },
+                            1: { 'class': 'kt-badge--warning' },
+                            2: { 'class': 'kt-badge--danger' },
                         };
                         if (typeof status[value] === 'undefined') {
                             return text;
