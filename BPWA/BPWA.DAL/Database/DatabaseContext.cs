@@ -1,6 +1,5 @@
 ﻿using BPWA.Core.Entities;
 using BPWA.DAL.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -65,7 +64,18 @@ namespace BPWA.DAL.Database
 
         void ConfigureCurrency(ModelBuilder builder) { }
 
-        void ConfigureGroup(ModelBuilder builder) { }
+        void ConfigureGroup(ModelBuilder builder) 
+        {
+            builder.Entity<Group>()
+                .HasQueryFilter(x =>
+                //Administration
+                (!_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue) ||
+                //Company
+                (_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue && x.CompanyId == _currentCompany.Id()) ||
+                //Business unit
+                (_currentCompany.Id().HasValue && _currentBusinessUnit.Id().HasValue && x.CompanyId == _currentCompany.Id() && x.BusinessUnitId == _currentBusinessUnit.Id())
+                && !x.IsDeleted);
+        }
 
         void ConfigureGroupUser(ModelBuilder builder) { }
 
