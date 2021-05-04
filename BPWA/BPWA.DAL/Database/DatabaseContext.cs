@@ -108,17 +108,15 @@ namespace BPWA.DAL.Database
                 builder.HasIndex(x => new { x.NormalizedName, x.CompanyId, x.BusinessUnitId }).HasName("RoleNameIndex").IsUnique();
             });
 
-            //EF does not allow this for now (https://docs.microsoft.com/en-us/ef/core/querying/filters)
-            builder.Entity<Role>().HasQueryFilter(x => !x.IsDeleted);
-            //builder.Entity<Role>()
-            //    .HasQueryFilter(x =>
-            //    //Administration
-            //    (!_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue) ||
-            //    //Company
-            //    (_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue && x.CompanyId == _currentCompany.Id() && x.BusinessUnitId == null) ||
-            //    //Business unit
-            //    (_currentCompany.Id().HasValue && _currentBusinessUnit.Id().HasValue && x.CompanyId == null && x.BusinessUnitId == _currentBusinessUnit.Id())
-            //    && !x.IsDeleted);
+            builder.Entity<Role>()
+                .HasQueryFilter(x =>
+                //Administration
+                (!_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue)
+                //Company
+                || (_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue && x.CompanyId == _currentCompany.Id() && x.BusinessUnitId == null)
+                //Business unit
+                || (_currentCompany.Id().HasValue && _currentBusinessUnit.Id().HasValue && x.CompanyId == null && x.BusinessUnitId == _currentBusinessUnit.Id())
+                && !x.IsDeleted);
         }
 
         void ConfigureRoleClaim(ModelBuilder builder)
@@ -185,7 +183,7 @@ namespace BPWA.DAL.Database
 
         #endregion Identity
 
-        #endregion 
+        #endregion Configuration
 
         #region Helpers 
 
@@ -244,6 +242,8 @@ namespace BPWA.DAL.Database
             #endregion
         }
 
+        #region IsDeleted
+
         /// <summary>
         /// This method sets the x.IsDeleted == false filter to every query 
         /// on the entity that implements IBaseEntity interface
@@ -255,9 +255,7 @@ namespace BPWA.DAL.Database
         /// <param name="builder"></param>
         void SetIsDeletedFilters(ModelBuilder builder)
         {
-            var entities = builder.Model.GetEntityTypes().Where(x => typeof(IBaseEntity).IsAssignableFrom(x.ClrType));
-
-            foreach (var entity in entities)
+            foreach (var entity in builder.Model.GetEntityTypes().Where(x => typeof(IBaseEntity).IsAssignableFrom(x.ClrType)))
             {
                 var parameter = Expression.Parameter(entity.ClrType);
 
@@ -267,12 +265,48 @@ namespace BPWA.DAL.Database
 
                 var isDeletedProperty = Expression.Call(propertyMethodInfo, parameter, Expression.Constant("IsDeleted"));
                 BinaryExpression isDeletedCompareExpression = Expression.MakeBinary(ExpressionType.Equal, isDeletedProperty, Expression.Constant(false));
-                var isDeletedLabmda = Expression.Lambda(isDeletedCompareExpression, parameter);
-                builder.Entity(entity.ClrType).HasQueryFilter(isDeletedLabmda);
+                var isDeletedLambda = Expression.Lambda(isDeletedCompareExpression, parameter);
+                builder.Entity(entity.ClrType).HasQueryFilter(isDeletedLambda);
 
                 #endregion
             }
         }
+
+        /// <summary>
+        /// Works only on included related entities
+        /// </summary>
+        /// <param name="entity"></param>
+        private void HandleCascadeSoftDelete(EntityEntry entity)
+        {
+            foreach (var navigationEntry in entity.Navigations.Where(n => !(n.Metadata as INavigation).IsOnDependent))
+            {
+                if (navigationEntry is CollectionEntry collectionEntry)
+                {
+                    if (collectionEntry.CurrentValue != null)
+                    {
+                        foreach (var dependentEntry in collectionEntry.CurrentValue)
+                        {
+                            if (dependentEntry != null)
+                            {
+                                var idependentEntry = (IBaseEntity)dependentEntry;
+                                idependentEntry.IsDeleted = true;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    var dependentEntry = navigationEntry.CurrentValue;
+                    if (dependentEntry != null)
+                    {
+                        var iNavigationEntry = (IBaseEntity)navigationEntry;
+                        iNavigationEntry.IsDeleted = true;
+                    }
+                }
+            }
+        }
+
+        #endregion IsDeleted
 
         #region SaveChanges overrides
 
@@ -330,40 +364,6 @@ namespace BPWA.DAL.Database
         };
 
         #endregion
-
-        /// <summary>
-        /// Works only on included related entities
-        /// </summary>
-        /// <param name="entity"></param>
-        private void HandleCascadeSoftDelete(EntityEntry entity)
-        {
-            foreach (var navigationEntry in entity.Navigations.Where(n => !(n.Metadata as INavigation).IsOnDependent))
-            {
-                if (navigationEntry is CollectionEntry collectionEntry)
-                {
-                    if (collectionEntry.CurrentValue != null)
-                    {
-                        foreach (var dependentEntry in collectionEntry.CurrentValue)
-                        {
-                            if (dependentEntry != null)
-                            {
-                                var idependentEntry = (IBaseEntity)dependentEntry;
-                                idependentEntry.IsDeleted = true;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    var dependentEntry = navigationEntry.CurrentValue;
-                    if (dependentEntry != null)
-                    {
-                        var iNavigationEntry = (IBaseEntity)navigationEntry;
-                        iNavigationEntry.IsDeleted = true;
-                    }
-                }
-            }
-        }
 
         #endregion
     }

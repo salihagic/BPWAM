@@ -25,13 +25,6 @@ namespace BPWA.Web.Services.Services
             _currentUser = currentUser;
         }
 
-        public override IQueryable<Role> BuildQueryConditions(IQueryable<Role> Query, RoleSearchModel searchModel = null)
-        {
-            return base.BuildQueryConditions(Query, searchModel)
-                       .WhereIf(_currentUser.CurrentCompanyId().HasValue, x => x.CompanyId == _currentUser.CurrentCompanyId() || x.BusinessUnit.CompanyId == _currentUser.CurrentCompanyId())
-                       .WhereIf(_currentUser.CurrentBusinessUnitId().HasValue, x => x.BusinessUnitId == _currentUser.CurrentBusinessUnitId());
-        }
-
         public override IQueryable<Role> BuildIncludesById(string id, IQueryable<Role> query)
         {
             return base.BuildIncludesById(id, query)

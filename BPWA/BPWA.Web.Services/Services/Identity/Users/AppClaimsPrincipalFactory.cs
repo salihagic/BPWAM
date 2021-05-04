@@ -60,11 +60,12 @@ namespace BPWA.Web.Services.Services
 
         async Task AddRoles(User user, List<Claim> claims)
         {
-            var roles = await _databaseContext.UserRoles
-               .AsNoTracking()
-               .Include(x => x.Role.RoleClaims)
-               .Where(x => x.UserId == user.Id)
-               .Where(x => (x.Role.CompanyId == null && x.Role.BusinessUnitId == null) ||
+            var roles = await _databaseContext.UserRoles.IgnoreQueryFilters()
+                .IgnoreQueryFilters()
+                .AsNoTracking()
+                .Include(x => x.Role.RoleClaims)
+                .Where(x => x.UserId == user.Id)
+                .Where(x => (x.Role.CompanyId == null && x.Role.BusinessUnitId == null) ||
                             x.Role.BusinessUnitId == user.CurrentBusinessUnitId ||
                             x.Role.CompanyId == user.CurrentCompanyId)
                 .Select(x => x.Role)
@@ -81,7 +82,7 @@ namespace BPWA.Web.Services.Services
         {
             if (user.CurrentCompanyId != null)
             {
-                var company = await _databaseContext.Companies
+                var company = await _databaseContext.Companies.IgnoreQueryFilters()
                                                     .FirstOrDefaultAsync(x => x.Id == user.CurrentCompanyId);
 
                 if (company != null)
@@ -96,7 +97,7 @@ namespace BPWA.Web.Services.Services
         {
             if (user.CurrentBusinessUnitId != null)
             {
-                var businessUnit = await _databaseContext.BusinessUnits.FirstOrDefaultAsync(x => x.Id == user.CurrentBusinessUnitId);
+                var businessUnit = await _databaseContext.BusinessUnits.IgnoreQueryFilters().FirstOrDefaultAsync(x => x.Id == user.CurrentBusinessUnitId);
 
                 if (businessUnit != null)
                 {
@@ -108,7 +109,7 @@ namespace BPWA.Web.Services.Services
 
         async Task AddCompanyIds(User user, List<Claim> claims)
         {
-            var companyIds = await _databaseContext.CompanyUsers
+            var companyIds = await _databaseContext.CompanyUsers.IgnoreQueryFilters()
                                        .Where(x => x.UserId == user.Id)
                                        .Select(x => x.CompanyId)
                                        .ToListAsync();
@@ -119,7 +120,7 @@ namespace BPWA.Web.Services.Services
 
         async Task AddBusinessUnitIds(User user, List<Claim> claims)
         {
-            var businessUnitIds = await _databaseContext.BusinessUnitUsers
+            var businessUnitIds = await _databaseContext.BusinessUnitUsers.IgnoreQueryFilters()
                                         .Where(x => x.UserId == user.Id)
                                         .Select(x => x.BusinessUnitId)
                                         .ToListAsync();

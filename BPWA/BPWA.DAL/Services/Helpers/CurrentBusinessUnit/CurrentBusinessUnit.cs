@@ -8,7 +8,7 @@ namespace BPWA.DAL.Services
     {
         public int? Id()
         {
-            var companyIdClaim = User.FindFirstValue(AppClaims.Meta.CurrentBusinessUnitId);
+            var companyIdClaim = User?.FindFirstValue(AppClaims.Meta.CurrentBusinessUnitId);
 
             if (string.IsNullOrEmpty(companyIdClaim))
                 return null;
