@@ -123,7 +123,7 @@ namespace BPWA.DAL.Database
             #endregion
         }
 
-        #region IsDeleted
+        #region Filters
 
         /// <summary>
         /// This method sets the filters to every query 
@@ -135,45 +135,48 @@ namespace BPWA.DAL.Database
         /// <param name="builder"></param>
         void SetGlobalFilters(ModelBuilder builder)
         {
-            builder.Entity<City>()
-            .HasQueryFilter(entity =>
+            //More levels == worse performance
+            builder.ApplyGlobalFilters<IBaseEntity>(entity =>
             !entity.IsDeleted &&
             //All
-            (entity.CompanyId == null || _currentCompany.Id() == null
-            //First level company
-            || entity.CompanyId == _currentCompany.Id()
-            //Second level company
-            || Set<Company>().IgnoreQueryFilters().Any(y => y.Id == entity.CompanyId && y.CompanyId == _currentCompany.Id())
-            ////Third level company
-            //|| entity.Company.Subcompanies.SelectMany(y => y.Subcompanies).Any(y => y.CompanyId == companyId)
+            (entity.CompanyId == null || _currentCompany.Id() == null ||
+            //Level 1 company
+            entity.CompanyId == _currentCompany.Id() ||
+            //Other levels
+            Set<Company>().IgnoreQueryFilters().Any(y => y.Id == entity.CompanyId && (
+                //Level 2 company
+                y.CompanyId == _currentCompany.Id() ||
+                //Level 3 company
+                y.Company.CompanyId == _currentCompany.Id() ||
+                //Level 4 company
+                y.Company.Company.CompanyId == _currentCompany.Id()
+                //...
+            ))
             ));
 
             //More levels == worse performance
-            builder.SetQueryFilterOnAllEntities<IBaseEntity>(entity =>
+            builder.Entity<Company>().HasQueryFilter(entity =>
             !entity.IsDeleted &&
             //All
-            (entity.CompanyId == null || _currentCompany.Id() == null
-            //First level company
-            || entity.CompanyId == _currentCompany.Id()
-            //Second level company
-            || Set<Company>().IgnoreQueryFilters().Any(y => y.Id == entity.CompanyId && y.CompanyId == _currentCompany.Id())
-            //|| entity.Company.Subcompanies.Any(y => y.CompanyId == _currentCompany.Id())
-            ////Third level company
-            //|| entity.Company.Subcompanies.SelectMany(y => y.Subcompanies).Any(y => y.CompanyId == companyId)
+            (_currentCompany.Id() == null ||
+            //Level 1 company
+            entity.CompanyId == _currentCompany.Id() ||
+            //Other levels
+            Set<Company>().IgnoreQueryFilters().Any(y => y.Id == entity.CompanyId && (
+                //Level 2 company
+                y.CompanyId == _currentCompany.Id() ||
+                //Level 3 company
+                y.Company.CompanyId == _currentCompany.Id() ||
+                //Level 4 company
+                y.Company.Company.CompanyId == _currentCompany.Id()
+                //...
+            ))
             ));
-            //More levels == worse performance
-            //builder.SetQueryFilterOnAllEntities<IBaseEntity<string>>(entity =>
-            //!entity.IsDeleted &&
-            ////All
-            //(entity.CompanyId == null || _currentCompany.Id() == null
-            ////First level company
-            //|| entity.CompanyId == _currentCompany.Id()
-            ////Second level company
-            ////|| entity.Company.Subcompanies.Any(y => y.CompanyId == _currentCompany.Id())
-            //////Third level company
-            ////|| entity.Company.Subcompanies.SelectMany(y => y.Subcompanies).Any(y => y.CompanyId == companyId)
-            //));
         }
+
+        #endregion
+
+        #region IsDeleted
 
         /// <summary>
         /// Works only on included related entities

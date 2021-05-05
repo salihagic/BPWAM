@@ -5,7 +5,7 @@
 
     function Select2NotificationTypes(options) {
         Select2({
-            data: @Html.Raw(DropdownHelperService.GetNotificationTypes().GetDropdownItemsJson()),
+            data: '@Html.Raw(DropdownHelperService.GetNotificationTypes().GetDropdownItemsJson())',
             placeholder: '@Translations.Select_notification_type',
             ...options
         });
@@ -13,7 +13,7 @@
 
     function Select2NotificationDistributionTypes(options) {
         Select2({
-            data: @Html.Raw(DropdownHelperService.GetNotificationDistributionTypes().GetDropdownItemsJson()),
+            data: '@Html.Raw(DropdownHelperService.GetNotificationDistributionTypes().GetDropdownItemsJson())',
             placeholder: '@Translations.Select_notification_distribution_type',
             ...options
         });
@@ -21,7 +21,7 @@
 
     function Select2SystemLanguages(options) {
         Select2({
-            data: @Html.Raw(DropdownHelperService.GetSystemLanguages().GetDropdownItemsJson()),
+            data: '@Html.Raw(DropdownHelperService.GetSystemLanguages().GetDropdownItemsJson())',
             placeholder: '@Translations.Select_language',
             ...options
         });
@@ -29,7 +29,7 @@
 
     function Select2AppClaims(options) {
         Select2({
-            data: @Html.Raw(DropdownHelperService.GetAppClaims().GetDropdownItemsJson()),
+            data: '@Html.Raw(DropdownHelperService.GetAppClaims().GetDropdownItemsJson())',
             placeholder: '@Translations.Select_app_claim',
             ...options
         });
@@ -37,7 +37,7 @@
 
     function Select2TicketTypes(options) {
         Select2({
-            data: @Html.Raw(DropdownHelperService.GetTicketTypes().GetDropdownItemsJson()),
+            data: '@Html.Raw(DropdownHelperService.GetTicketTypes().GetDropdownItemsJson())',
             placeholder: '@Translations.Select_ticket_type',
             ...options
         });
@@ -45,7 +45,7 @@
 
     function Select2TicketStatuses(options) {
         Select2({
-            data: @Html.Raw(DropdownHelperService.GetTicketStatuses().GetDropdownItemsJson()),
+            data: '@Html.Raw(DropdownHelperService.GetTicketStatuses().GetDropdownItemsJson())',
             placeholder: '@Translations.Select_ticket_status',
             ...options
         });

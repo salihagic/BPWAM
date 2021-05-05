@@ -43,6 +43,7 @@ namespace BPWA.Common.Security
             public static string TimezoneId = nameof(TimezoneId);
             public static string CurrentCompanyId = nameof(CurrentCompanyId);
             public static string CurrentCompanyName = nameof(CurrentCompanyName);
+            public static string HasMultipleCompanies = nameof(HasMultipleCompanies);
         }
     }
 

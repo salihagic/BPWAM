@@ -11,9 +11,8 @@ namespace BPWA.Web.Services.Services
     {
         public CompaniesWebService(
             DatabaseContext databaseContext,
-            IMapper mapper,
-            ICurrentUser currentUser
-            ) : base(databaseContext, mapper, currentUser)
+            IMapper mapper
+            ) : base(databaseContext, mapper)
         {
         }
 

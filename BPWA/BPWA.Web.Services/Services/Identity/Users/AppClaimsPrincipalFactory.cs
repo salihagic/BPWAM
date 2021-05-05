@@ -59,10 +59,10 @@ namespace BPWA.Web.Services.Services
         {
             var roles = await _databaseContext.UserRoles
                 .AsNoTracking()
+                .IgnoreQueryFilters()
                 .Include(x => x.Role.RoleClaims)
                 .Where(x => x.UserId == user.Id)
-                .Where(x => x.Role.CompanyId == null ||
-                            x.Role.CompanyId == user.CurrentCompanyId)
+                .Where(x => x.Role.CompanyId == null || x.Role.CompanyId == user.CurrentCompanyId)
                 .Select(x => x.Role)
                 .ToListAsync();
 
@@ -77,8 +77,9 @@ namespace BPWA.Web.Services.Services
         {
             if (user.CurrentCompanyId != null)
             {
-                var company = await _databaseContext.Companies.IgnoreQueryFilters()
-                                                    .FirstOrDefaultAsync(x => x.Id == user.CurrentCompanyId);
+                var company = await _databaseContext.Companies
+                    .IgnoreQueryFilters()
+                    .FirstOrDefaultAsync(x => x.Id == user.CurrentCompanyId);
 
                 if (company != null)
                 {
@@ -86,6 +87,12 @@ namespace BPWA.Web.Services.Services
                     claims.Add(new Claim(AppClaims.Meta.CurrentCompanyName, company.Name));
                 }
             }
+
+            bool hasMultipleCompanies = _databaseContext.Companies
+                .IgnoreQueryFilters()
+                .Any(x => x.CompanyId == user.CompanyId);
+
+            claims.Add(new Claim(AppClaims.Meta.HasMultipleCompanies, hasMultipleCompanies.ToString()));
         }
     }
 }

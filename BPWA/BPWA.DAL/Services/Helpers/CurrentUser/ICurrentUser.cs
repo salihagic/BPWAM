@@ -10,7 +10,7 @@ namespace BPWA.DAL.Services
         string LastName();
         string FullName();
         string TimezoneId();
-        List<int> CompanyIds();
+        bool HasMultipleCompanies();
         int? CurrentCompanyId();
         string CurrentCompanyName();
         bool HasAuthorizationClaim(string claim);

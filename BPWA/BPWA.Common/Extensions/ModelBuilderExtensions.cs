@@ -10,6 +10,21 @@ namespace BPWA.Common.Extensions
 {
     public static class ModelBuilderExtensions
     {
+        public static void ApplyGlobalFilters<TInterface>(this ModelBuilder modelBuilder, Expression<Func<TInterface, bool>> expression)
+        {
+            var entities = modelBuilder.Model
+                .GetEntityTypes()
+                .Where(x => typeof(TInterface).IsAssignableFrom(x.ClrType))
+                .Select(x => x.ClrType);
+            
+            foreach (var entity in entities)
+            {
+                var newParam = Expression.Parameter(entity);
+                var newbody = ReplacingExpressionVisitor.Replace(expression.Parameters.Single(), newParam, expression.Body);
+                modelBuilder.Entity(entity).HasQueryFilter(Expression.Lambda(newbody, newParam));
+            }
+        }
+
         static readonly MethodInfo SetQueryFilterMethod = typeof(ModelBuilderExtensions)
         .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
         .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));

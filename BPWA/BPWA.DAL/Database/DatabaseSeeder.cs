@@ -90,6 +90,8 @@ namespace BPWA.DAL.Database
                     var companyXAdminRole = companyX.Roles.FirstOrDefault(x => x.Name == adminRoleName);
 
                     companyXAdminUser.UserRoles.Add(new UserRole { RoleId = companyXAdminRole.Id });
+                    companyXAdminUser.CompanyId = companyX.Id;
+                    companyXAdminUser.CurrentCompanyId = companyX.Id;
 
                     await databaseContext.SaveChangesAsync();
 
@@ -104,6 +106,7 @@ namespace BPWA.DAL.Database
                     };
 
                     await databaseContext.Companies.AddAsync(companyY);
+                    companyY.CompanyId = companyX.Id;
 
                     await databaseContext.SaveChangesAsync();
 
@@ -114,6 +117,8 @@ namespace BPWA.DAL.Database
                     var companyYAdminRole = companyY.Roles.FirstOrDefault(x => x.Name == adminRoleName);
 
                     companyYAdminUser.UserRoles.Add(new UserRole { RoleId = companyYAdminRole.Id });
+                    companyYAdminUser.CompanyId = companyY.Id;
+                    companyYAdminUser.CurrentCompanyId = companyY.Id;
 
                     await databaseContext.SaveChangesAsync();
 
@@ -204,7 +209,7 @@ namespace BPWA.DAL.Database
 
             #endregion 
 
-            #region Company admin
+            #region Company X admin
 
             if (environment.IsDevelopment())
             {
@@ -216,16 +221,16 @@ namespace BPWA.DAL.Database
                     {
                         Id = Guid.NewGuid().ToString(),
                         UserName = companyXAdminUserName,
-                        FirstName = "Company",
+                        FirstName = "Company X",
                         LastName = "Admin",
-                        Email = "company.admin@BPWA.com",
+                        Email = "company.x.admin@BPWA.com",
                     }, "demo");
                 }
             }
 
             #endregion
 
-            #region Subcompany admin
+            #region Company Y admin
 
             if (environment.IsDevelopment())
             {
@@ -237,9 +242,9 @@ namespace BPWA.DAL.Database
                     {
                         Id = Guid.NewGuid().ToString(),
                         UserName = companyYAdminUserName,
-                        FirstName = "Subcompany",
+                        FirstName = "Company Y",
                         LastName = "Admin",
-                        Email = "sub.company.admin@BPWA.com",
+                        Email = "company.y.admin@BPWA.com",
                     }, "demo");
                 }
             }
