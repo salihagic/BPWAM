@@ -217,7 +217,7 @@ namespace BPWA.DAL.Database
         {
             if (_executeOnBeforeSaveChanges)
             {
-                var entities = ChangeTracker.Entries().Where(x => x.Entity is IBaseEntity);
+                var entities = ChangeTracker.Entries().Where(x => x.Entity is IBaseEntity || x.Entity is IBaseEntity<string>);
 
                 foreach (var entity in entities)
                 {
@@ -239,7 +239,8 @@ namespace BPWA.DAL.Database
 
             baseEntity.CreatedAtUtc = DateTime.UtcNow;
 
-            if (typeof(IBaseCompanyEntity).IsAssignableFrom(entity.Entity.GetType()))
+            if (typeof(IBaseCompanyEntity).IsAssignableFrom(entity.Entity.GetType()) ||
+                typeof(IBaseCompanyEntity<string>).IsAssignableFrom(entity.Entity.GetType()))
             {
                 ((IBaseCompanyEntity)entity.Entity).CompanyId = _currentCompany.Id();
             }

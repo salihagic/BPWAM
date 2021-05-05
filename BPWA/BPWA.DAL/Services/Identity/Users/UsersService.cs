@@ -56,7 +56,10 @@ namespace BPWA.DAL.Services
 
         public async Task<User> AddEntity(User entity, string password)
         {
-            var result = await UserManager.CreateAsync(entity, password);
+            await DatabaseContext.Users.AddAsync(entity);
+            await DatabaseContext.SaveChangesAsync();
+
+            var result = await UserManager.AddPasswordAsync(entity, password);
 
             if (!result.Succeeded)
                 throw new ValidationException(result.Errors.Select(x => x.Description).ToArray());
@@ -307,7 +310,7 @@ namespace BPWA.DAL.Services
             }
             catch (Exception e)
             {
-                throw new Exception("Failed to add entity");
+                throw e;
             }
         }
 
