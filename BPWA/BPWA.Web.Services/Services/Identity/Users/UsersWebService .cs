@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using BPWA.Common.Configuration;
-using BPWA.Common.Extensions;
 using BPWA.Common.Resources;
 using BPWA.Common.Services;
 using BPWA.Core.Entities;
@@ -67,6 +66,7 @@ namespace BPWA.Web.Services.Services
             try
             {
                 var user = await DatabaseContext.Users
+                    .IgnoreQueryFilters()
                     .Include(x => x.City)
                     .FirstOrDefaultAsync(x => x.Id == CurrentUser.Id());
 
@@ -103,9 +103,9 @@ namespace BPWA.Web.Services.Services
         {
             return await DatabaseContext.Users
                 .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(x => x.Id == CurrentUser.Id());
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
-        
+
         public override async Task<User> GetEntityById(string id, bool shouldTranslate = true, bool includeRelated = true)
         {
             var result = await base.GetEntityById(id, shouldTranslate, includeRelated);

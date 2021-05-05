@@ -12,15 +12,11 @@ namespace BPWA.Web.Services.Services
 {
     public class GroupsWebService : GroupsService, IGroupsWebService
     {
-        private ICurrentCompany _currentCompany;
-
         public GroupsWebService(
             DatabaseContext databaseContext,
-            IMapper mapper,
-            ICurrentCompany currentCompany
+            IMapper mapper
             ) : base(databaseContext, mapper)
         {
-            _currentCompany = currentCompany;
         }
 
         public override IQueryable<Group> BuildIncludesById(int id, IQueryable<Group> query)
@@ -33,7 +29,6 @@ namespace BPWA.Web.Services.Services
         public async Task<GroupDTO> Add(GroupAddModel model)
         {
             var entity = Mapper.Map<Group>(model);
-            entity.CompanyId = _currentCompany.Id();
             var result = await base.Add(entity);
 
             await ManageRelatedEntities<GroupUser, string>(result.Id, model.UserIds, x => x.GroupId, x => x.UserId);
@@ -45,7 +40,6 @@ namespace BPWA.Web.Services.Services
         {
             var entity = await GetEntityById(model.Id, false, false);
             Mapper.Map(model, entity);
-            entity.CompanyId = _currentCompany.Id();
             var result = await base.Update(entity);
 
             await ManageRelatedEntities<GroupUser, string>(result.Id, model.UserIds, x => x.GroupId, x => x.UserId);

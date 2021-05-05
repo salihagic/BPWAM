@@ -186,7 +186,6 @@ namespace BPWA.DAL.Database
         #region SaveChanges 
 
         bool _executeOnBeforeSaveChanges = true;
-
         public void IgnoreOnBeforeSaveChanges() { _executeOnBeforeSaveChanges = false; }
         public void ApplyOnBeforeSaveChanges() { _executeOnBeforeSaveChanges = true; }
 
@@ -240,8 +239,7 @@ namespace BPWA.DAL.Database
 
             baseEntity.CreatedAtUtc = DateTime.UtcNow;
 
-            if (typeof(IBaseCompanyEntity).IsAssignableFrom(entity.Entity.GetType()) &&
-            !ExcludeForCurrentCompanyTypes.Contains(entity.Entity.GetType()))
+            if (typeof(IBaseCompanyEntity).IsAssignableFrom(entity.Entity.GetType()))
             {
                 ((IBaseCompanyEntity)entity.Entity).CompanyId = _currentCompany.Id();
             }
@@ -256,18 +254,7 @@ namespace BPWA.DAL.Database
             var baseEntity = (IBaseEntity)entity.Entity;
 
             baseEntity.ModifiedAtUtc = DateTime.UtcNow;
-
-            if (typeof(IBaseCompanyEntity).IsAssignableFrom(entity.Entity.GetType()) &&
-            !ExcludeForCurrentCompanyTypes.Contains(entity.Entity.GetType()))
-            {
-                ((IBaseCompanyEntity)entity.Entity).CompanyId = _currentCompany.Id();
-            }
         }
-
-        List<Type> ExcludeForCurrentCompanyTypes => new List<Type>
-        {
-            typeof(User),
-        };
 
         #endregion
 
