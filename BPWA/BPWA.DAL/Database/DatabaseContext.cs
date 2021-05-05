@@ -108,7 +108,6 @@ namespace BPWA.DAL.Database
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
             SetGlobalFilters(builder);
 
             #region Identity
@@ -136,6 +135,19 @@ namespace BPWA.DAL.Database
         /// <param name="builder"></param>
         void SetGlobalFilters(ModelBuilder builder)
         {
+            builder.Entity<City>()
+            .HasQueryFilter(entity =>
+            !entity.IsDeleted &&
+            //All
+            (entity.CompanyId == null || _currentCompany.Id() == null
+            //First level company
+            || entity.CompanyId == _currentCompany.Id()
+            //Second level company
+            || Set<Company>().IgnoreQueryFilters().Any(y => y.Id == entity.CompanyId && y.CompanyId == _currentCompany.Id())
+            ////Third level company
+            //|| entity.Company.Subcompanies.SelectMany(y => y.Subcompanies).Any(y => y.CompanyId == companyId)
+            ));
+
             //More levels == worse performance
             builder.SetQueryFilterOnAllEntities<IBaseEntity>(entity =>
             !entity.IsDeleted &&
@@ -143,23 +155,24 @@ namespace BPWA.DAL.Database
             (entity.CompanyId == null || _currentCompany.Id() == null
             //First level company
             || entity.CompanyId == _currentCompany.Id()
-            ////Second level company
-            //|| entity.Company.Subcompanies.Any(y => y.CompanyId == companyId)
+            //Second level company
+            || Set<Company>().IgnoreQueryFilters().Any(y => y.Id == entity.CompanyId && y.CompanyId == _currentCompany.Id())
+            //|| entity.Company.Subcompanies.Any(y => y.CompanyId == _currentCompany.Id())
             ////Third level company
             //|| entity.Company.Subcompanies.SelectMany(y => y.Subcompanies).Any(y => y.CompanyId == companyId)
             ));
             //More levels == worse performance
-            builder.SetQueryFilterOnAllEntities<IBaseEntity<string>>(entity =>
-            !entity.IsDeleted &&
-            //All
-            (entity.CompanyId == null || _currentCompany.Id() == null
-            //First level company
-            || entity.CompanyId == _currentCompany.Id()
+            //builder.SetQueryFilterOnAllEntities<IBaseEntity<string>>(entity =>
+            //!entity.IsDeleted &&
+            ////All
+            //(entity.CompanyId == null || _currentCompany.Id() == null
+            ////First level company
+            //|| entity.CompanyId == _currentCompany.Id()
             ////Second level company
-            //|| entity.Company.Subcompanies.Any(y => y.CompanyId == companyId)
-            ////Third level company
-            //|| entity.Company.Subcompanies.SelectMany(y => y.Subcompanies).Any(y => y.CompanyId == companyId)
-            ));
+            ////|| entity.Company.Subcompanies.Any(y => y.CompanyId == _currentCompany.Id())
+            //////Third level company
+            ////|| entity.Company.Subcompanies.SelectMany(y => y.Subcompanies).Any(y => y.CompanyId == companyId)
+            //));
         }
 
         /// <summary>
