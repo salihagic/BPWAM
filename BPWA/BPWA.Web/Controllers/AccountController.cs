@@ -79,7 +79,7 @@ namespace BPWA.Controllers
         [HttpPost]
         public virtual async Task<IActionResult> CurrentUserCompaniesDropdown()
         {
-            var result = await _companiesWebService.GetForCurrentUser();
+            var result = await _companiesWebService.GetForToggle();
 
             return Ok(new
             {

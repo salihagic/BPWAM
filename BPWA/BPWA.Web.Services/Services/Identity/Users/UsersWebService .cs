@@ -99,6 +99,13 @@ namespace BPWA.Web.Services.Services
                        .Include(x => x.City);
         }
 
+        public async Task<User> GetEntityByIdWithoutQueryFilters(string id)
+        {
+            return await DatabaseContext.Users
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(x => x.Id == CurrentUser.Id());
+        }
+        
         public override async Task<User> GetEntityById(string id, bool shouldTranslate = true, bool includeRelated = true)
         {
             var result = await base.GetEntityById(id, shouldTranslate, includeRelated);
@@ -141,13 +148,13 @@ namespace BPWA.Web.Services.Services
             //if (!CurrentUser.HasGodMode() && !(CurrentUser.CompanyIds().Count > 1))
             //    return Result.Failed(Translations.There_was_an_error_while_trying_to_change_current_company);
 
-            var currentUserResult = await GetEntityById(CurrentUser.Id(), false, false);
+            var currentUser = await GetEntityByIdWithoutQueryFilters(CurrentUser.Id());
 
             try
             {
-                currentUserResult.CurrentCompanyId = model.CompanyId;
+                currentUser.CurrentCompanyId = model.CompanyId;
 
-                DatabaseContext.Users.Update(currentUserResult);
+                DatabaseContext.Users.Update(currentUser);
                 await DatabaseContext.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -160,9 +167,9 @@ namespace BPWA.Web.Services.Services
 
         public async Task RefreshSignIn()
         {
-            var currentUserResult = await GetEntityById(CurrentUser.Id());
+            var currentUser = await GetEntityByIdWithoutQueryFilters(CurrentUser.Id());
 
-            await SignInManager.RefreshSignInAsync(currentUserResult);
+            await SignInManager.RefreshSignInAsync(currentUser);
         }
 
         public async Task<ResetPasswordModel> PrepareForResetPassword(string userId, string token)

@@ -2,7 +2,9 @@
 
 namespace BPWA.Core.Entities
 {
-    public class City : BaseEntity, IBaseEntity
+    public class City : 
+        BaseEntity,
+        IBaseEntity
     {
         public string Name { get; set; }
         public double Longitude { get; set; }

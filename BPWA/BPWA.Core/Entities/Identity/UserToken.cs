@@ -3,7 +3,11 @@ using System;
 
 namespace BPWA.Core.Entities
 {
-    public class UserToken : IdentityUserToken<string>, IBaseEntity, IBaseSoftDeletableEntity
+    public class UserToken : 
+        IdentityUserToken<string>,
+        IBaseCompanyEntity, 
+        IBaseEntity, 
+        IBaseSoftDeletableEntity
     {
         public int Id { get; set; }
         public DateTime CreatedAtUtc { get; set; }

@@ -4,7 +4,11 @@ using System.Collections.Generic;
 
 namespace BPWA.Core.Entities
 {
-    public class Role : IdentityRole<string>, IBaseEntity<string>, IBaseSoftDeletableEntity
+    public class Role : 
+        IdentityRole<string>, 
+        IBaseCompanyEntity<string>,
+        IBaseEntity<string>, 
+        IBaseSoftDeletableEntity
     {
         public DateTime CreatedAtUtc { get; set; }
         public DateTime? ModifiedAtUtc { get; set; }

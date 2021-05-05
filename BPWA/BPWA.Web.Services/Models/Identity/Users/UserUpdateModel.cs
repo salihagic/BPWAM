@@ -10,6 +10,8 @@ namespace BPWA.Web.Services.Models
         public string LastName { get; set; }
         public int? CityId { get; set; }
         public DropdownItem CityIdDropdownItem { get; set; }
+        public int? CompanyId { get; set; }
+        public DropdownItem CompanyIdDropdownItem { get; set; }
         public List<DropdownItem<string>> RoleIdsDropdownItems { get; set; }
         public List<string> RoleIds => RoleIdsDropdownItems.GetIds();
     }

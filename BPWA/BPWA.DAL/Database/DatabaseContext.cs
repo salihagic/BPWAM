@@ -96,13 +96,16 @@ namespace BPWA.DAL.Database
         #region Helpers 
 
         private ICurrentCompany _currentCompany;
+        private ICurrentUserBaseCompany _currentUserBaseCompany;
 
         public DatabaseContext(
             DbContextOptions<DatabaseContext> options,
-            ICurrentCompany currentCompany
+            ICurrentCompany currentCompany,
+            ICurrentUserBaseCompany currentUserBaseCompany
             ) : base(options)
         {
             _currentCompany = currentCompany;
+            _currentUserBaseCompany = currentUserBaseCompany;
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -135,27 +138,12 @@ namespace BPWA.DAL.Database
         /// <param name="builder"></param>
         void SetGlobalFilters(ModelBuilder builder)
         {
-            //More levels == worse performance
-            builder.ApplyGlobalFilters<IBaseEntity>(entity =>
-            !entity.IsDeleted &&
-            //All
-            (entity.CompanyId == null || _currentCompany.Id() == null ||
-            //Level 1 company
-            entity.CompanyId == _currentCompany.Id() ||
-            //Other levels
-            Set<Company>().IgnoreQueryFilters().Any(y => y.Id == entity.CompanyId && (
-                //Level 2 company
-                y.CompanyId == _currentCompany.Id() ||
-                //Level 3 company
-                y.Company.CompanyId == _currentCompany.Id() ||
-                //Level 4 company
-                y.Company.Company.CompanyId == _currentCompany.Id()
-                //...
-            ))
-            ));
+            //IsDeleted filter for IBaseEntity entities
+            builder.ApplyGlobalFilters<IBaseEntity>(entity => !entity.IsDeleted);
+            builder.ApplyGlobalFilters<IBaseEntity<string>>(entity => !entity.IsDeleted);
 
             //More levels == worse performance
-            builder.Entity<Company>().HasQueryFilter(entity =>
+            builder.ApplyGlobalFilters<IBaseCompanyEntity>(entity =>
             !entity.IsDeleted &&
             //All
             (_currentCompany.Id() == null ||
@@ -169,14 +157,140 @@ namespace BPWA.DAL.Database
                 y.Company.CompanyId == _currentCompany.Id() ||
                 //Level 4 company
                 y.Company.Company.CompanyId == _currentCompany.Id()
-                //...
+            //...
+            ))
+            ));
+
+            //More levels == worse performance
+            builder.ApplyGlobalFilters<IBaseCompanyEntity<string>>(entity =>
+            !entity.IsDeleted &&
+            //All
+            (_currentCompany.Id() == null ||
+            //Level 1 company
+            entity.CompanyId == _currentCompany.Id() ||
+            //Other levels
+            Set<Company>().IgnoreQueryFilters().Any(y => y.Id == entity.CompanyId && (
+                //Level 2 company
+                y.CompanyId == _currentCompany.Id() ||
+                //Level 3 company
+                y.Company.CompanyId == _currentCompany.Id() ||
+                //Level 4 company
+                y.Company.Company.CompanyId == _currentCompany.Id()
+            //...
             ))
             ));
         }
 
         #endregion
 
-        #region IsDeleted
+        #region SaveChanges 
+
+        bool _executeOnBeforeSaveChanges = true;
+
+        public void IgnoreOnBeforeSaveChanges() { _executeOnBeforeSaveChanges = false; }
+        public void ApplyOnBeforeSaveChanges() { _executeOnBeforeSaveChanges = true; }
+
+        public override int SaveChanges()
+        {
+            OnBeforeSaveChanges();
+            return base.SaveChanges();
+        }
+
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            OnBeforeSaveChanges();
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            OnBeforeSaveChanges();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            OnBeforeSaveChanges();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        private void OnBeforeSaveChanges()
+        {
+            if (_executeOnBeforeSaveChanges)
+            {
+                var entities = ChangeTracker.Entries().Where(x => x.Entity is IBaseEntity);
+
+                foreach (var entity in entities)
+                {
+                    if (entity.State == EntityState.Added)
+                        HandleEntityStateAdded(entity);
+                    else if (entity.State == EntityState.Modified)
+                        HandleEntityStateModified(entity);
+                    else if (entity.State == EntityState.Deleted)
+                        HandleEntityStateDeleted(entity);
+                }
+            }
+        }
+
+        #region Handle EntityState Added
+
+        private void HandleEntityStateAdded(EntityEntry entity)
+        {
+            var baseEntity = (IBaseEntity)entity.Entity;
+
+            baseEntity.CreatedAtUtc = DateTime.UtcNow;
+
+            if (typeof(IBaseCompanyEntity).IsAssignableFrom(entity.Entity.GetType()) &&
+            !ExcludeForCurrentCompanyTypes.Contains(entity.Entity.GetType()))
+            {
+                ((IBaseCompanyEntity)entity.Entity).CompanyId = _currentCompany.Id();
+            }
+        }
+
+        #endregion
+
+        #region Handle EntityState Modified
+
+        private void HandleEntityStateModified(EntityEntry entity)
+        {
+            var baseEntity = (IBaseEntity)entity.Entity;
+
+            baseEntity.ModifiedAtUtc = DateTime.UtcNow;
+
+            if (typeof(IBaseCompanyEntity).IsAssignableFrom(entity.Entity.GetType()) &&
+            !ExcludeForCurrentCompanyTypes.Contains(entity.Entity.GetType()))
+            {
+                ((IBaseCompanyEntity)entity.Entity).CompanyId = _currentCompany.Id();
+            }
+        }
+
+        List<Type> ExcludeForCurrentCompanyTypes => new List<Type>
+        {
+            typeof(User),
+        };
+
+        #endregion
+
+        #region Handle EntityState Deleted
+
+        private void HandleEntityStateDeleted(EntityEntry entity)
+        {
+            if (!HardDeleteTypes.Contains(entity.Entity.GetType()))
+            {
+                var baseEntity = (IBaseEntity)entity.Entity;
+
+                entity.State = EntityState.Modified;
+                baseEntity.IsDeleted = true;
+                baseEntity.DeletedAtUtc = DateTime.UtcNow;
+                HandleCascadeSoftDelete(entity);
+            }
+        }
+
+        List<Type> HardDeleteTypes => new List<Type>
+        {
+            typeof(UserRole),
+            typeof(Role),
+        };
 
         /// <summary>
         /// Works only on included related entities
@@ -212,62 +326,7 @@ namespace BPWA.DAL.Database
             }
         }
 
-        #endregion IsDeleted
-
-        #region SaveChanges overrides
-
-        public override int SaveChanges()
-        {
-            AddTimestamps();
-            return base.SaveChanges();
-        }
-
-        public override int SaveChanges(bool acceptAllChangesOnSuccess)
-        {
-            AddTimestamps();
-            return base.SaveChanges(acceptAllChangesOnSuccess);
-        }
-
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            AddTimestamps();
-            return base.SaveChangesAsync(cancellationToken);
-        }
-
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
-        {
-            AddTimestamps();
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-        }
-
-        private void AddTimestamps()
-        {
-            var entities = ChangeTracker.Entries().Where(x => x.Entity is IBaseEntity);
-
-            foreach (var entity in entities)
-            {
-                var iEntity = (IBaseEntity)entity.Entity;
-
-                if (entity.State == EntityState.Added)
-                    iEntity.CreatedAtUtc = DateTime.UtcNow;
-                else if (entity.State == EntityState.Modified)
-                    iEntity.ModifiedAtUtc = DateTime.UtcNow;
-                else if (entity.State == EntityState.Deleted &&
-                    !HardDeleteTypes.Contains(entity.Entity.GetType()))
-                {
-                    entity.State = EntityState.Modified;
-                    iEntity.IsDeleted = true;
-                    iEntity.DeletedAtUtc = DateTime.UtcNow;
-                    HandleCascadeSoftDelete(entity);
-                }
-            }
-        }
-
-        List<Type> HardDeleteTypes => new List<Type>
-        {
-            typeof(UserRole),
-            typeof(Role),
-        };
+        #endregion 
 
         #endregion
 

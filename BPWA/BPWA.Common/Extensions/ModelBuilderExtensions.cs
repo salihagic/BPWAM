@@ -16,7 +16,7 @@ namespace BPWA.Common.Extensions
                 .GetEntityTypes()
                 .Where(x => typeof(TInterface).IsAssignableFrom(x.ClrType))
                 .Select(x => x.ClrType);
-            
+
             foreach (var entity in entities)
             {
                 var newParam = Expression.Parameter(entity);

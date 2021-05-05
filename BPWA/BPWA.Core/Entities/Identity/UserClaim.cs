@@ -3,7 +3,11 @@ using System;
 
 namespace BPWA.Core.Entities
 {
-    public class UserClaim : IdentityUserClaim<string>, IBaseEntity, IBaseSoftDeletableEntity
+    public class UserClaim : 
+        IdentityUserClaim<string>, 
+        IBaseCompanyEntity,
+        IBaseEntity, 
+        IBaseSoftDeletableEntity
     {
         public DateTime CreatedAtUtc { get; set; }
         public DateTime? ModifiedAtUtc { get; set; }

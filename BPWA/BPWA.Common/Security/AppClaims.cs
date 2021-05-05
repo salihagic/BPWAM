@@ -7,8 +7,6 @@ namespace BPWA.Common.Security
     {
         public static class Authorization
         {
-            public const string CompanyIds = nameof(CompanyIds);
-
             public class Administration
             {
                 public const string GodMode = nameof(GodMode);
@@ -43,6 +41,7 @@ namespace BPWA.Common.Security
             public static string TimezoneId = nameof(TimezoneId);
             public static string CurrentCompanyId = nameof(CurrentCompanyId);
             public static string CurrentCompanyName = nameof(CurrentCompanyName);
+            public static string BaseCompanyId = nameof(BaseCompanyId);
             public static string HasMultipleCompanies = nameof(HasMultipleCompanies);
         }
     }

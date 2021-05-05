@@ -1,6 +1,8 @@
 ﻿namespace BPWA.Core.Entities
 {
-    public class CountryLanguage : BaseEntity, IBaseEntity
+    public class CountryLanguage : 
+        BaseEntity, 
+        IBaseEntity
     {
         public int CountryId { get; set; }
         public int LanguageId { get; set; }

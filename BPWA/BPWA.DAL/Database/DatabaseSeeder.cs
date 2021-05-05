@@ -45,10 +45,8 @@ namespace BPWA.DAL.Database
             }
             if (databaseSettings.Seed)
             {
-                await SeedRoles(serviceProvider);
                 await SeedUsers(serviceProvider);
-                if (environment.IsDevelopment())
-                    await SeedCompanies(serviceProvider);
+                await SeedCompanies(serviceProvider);
                 //await SeedGeolocations(serviceProvider);
             }
         }
@@ -56,6 +54,8 @@ namespace BPWA.DAL.Database
         private static async Task SeedCompanies(IServiceProvider serviceProvider)
         {
             var databaseContext = serviceProvider.GetService<DatabaseContext>();
+
+            databaseContext.IgnoreOnBeforeSaveChanges();
 
             try
             {
@@ -71,11 +71,42 @@ namespace BPWA.DAL.Database
                         .Include(x => x.UserRoles)
                         .FirstOrDefaultAsync(x => x.UserName == companyYAdminUserName);
 
+                    #region Add company (Company BPWA) Root company for superadmins
+
+                    var companyBPWA = new Company
+                    {
+                        Name = "Company BPWA",
+                        Roles = GetRootCompanyRoles()
+                    };
+
+                    await databaseContext.Companies.AddAsync(companyBPWA);
+
+                    await databaseContext.SaveChangesAsync();
+
+                    #endregion
+
+                    #region Add company users (Company BPWA)
+
+                    superAdminUser.UserRoles.AddRange(
+                        companyBPWA.Roles.Select(x => new UserRole
+                        {
+                            RoleId = x.Id,
+                            CompanyId = x.CompanyId
+                        }
+                    ));
+                    superAdminUser.CompanyId = companyBPWA.Id;
+                    superAdminUser.CurrentCompanyId = companyBPWA.Id;
+
+                    await databaseContext.SaveChangesAsync();
+
+                    #endregion
+
                     #region Add company (Company X)
 
                     var companyX = new Company
                     {
                         Name = "Company X",
+                        CompanyId = companyBPWA.Id,
                         Roles = GetCompanyRoles()
                     };
 
@@ -87,9 +118,13 @@ namespace BPWA.DAL.Database
 
                     #region Add company users (Company X)
 
-                    var companyXAdminRole = companyX.Roles.FirstOrDefault(x => x.Name == adminRoleName);
-
-                    companyXAdminUser.UserRoles.Add(new UserRole { RoleId = companyXAdminRole.Id });
+                    companyXAdminUser.UserRoles.AddRange(
+                        companyX.Roles.Select(x => new UserRole
+                        {
+                            RoleId = x.Id,
+                            CompanyId = x.CompanyId
+                        }
+                    ));
                     companyXAdminUser.CompanyId = companyX.Id;
                     companyXAdminUser.CurrentCompanyId = companyX.Id;
 
@@ -102,6 +137,7 @@ namespace BPWA.DAL.Database
                     var companyY = new Company
                     {
                         Name = "Company Y",
+                        CompanyId = companyX.Id,
                         Roles = GetCompanyRoles()
                     };
 
@@ -114,9 +150,13 @@ namespace BPWA.DAL.Database
 
                     #region Add company users (Company Y)
 
-                    var companyYAdminRole = companyY.Roles.FirstOrDefault(x => x.Name == adminRoleName);
-
-                    companyYAdminUser.UserRoles.Add(new UserRole { RoleId = companyYAdminRole.Id });
+                    companyYAdminUser.UserRoles.AddRange(
+                        companyY.Roles.Select(x => new UserRole
+                        {
+                            RoleId = x.Id,
+                            CompanyId = x.CompanyId
+                        }
+                    ));
                     companyYAdminUser.CompanyId = companyY.Id;
                     companyYAdminUser.CurrentCompanyId = companyY.Id;
 
@@ -127,21 +167,18 @@ namespace BPWA.DAL.Database
             }
             catch (Exception exception)
             {
+                databaseContext.ApplyOnBeforeSaveChanges();
                 throw;
             }
+
+            databaseContext.ApplyOnBeforeSaveChanges();
         }
 
-        private static async Task SeedRoles(IServiceProvider serviceProvider)
+        private static List<Role> GetRootCompanyRoles()
         {
-            var rolesService = serviceProvider.GetService<IRolesService>();
-
-            #region Superadmin
-
-            var superadminRole = (await rolesService.GetEntities(new RoleSearchModel { Name = superAdminRoleName }))?.FirstOrDefault();
-
-            if (superadminRole == null)
+            return new List<Role>
             {
-                superadminRole = new Role
+                new Role
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = superAdminRoleName,
@@ -154,12 +191,8 @@ namespace BPWA.DAL.Database
                             ClaimValue = AppClaims.Authorization.Administration.GodMode
                         }
                     }
-                };
-
-                await rolesService.Add(superadminRole);
-            }
-
-            #endregion Superadmin
+                }
+            };
         }
 
         private static List<Role> GetCompanyRoles()
@@ -203,8 +236,6 @@ namespace BPWA.DAL.Database
                     LastName = "Admin",
                     Email = "super.admin@BPWA.com"
                 }, "demo");
-
-                await usersService.AddToRole(user, superAdminRoleName);
             }
 
             #endregion 

@@ -3,7 +3,11 @@ using System;
 
 namespace BPWA.Core.Entities
 {
-    public class RoleClaim : IdentityRoleClaim<string>, IBaseEntity, IBaseSoftDeletableEntity
+    public class RoleClaim : 
+        IdentityRoleClaim<string>, 
+        IBaseCompanyEntity,
+        IBaseEntity, 
+        IBaseSoftDeletableEntity
     {
         public DateTime CreatedAtUtc { get; set; }
         public DateTime? ModifiedAtUtc { get; set; }
