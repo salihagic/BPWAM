@@ -16,19 +16,16 @@ namespace BPWA.Controllers
     {
         private readonly IUsersWebService _usersWebService;
         private readonly ICompaniesWebService _companiesWebService;
-        private readonly IBusinessUnitsWebService _businessUnitsWebService;
         private IToastNotification _toast;
 
         public AccountController(
             IUsersWebService usersWebService,
             ICompaniesWebService companiesWebService,
-            IBusinessUnitsWebService businessUnitsWebService,
             IToastNotification toast
             )
         {
             _usersWebService = usersWebService;
             _companiesWebService = companiesWebService;
-            _businessUnitsWebService = businessUnitsWebService;
             _toast = toast;
         }
 
@@ -112,43 +109,6 @@ namespace BPWA.Controllers
         }
 
         #endregion Toggle current company
-
-        #region Toggle current business unit
-
-        public async Task<IActionResult> ToggleCurrentBusinessUnit() => View();
-
-        [HttpPost]
-        public virtual async Task<IActionResult> CurrentUserBusinessUnitsDropdown()
-        {
-            var result = await _businessUnitsWebService.GetForCurrentUser();
-
-            return Ok(new
-            {
-                pagination = new
-                {
-                    more = false,
-                },
-                results = result
-            });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ToggleCurrentBusinessUnit(ToggleCurrentBusinessUnitModel model, string returnUrl = "")
-        {
-            try
-            {
-                await _usersWebService.ToggleCurrentBusinessUnit(model);
-                _toast.AddSuccessToastMessage(Translations.Successfully_changed_current_business_unit);
-            }
-            catch (Exception)
-            {
-                _toast.AddErrorToastMessage(Translations.There_was_an_error_while_trying_to_change_current_business_unit);
-            }
-
-            return !string.IsNullOrEmpty(returnUrl) ? LocalRedirect(returnUrl) : RedirectToAction("Index", "Dashboard");
-        }
-
-        #endregion 
 
         #region Reset password
 

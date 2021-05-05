@@ -168,9 +168,7 @@ namespace BPWA.DAL.Services
                 .WhereIf(!string.IsNullOrEmpty(searchModel.FirstName), x => x.FirstName.ToLower().StartsWith(searchModel.FirstName.ToLower()))
                 .WhereIf(!string.IsNullOrEmpty(searchModel.LastName), x => x.LastName.ToLower().StartsWith(searchModel.LastName.ToLower()))
                 .WhereIf(searchModel.CityIds.IsNotEmpty(), x => searchModel.CityIds.Contains(x.CityId.GetValueOrDefault()))
-                .WhereIf(searchModel.RoleIds.IsNotEmpty(), x => searchModel.RoleIds.Any(y => x.UserRoles.Any(z => z.RoleId == y)))
-                .WhereIf(searchModel.CompanyIds.IsNotEmpty(), x => searchModel.CompanyIds.Any(y => x.CompanyUsers.Any(z => z.CompanyId == y)))
-                .WhereIf(searchModel.BusinessUnitIds.IsNotEmpty(), x => searchModel.BusinessUnitIds.Any(y => x.BusinessUnitUsers.Any(z => z.BusinessUnitId == y)));
+                .WhereIf(searchModel.RoleIds.IsNotEmpty(), x => searchModel.RoleIds.Any(y => x.UserRoles.Any(z => z.RoleId == y)));
         }
 
         virtual public IQueryable<User> BuildIncludesById(string id, IQueryable<User> query) => query;
@@ -363,8 +361,6 @@ namespace BPWA.DAL.Services
         public Task<User> IncludeRelatedEntitiesToDelete(User entity)
         {
             return DatabaseContext.Users
-                .Include(x => x.CompanyUsers)
-                .Include(x => x.BusinessUnitUsers)
                 .Include(x => x.GroupUsers)
                 .FirstOrDefaultAsync(x => x.Id == entity.Id);
         }

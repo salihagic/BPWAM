@@ -11,10 +11,8 @@ namespace BPWA.Core.Entities
         public DateTime? DeletedAtUtc { get; set; }
         public bool IsDeleted { get; set; }
         public int? CompanyId { get; set; }
-        public int? BusinessUnitId { get; set; }
 
         public Company Company { get; set; }
-        public BusinessUnit BusinessUnit { get; set; }
         public List<RoleClaim> RoleClaims { get; set; }
         public List<UserRole> UserRoles { get; set; }
     }

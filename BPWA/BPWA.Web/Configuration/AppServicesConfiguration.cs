@@ -10,8 +10,7 @@ namespace BPWA.Web.Configuration
     {
         public static IServiceCollection ConfigureAppServices(this IServiceCollection services)
         {
-            services.AddScoped<IBusinessUnitsWebService, BusinessUnitsWebService>()
-                    .AddScoped<ICitiesWebService, CitiesWebService>()
+            services.AddScoped<ICitiesWebService, CitiesWebService>()
                     .AddScoped<ICompaniesWebService, CompaniesWebService>()
                     .AddScoped<ICountriesWebService, CountriesWebService>()
                     .AddScoped<ICurrenciesWebService, CurrenciesWebService>()
@@ -29,7 +28,6 @@ namespace BPWA.Web.Configuration
                     .AddScoped<IRolesService, RolesService>()
             #endregion 
             #region Helpers
-                    .AddScoped<ICurrentBusinessUnit, CurrentBusinessUnit>()
                     .AddScoped<ICurrentCompany, CurrentCompany>()
                     .AddScoped<ICurrentTimezone, CurrentTimezone>()
                     .AddScoped<ICurrentUser, CurrentUser>()

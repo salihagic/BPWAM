@@ -25,21 +25,9 @@ namespace BPWA.DAL.Services
             return int.Parse(companyIdClaim);
         }
         public string CurrentCompanyName() => User.FindFirstValue(AppClaims.Meta.CurrentCompanyName);
-        public List<int> BusinessUnitIds() => User.FindAll(AppClaims.Authorization.BusinessUnitIds).Select(x => int.Parse(x.Value)).ToList();
-        public int? CurrentBusinessUnitId()
-        {
-            var companyIdClaim = User.FindFirstValue(AppClaims.Meta.CurrentBusinessUnitId);
-
-            if (string.IsNullOrEmpty(companyIdClaim))
-                return null;
-
-            return int.Parse(companyIdClaim);
-        }
-        public string CurrentBusinessUnitName() => User.FindFirstValue(AppClaims.Meta.CurrentBusinessUnitName);
         public bool HasAuthorizationClaim(string claim) => User.Claims.Any(x => x.Type == AppClaimsHelper.Authorization.Type && x.Value == claim) || HasGodMode();
         public bool HasGodMode() => User.Claims.Any(x => x.Type == AppClaimsHelper.Authorization.Type && x.Value == AppClaims.Authorization.Administration.GodMode);
         public bool HasCompanyGodMode() => HasAuthorizationClaim(AppClaims.Authorization.Company.CompanyGodMode);
-        public bool HasBusinessUnitGodMode() => HasAuthorizationClaim(AppClaims.Authorization.BusinessUnit.BusinessUnitGodMode);
         public List<string> Configuration() => User.FindAll(x => x.Type == AppClaimsHelper.Configuration.Type).Select(x => x.Value).ToList();
 
         private readonly IHttpContextAccessor _httpContextAccessor;

@@ -39,9 +39,6 @@ namespace BPWA.Web.Services.Services
             await AddBasicInfo(user, claims);
             await AddRoles(user, claims);
             await AddCurrentCompanyId(user, claims);
-            await AddCurrentBusinessUnitId(user, claims);
-            await AddCompanyIds(user, claims);
-            await AddBusinessUnitIds(user, claims);
 
             claimsIdentity.AddClaims(claims);
 
@@ -60,13 +57,11 @@ namespace BPWA.Web.Services.Services
 
         async Task AddRoles(User user, List<Claim> claims)
         {
-            var roles = await _databaseContext.UserRoles.IgnoreQueryFilters()
-                .IgnoreQueryFilters()
+            var roles = await _databaseContext.UserRoles
                 .AsNoTracking()
                 .Include(x => x.Role.RoleClaims)
                 .Where(x => x.UserId == user.Id)
-                .Where(x => (x.Role.CompanyId == null && x.Role.BusinessUnitId == null) ||
-                            x.Role.BusinessUnitId == user.CurrentBusinessUnitId ||
+                .Where(x => x.Role.CompanyId == null ||
                             x.Role.CompanyId == user.CurrentCompanyId)
                 .Select(x => x.Role)
                 .ToListAsync();
@@ -91,42 +86,6 @@ namespace BPWA.Web.Services.Services
                     claims.Add(new Claim(AppClaims.Meta.CurrentCompanyName, company.Name));
                 }
             }
-        }
-
-        async Task AddCurrentBusinessUnitId(User user, List<Claim> claims)
-        {
-            if (user.CurrentBusinessUnitId != null)
-            {
-                var businessUnit = await _databaseContext.BusinessUnits.IgnoreQueryFilters().FirstOrDefaultAsync(x => x.Id == user.CurrentBusinessUnitId);
-
-                if (businessUnit != null)
-                {
-                    claims.Add(new Claim(AppClaims.Meta.CurrentBusinessUnitId, user.CurrentBusinessUnitId.ToString()));
-                    claims.Add(new Claim(AppClaims.Meta.CurrentBusinessUnitName, businessUnit.Name));
-                }
-            }
-        }
-
-        async Task AddCompanyIds(User user, List<Claim> claims)
-        {
-            var companyIds = await _databaseContext.CompanyUsers.IgnoreQueryFilters()
-                                       .Where(x => x.UserId == user.Id)
-                                       .Select(x => x.CompanyId)
-                                       .ToListAsync();
-
-            if (companyIds.IsNotEmpty())
-                claims.AddRange(companyIds.Select(x => new Claim(AppClaims.Meta.CompanyIds, x.ToString())));
-        }
-
-        async Task AddBusinessUnitIds(User user, List<Claim> claims)
-        {
-            var businessUnitIds = await _databaseContext.BusinessUnitUsers.IgnoreQueryFilters()
-                                        .Where(x => x.UserId == user.Id)
-                                        .Select(x => x.BusinessUnitId)
-                                        .ToListAsync();
-
-            if (businessUnitIds.IsNotEmpty())
-                claims.AddRange(businessUnitIds.Select(x => new Claim(AppClaims.Meta.BusinessUnitIds, x.ToString())));
         }
     }
 }

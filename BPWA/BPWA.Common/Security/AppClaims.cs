@@ -8,7 +8,6 @@ namespace BPWA.Common.Security
         public static class Authorization
         {
             public const string CompanyIds = nameof(CompanyIds);
-            public const string BusinessUnitIds = nameof(BusinessUnitIds);
 
             public class Administration
             {
@@ -30,20 +29,6 @@ namespace BPWA.Common.Security
             public static class Company
             {
                 public const string CompanyGodMode = nameof(CompanyGodMode);
-                public const string CompanyRolesManagement = nameof(CompanyRolesManagement);
-                public const string BusinessUnitsManagement = nameof(BusinessUnitsManagement);
-                public const string CompanyUsersManagement = nameof(CompanyUsersManagement);
-                public const string CompanyNotificationsManagement = nameof(CompanyNotificationsManagement);
-                public const string CompanyGroupsManagement = nameof(CompanyGroupsManagement);
-            }
-
-            public static class BusinessUnit
-            {
-                public const string BusinessUnitGodMode = nameof(BusinessUnitGodMode);
-                public const string BusinessUnitRolesManagement = nameof(BusinessUnitRolesManagement);
-                public const string BusinessUnitUsersManagement = nameof(BusinessUnitUsersManagement);
-                public const string BusinessUnitNotificationsManagement = nameof(BusinessUnitNotificationsManagement);
-                public const string BusinessUnitGroupsManagement = nameof(BusinessUnitGroupsManagement);
             }
         }
 
@@ -56,12 +41,8 @@ namespace BPWA.Common.Security
         public static class Meta
         {
             public static string TimezoneId = nameof(TimezoneId);
-            public static string CompanyIds = nameof(CompanyIds);
             public static string CurrentCompanyId = nameof(CurrentCompanyId);
             public static string CurrentCompanyName = nameof(CurrentCompanyName);
-            public static string BusinessUnitIds = nameof(BusinessUnitIds);
-            public static string CurrentBusinessUnitId = nameof(CurrentBusinessUnitId);
-            public static string CurrentBusinessUnitName = nameof(CurrentBusinessUnitName);
         }
     }
 
@@ -78,7 +59,6 @@ namespace BPWA.Common.Security
 
                     all.AddRange(Administration.All);
                     all.AddRange(Company.All);
-                    all.AddRange(BusinessUnit.All);
 
                     return all;
                 }
@@ -92,11 +72,6 @@ namespace BPWA.Common.Security
             public static class Company
             {
                 public static List<string> All => typeof(AppClaims.Authorization.Company).GetFields().Select(x => x.Name).ToList();
-            }
-
-            public static class BusinessUnit
-            {
-                public static List<string> All => typeof(AppClaims.Authorization.BusinessUnit).GetFields().Select(x => x.Name).ToList();
             }
         }
 

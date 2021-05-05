@@ -2,7 +2,7 @@
 
 namespace BPWA.DAL.Models
 {
-    public class BaseDTO : BaseDTO<int>, IBaseDTO<int> {}
+    public class BaseDTO : BaseDTO<int>, IBaseDTO<int> { }
 
     public class BaseDTO<T> : IBaseDTO<T>
     {
@@ -11,8 +11,11 @@ namespace BPWA.DAL.Models
         public DateTime CreatedAt { get; set; }
         public DateTime? ModifiedAtUtc { get; set; }
         public DateTime? ModifiedAt { get; set; }
-        public DateTime? DeletedAtUtc { get; set; }        
+        public DateTime? DeletedAtUtc { get; set; }
         public DateTime? DeletedAt { get; set; }
         public bool IsDeleted { get; set; }
+        public int? CompanyId { get; set; }
+
+        public CompanyDTO Company { get; set; }
     }
 }

@@ -31,16 +31,5 @@
             </a>
         </li>
     }
-    @if (viewHelperService.ShowToggleCurrentBusinessUnitItem())
-    {
-        <li class="kt-sticky-toolbar__item kt-sticky-toolbar__item--warning"
-            data-toggle="kt-tooltip"
-            title="Change current business unit: @(currentUser.CurrentBusinessUnitName() ?? Translations.All)"
-            data-placement="right">
-            <a href="@Url.Action("ToggleCurrentBusinessUnit", "Account")" class="open_modal_button">
-                <i class="flaticon-grid-menu-v2"></i>
-            </a>
-        </li>
-    }
 </ul>
 <!-- end::Sticky Toolbar -->

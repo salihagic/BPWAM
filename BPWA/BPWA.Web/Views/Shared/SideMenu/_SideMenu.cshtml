@@ -26,11 +26,6 @@
                 {
                     <partial name="_CompanySection.cshtml" />
                 }
-                
-                @if (viewHelperService.ShowBusinessUnitSection() && currentUser.CurrentBusinessUnitId().HasValue)
-                {
-                    <partial name="_BusinessUnitSection.cshtml" />
-                }
 
             </ul>
         </div>

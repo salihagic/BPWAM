@@ -29,21 +29,18 @@ namespace BPWA.Web.Services.Services
         {
             return base.BuildIncludesById(id, query)
                        .Include(x => x.RoleClaims)
-                       .Include(x => x.Company)
-                       .Include(x => x.BusinessUnit);
+                       .Include(x => x.Company);
         }
 
         public override IQueryable<Role> BuildIncludes(IQueryable<Role> query)
         {
             return base.BuildIncludes(query)
-                       .Include(x => x.Company)
-                       .Include(x => x.BusinessUnit);
+                       .Include(x => x.Company);
         }
 
         public override async Task<Role> AddEntity(Role entity)
         {
             entity.CompanyId = _currentUser.CurrentCompanyId();
-            entity.BusinessUnitId = _currentUser.CurrentBusinessUnitId();
 
             return await base.AddEntity(entity);
         }

@@ -27,16 +27,10 @@ namespace BPWA.Web.Services.Services
             {
                 claims.AddRange(AppClaimsHelper.Authorization.Administration.All);
                 claims.AddRange(AppClaimsHelper.Authorization.Company.All);
-                claims.AddRange(AppClaimsHelper.Authorization.BusinessUnit.All);
             }
-            else if (_currentUser.HasCompanyGodMode() || _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.CompanyRolesManagement))
+            else if (_currentUser.HasCompanyGodMode())
             {
                 claims.AddRange(AppClaimsHelper.Authorization.Company.All);
-                claims.AddRange(AppClaimsHelper.Authorization.BusinessUnit.All);
-            }
-            else if (_currentUser.HasBusinessUnitGodMode() || _currentUser.HasAuthorizationClaim(AppClaims.Authorization.BusinessUnit.BusinessUnitRolesManagement))
-            {
-                claims.AddRange(AppClaimsHelper.Authorization.BusinessUnit.All);
             }
 
             return claims.Select(x => new DropdownItem<string>

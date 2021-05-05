@@ -88,29 +88,15 @@ namespace BPWA.Web.Services.Services
         {
             return base.BuildIncludesById(id, query)
                        .Include(x => x.City)
-                       .Include(x => x.CompanyUsers)
-                       .ThenInclude(x => x.Company)
-                       .Include(x => x.BusinessUnitUsers)
-                       .ThenInclude(x => x.BusinessUnit)
                        .Include(x => x.UserRoles)
                        .ThenInclude(x => x.Role)
-                       .ThenInclude(x => x.Company)
-                       .Include(x => x.UserRoles)
-                       .ThenInclude(x => x.Role)
-                       .ThenInclude(x => x.BusinessUnit);
+                       .ThenInclude(x => x.Company);
         }
 
         public override IQueryable<User> BuildIncludes(IQueryable<User> query)
         {
             return base.BuildIncludes(query)
                        .Include(x => x.City);
-        }
-
-        public override IQueryable<User> BuildQueryConditions(IQueryable<User> Query, UserSearchModel searchModel = null)
-        {
-            return base.BuildQueryConditions(Query, searchModel)
-                .WhereIf(CurrentUser.CurrentCompanyId().HasValue, x => x.CompanyUsers.Any(y => y.CompanyId == CurrentUser.CurrentCompanyId()) || x.BusinessUnitUsers.Any(y => y.BusinessUnit.CompanyId == CurrentUser.CurrentCompanyId()))
-                .WhereIf(CurrentUser.CurrentBusinessUnitId().HasValue, x => x.BusinessUnitUsers.Any(y => y.BusinessUnit.Id == CurrentUser.CurrentBusinessUnitId()));
         }
 
         public override async Task<User> GetEntityById(string id, bool shouldTranslate = true, bool includeRelated = true)
@@ -123,8 +109,6 @@ namespace BPWA.Web.Services.Services
             {
                 if (x.Role.Company != null)
                     x.Role.Name += $" ({x.Role.Company.Name})";
-                if (x.Role.BusinessUnit != null)
-                    x.Role.Name += $" ({x.Role.BusinessUnit.Name})";
             });
 
             return result;
@@ -136,8 +120,6 @@ namespace BPWA.Web.Services.Services
             var result = await base.Add(entity);
 
             await ManageRelatedEntities<UserRole, string, string>(result.Id, model.RoleIds, x => x.UserId, x => x.RoleId);
-            await ManageRelatedEntities<CompanyUser, string, int>(result.Id, model.CompanyIds, x => x.UserId, x => x.CompanyId);
-            await ManageRelatedEntities<BusinessUnitUser, string, int>(result.Id, model.BusinessUnitIds, x => x.UserId, x => x.BusinessUnitId);
 
             return result;
         }
@@ -149,15 +131,6 @@ namespace BPWA.Web.Services.Services
             var result = await base.Update(entity);
 
             await ManageRelatedEntities<UserRole, string, string>(result.Id, model.RoleIds, x => x.UserId, x => x.RoleId);
-
-            if (!CurrentUser.CurrentCompanyId().HasValue)
-            {
-                await ManageRelatedEntities<CompanyUser, string, int>(result.Id, model.CompanyIds, x => x.UserId, x => x.CompanyId);
-            }
-            if (!CurrentUser.CurrentBusinessUnitId().HasValue)
-            {
-                await ManageRelatedEntities<BusinessUnitUser, string, int>(result.Id, model.BusinessUnitIds, x => x.UserId, x => x.BusinessUnitId);
-            }
 
             return result;
         }
@@ -173,7 +146,6 @@ namespace BPWA.Web.Services.Services
             try
             {
                 currentUserResult.CurrentCompanyId = model.CompanyId;
-                currentUserResult.CurrentBusinessUnitId = null;
 
                 DatabaseContext.Users.Update(currentUserResult);
                 await DatabaseContext.SaveChangesAsync();
@@ -184,51 +156,6 @@ namespace BPWA.Web.Services.Services
             }
 
             await RefreshSignIn();
-        }
-
-        public async Task ToggleCurrentBusinessUnit(ToggleCurrentBusinessUnitModel model)
-        {
-            //TODO: Check if the user can change to selected business unit
-            //if (!CurrentUser.HasGodMode() && !CurrentUser.HasCompanyGodMode() && !(CurrentUser.BusinessUnitIds().Count > 1))
-            //    return Result.Failed(Translations.There_was_an_error_while_trying_to_change_current_business_unit);
-
-            var currentUserResult = await GetEntityById(CurrentUser.Id(), false, false);
-
-            try
-            {
-                currentUserResult.CurrentBusinessUnitId = model.BusinessUnitId;
-
-                if (model.BusinessUnitId.HasValue)
-                {
-                    var companyId = DatabaseContext.BusinessUnits.FirstOrDefault(x => x.Id == model.BusinessUnitId)?.CompanyId;
-                    currentUserResult.CurrentCompanyId = companyId;
-                }
-                else
-                {
-                    //Default to first company
-                    var isCompanyUserForCurrentCompany = await DatabaseContext.CompanyUsers
-                        .AnyAsync(x => x.UserId == CurrentUser.Id() && x.CompanyId == CurrentUser.CurrentCompanyId());
-
-                    if (!isCompanyUserForCurrentCompany && !CurrentUser.HasGodMode())
-                    {
-                        var firstCompany = await DatabaseContext.CompanyUsers
-                        .FirstOrDefaultAsync(x => x.UserId == CurrentUser.Id());
-
-                        currentUserResult.CurrentCompanyId = firstCompany.CompanyId;
-                    }
-                }
-
-                DatabaseContext.Users.Update(currentUserResult);
-                await DatabaseContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(Translations.There_was_an_error_while_trying_to_change_current_business_unit);
-            }
-
-            await RefreshSignIn();
-
-            return;
         }
 
         public async Task RefreshSignIn()

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BPWA.Core.Entities;
+using System;
+using System.Collections.Generic;
 
 namespace BPWA.DAL.Models
 {
@@ -14,5 +16,7 @@ namespace BPWA.DAL.Models
         public DateTime? DeletedAtUtc { get; set; }
         public DateTime? DeletedAt { get; set; }
         public bool IsDeleted { get; set; }
+
+        public CompanyDTO Company { get; set; }
     }
 }
