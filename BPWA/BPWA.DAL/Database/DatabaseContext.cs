@@ -235,15 +235,14 @@ namespace BPWA.DAL.Database
 
         private void HandleEntityStateAdded(EntityEntry entity)
         {
-            var baseEntity = (IBaseEntity)entity.Entity;
-
-            baseEntity.CreatedAtUtc = DateTime.UtcNow;
-
-            if (typeof(IBaseCompanyEntity).IsAssignableFrom(entity.Entity.GetType()) ||
-                typeof(IBaseCompanyEntity<string>).IsAssignableFrom(entity.Entity.GetType()))
-            {
+            if(entity.Entity is IBaseEntity)
+                ((IBaseEntity)entity.Entity).CreatedAtUtc = DateTime.UtcNow;
+            if(entity.Entity is IBaseEntity<string>)
+                ((IBaseEntity<string>)entity.Entity).CreatedAtUtc = DateTime.UtcNow;
+            if(entity.Entity is IBaseCompanyEntity)
                 ((IBaseCompanyEntity)entity.Entity).CompanyId = _currentCompany.Id();
-            }
+            if(entity.Entity is IBaseCompanyEntity<string>)
+                ((IBaseCompanyEntity<string>)entity.Entity).CompanyId = _currentCompany.Id();
         }
 
         #endregion
@@ -252,9 +251,10 @@ namespace BPWA.DAL.Database
 
         private void HandleEntityStateModified(EntityEntry entity)
         {
-            var baseEntity = (IBaseEntity)entity.Entity;
-
-            baseEntity.ModifiedAtUtc = DateTime.UtcNow;
+            if (entity.Entity is IBaseEntity)
+                ((IBaseEntity)entity.Entity).ModifiedAtUtc = DateTime.UtcNow;
+            if (entity.Entity is IBaseEntity<string>)
+                ((IBaseEntity<string>)entity.Entity).ModifiedAtUtc = DateTime.UtcNow;
         }
 
         #endregion
@@ -268,8 +268,17 @@ namespace BPWA.DAL.Database
                 var baseEntity = (IBaseEntity)entity.Entity;
 
                 entity.State = EntityState.Modified;
-                baseEntity.IsDeleted = true;
-                baseEntity.DeletedAtUtc = DateTime.UtcNow;
+
+                if (entity.Entity is IBaseEntity)
+                {
+                    ((IBaseEntity)entity.Entity).IsDeleted = true;
+                    ((IBaseEntity)entity.Entity).DeletedAtUtc = DateTime.UtcNow;
+                }
+                if (entity.Entity is IBaseEntity<string>)
+                {
+                    ((IBaseEntity<string>)entity.Entity).IsDeleted = true;
+                    ((IBaseEntity<string>)entity.Entity).DeletedAtUtc = DateTime.UtcNow;
+                }
                 HandleCascadeSoftDelete(entity);
             }
         }
