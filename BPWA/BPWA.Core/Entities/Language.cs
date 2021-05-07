@@ -2,9 +2,7 @@
 
 namespace BPWA.Core.Entities
 {
-    public class Language : 
-        BaseEntity, 
-        IBaseEntity
+    public class Language : BaseSoftDeletableEntity
     {
         public string Code { get; set; }
         public string Name { get; set; }

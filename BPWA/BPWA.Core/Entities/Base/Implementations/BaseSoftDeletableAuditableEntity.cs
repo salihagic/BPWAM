@@ -2,9 +2,13 @@
 
 namespace BPWA.Core.Entities
 {
-    public class BaseEntity : BaseEntity<int> { }
+    public class BaseSoftDeletableAuditableEntity : 
+        BaseSoftDeletableAuditableEntity<int> { }
 
-    public class BaseEntity<TKey> : IBaseEntity<TKey>, IBaseSoftDeletableEntity
+    public class BaseSoftDeletableAuditableEntity<TKey> : 
+        IBaseEntity<TKey>,
+        IBaseSoftDeletableEntity,
+        IBaseAuditableEntity
     {
         public TKey Id { get; set; }
         public DateTime CreatedAtUtc { get; set; }

@@ -3,10 +3,7 @@ using BPWA.Common.Enumerations;
 
 namespace BPWA.Core.Entities
 {
-    public class Ticket :
-        BaseCompanyEntity, 
-        IBaseCompanyEntity, 
-        IBaseEntity
+    public class Ticket : BaseEntity
     {
         [Translatable]
         public string Title { get; set; }

@@ -1,13 +1,17 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
+﻿using System;
 
 namespace BPWA.Core.Entities
 {
-    public class UserLogin : 
-        IdentityUserLogin<string>,
+    public class BaseEntity : 
+        BaseEntity<int> { }
+
+    public class BaseEntity<TKey> : 
+        IBaseEntity<TKey>,
+        IBaseSoftDeletableEntity,
         IBaseAuditableEntity,
         IBaseCompanyEntity
     {
+        public TKey Id { get; set; }
         public DateTime CreatedAtUtc { get; set; }
         public DateTime? ModifiedAtUtc { get; set; }
         public DateTime? DeletedAtUtc { get; set; }
@@ -15,6 +19,5 @@ namespace BPWA.Core.Entities
         public int? CompanyId { get; set; }
 
         public Company Company { get; set; }
-        public User User { get; set; }
     }
 }

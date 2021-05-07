@@ -139,30 +139,10 @@ namespace BPWA.DAL.Database
         void SetGlobalFilters(ModelBuilder builder)
         {
             //IsDeleted filter for IBaseEntity entities
-            builder.ApplyGlobalFilters<IBaseEntity>(entity => !entity.IsDeleted);
-            builder.ApplyGlobalFilters<IBaseEntity<string>>(entity => !entity.IsDeleted);
+            builder.ApplyGlobalFilters<IBaseSoftDeletableEntity>(entity => !entity.IsDeleted);
 
             //More levels == worse performance
-            builder.ApplyGlobalFilters<IBaseCompanyEntity>(entity =>
-            !entity.IsDeleted &&
-            //All
-            (_currentCompany.Id() == null ||
-            //Level 1 company
-            entity.CompanyId == _currentCompany.Id() ||
-            //Other levels
-            Set<Company>().IgnoreQueryFilters().Any(y => y.Id == entity.CompanyId && (
-                //Level 2 company
-                y.CompanyId == _currentCompany.Id() ||
-                //Level 3 company
-                y.Company.CompanyId == _currentCompany.Id() ||
-                //Level 4 company
-                y.Company.Company.CompanyId == _currentCompany.Id()
-            //...
-            ))
-            ));
-
-            //More levels == worse performance
-            builder.ApplyGlobalFilters<IBaseCompanyEntity<string>>(entity =>
+            builder.ApplyGlobalFilters<IBaseSoftDeletableCompanyEntity>(entity =>
             !entity.IsDeleted &&
             //All
             (_currentCompany.Id() == null ||
@@ -235,14 +215,14 @@ namespace BPWA.DAL.Database
 
         private void HandleEntityStateAdded(EntityEntry entity)
         {
-            if(entity.Entity is IBaseEntity)
-                ((IBaseEntity)entity.Entity).CreatedAtUtc = DateTime.UtcNow;
-            if(entity.Entity is IBaseEntity<string>)
-                ((IBaseEntity<string>)entity.Entity).CreatedAtUtc = DateTime.UtcNow;
-            if(entity.Entity is IBaseCompanyEntity)
+            if (entity.Entity is IBaseAuditableEntity)
+            {
+                ((IBaseAuditableEntity)entity.Entity).CreatedAtUtc = DateTime.UtcNow;
+            }
+            if (entity.Entity is IBaseCompanyEntity)
+            {
                 ((IBaseCompanyEntity)entity.Entity).CompanyId = _currentCompany.Id();
-            if(entity.Entity is IBaseCompanyEntity<string>)
-                ((IBaseCompanyEntity<string>)entity.Entity).CompanyId = _currentCompany.Id();
+            }
         }
 
         #endregion
@@ -251,10 +231,10 @@ namespace BPWA.DAL.Database
 
         private void HandleEntityStateModified(EntityEntry entity)
         {
-            if (entity.Entity is IBaseEntity)
-                ((IBaseEntity)entity.Entity).ModifiedAtUtc = DateTime.UtcNow;
-            if (entity.Entity is IBaseEntity<string>)
-                ((IBaseEntity<string>)entity.Entity).ModifiedAtUtc = DateTime.UtcNow;
+            if (entity.Entity is IBaseAuditableEntity)
+            {
+                ((IBaseAuditableEntity)entity.Entity).ModifiedAtUtc = DateTime.UtcNow;
+            }
         }
 
         #endregion
@@ -263,31 +243,20 @@ namespace BPWA.DAL.Database
 
         private void HandleEntityStateDeleted(EntityEntry entity)
         {
-            if (!HardDeleteTypes.Contains(entity.Entity.GetType()))
+            if (entity.Entity is IBaseSoftDeletableEntity)
             {
-                var baseEntity = (IBaseEntity)entity.Entity;
-
                 entity.State = EntityState.Modified;
-
-                if (entity.Entity is IBaseEntity)
-                {
-                    ((IBaseEntity)entity.Entity).IsDeleted = true;
-                    ((IBaseEntity)entity.Entity).DeletedAtUtc = DateTime.UtcNow;
-                }
-                if (entity.Entity is IBaseEntity<string>)
-                {
-                    ((IBaseEntity<string>)entity.Entity).IsDeleted = true;
-                    ((IBaseEntity<string>)entity.Entity).DeletedAtUtc = DateTime.UtcNow;
-                }
-                HandleCascadeSoftDelete(entity);
+                ((IBaseSoftDeletableEntity)entity.Entity).IsDeleted = true;
             }
-        }
+            else if (entity.Entity is IBaseSoftDeletableAuditableEntity)
+            {
+                entity.State = EntityState.Modified;
+                ((IBaseSoftDeletableAuditableEntity)entity.Entity).IsDeleted = true;
+                ((IBaseSoftDeletableAuditableEntity)entity.Entity).DeletedAtUtc = DateTime.UtcNow;
+            }
 
-        List<Type> HardDeleteTypes => new List<Type>
-        {
-            typeof(UserRole),
-            typeof(Role),
-        };
+            HandleCascadeSoftDelete(entity);
+        }
 
         /// <summary>
         /// Works only on included related entities
@@ -305,19 +274,16 @@ namespace BPWA.DAL.Database
                         {
                             if (dependentEntry != null)
                             {
-                                var idependentEntry = (IBaseEntity)dependentEntry;
-                                idependentEntry.IsDeleted = true;
+                                HandleEntityStateDeleted(((NavigationEntry)dependentEntry).EntityEntry);
                             }
                         }
                     }
                 }
                 else
                 {
-                    var dependentEntry = navigationEntry.CurrentValue;
-                    if (dependentEntry != null)
+                    if (navigationEntry.CurrentValue != null)
                     {
-                        var iNavigationEntry = (IBaseEntity)navigationEntry;
-                        iNavigationEntry.IsDeleted = true;
+                        HandleEntityStateDeleted(navigationEntry.EntityEntry);
                     }
                 }
             }

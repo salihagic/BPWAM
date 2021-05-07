@@ -1,8 +1,6 @@
 ﻿namespace BPWA.Core.Entities
 {
-    public class CountryLanguage : 
-        BaseEntity, 
-        IBaseEntity
+    public class CountryLanguage : BaseSoftDeletableEntity
     {
         public int CountryId { get; set; }
         public int LanguageId { get; set; }

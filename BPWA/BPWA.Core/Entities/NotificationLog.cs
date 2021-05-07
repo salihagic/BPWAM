@@ -1,9 +1,6 @@
 ﻿namespace BPWA.Core.Entities
 {
-    public class NotificationLog :
-        BaseCompanyEntity, 
-        IBaseCompanyEntity, 
-        IBaseEntity
+    public class NotificationLog : BaseEntity
     {
         public int NotificationId { get; set; }
         public string UserId { get; set; }

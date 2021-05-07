@@ -2,10 +2,7 @@
 
 namespace BPWA.Core.Entities
 {
-    public class Group :
-        BaseCompanyEntity,
-        IBaseCompanyEntity,
-        IBaseEntity
+    public class Group : BaseEntity
     {
         public string Title { get; set; }
         public string Description { get; set; }

@@ -4,10 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BPWA.Core.Entities
 {
-    public class Notification :
-        BaseCompanyEntity, 
-        IBaseCompanyEntity, 
-        IBaseEntity
+    public class Notification : BaseEntity
     {
         public string Title { get; set; }
         public string Description { get; set; }

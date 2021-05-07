@@ -6,9 +6,10 @@ namespace BPWA.Core.Entities
 {
     public class User : 
         IdentityUser<string>,
-        IBaseCompanyEntity<string>,
-        IBaseEntity<string>, 
-        IBaseSoftDeletableEntity
+        IBaseEntity<string>,
+        IBaseSoftDeletableEntity,
+        IBaseAuditableEntity,
+        IBaseCompanyEntity
     {
         public DateTime CreatedAtUtc { get; set; }
         public DateTime? ModifiedAtUtc { get; set; }

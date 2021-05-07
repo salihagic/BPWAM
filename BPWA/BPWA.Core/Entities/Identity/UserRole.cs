@@ -5,15 +5,12 @@ namespace BPWA.Core.Entities
 {
     public class UserRole : 
         IdentityUserRole<string>,
-        IBaseCompanyEntity, 
-        IBaseEntity, 
-        IBaseSoftDeletableEntity
+        IBaseAuditableEntity,
+        IBaseCompanyEntity
     {
-        public int Id { get; set; }
         public DateTime CreatedAtUtc { get; set; }
         public DateTime? ModifiedAtUtc { get; set; }
         public DateTime? DeletedAtUtc { get; set; }
-        public bool IsDeleted { get; set; }
         public int? CompanyId { get; set; }
 
         public Company Company { get; set; }
