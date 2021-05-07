@@ -5,6 +5,7 @@ namespace BPWA.Core.Entities
     public class BaseEntity : 
         BaseEntity<int>,
         IBaseEntity,
+        IBaseSoftDeletableCompanyEntity,
         IBaseSoftDeletableEntity,
         IBaseAuditableEntity,
         IBaseCompanyEntity
@@ -12,6 +13,7 @@ namespace BPWA.Core.Entities
 
     public class BaseEntity<TKey> : 
         IBaseEntity<TKey>,
+        IBaseSoftDeletableCompanyEntity,
         IBaseSoftDeletableEntity,
         IBaseAuditableEntity,
         IBaseCompanyEntity

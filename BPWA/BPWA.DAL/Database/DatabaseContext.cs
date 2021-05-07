@@ -96,16 +96,13 @@ namespace BPWA.DAL.Database
         #region Helpers 
 
         private ICurrentCompany _currentCompany;
-        private ICurrentUserBaseCompany _currentUserBaseCompany;
 
         public DatabaseContext(
             DbContextOptions<DatabaseContext> options,
-            ICurrentCompany currentCompany,
-            ICurrentUserBaseCompany currentUserBaseCompany
+            ICurrentCompany currentCompany
             ) : base(options)
         {
             _currentCompany = currentCompany;
-            _currentUserBaseCompany = currentUserBaseCompany;
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
