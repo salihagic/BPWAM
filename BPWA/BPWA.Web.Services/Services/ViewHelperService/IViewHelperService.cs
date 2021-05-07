@@ -45,6 +45,7 @@
 
         #region Items
 
+        bool ShowCompanyCompaniesItem();
         bool ShowCompanyRolesItem();
         bool ShowCompanyUsersItem();
         bool ShowCompanyNotificationsItem();

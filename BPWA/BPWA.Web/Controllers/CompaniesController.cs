@@ -10,7 +10,7 @@ using NToastNotify;
 
 namespace BPWA.Administration.Controllers
 {
-    [Authorize(Policy = AppClaims.Authorization.Administration.CompaniesManagement)]
+    [Authorize(Policy = AppClaims.Authorization.Company.CompaniesManagement)]
     public class CompaniesController :
         BaseCRUDController<
             Company,

@@ -7,6 +7,16 @@
     <i class="kt-menu__section-icon flaticon-more-v2"></i>
 </li>
 
+@if (viewHelperService.ShowCompanyCompaniesItem())
+{
+    <li class="kt-menu__item " aria-haspopup="true">
+        <a asp-controller="Companies" asp-action="Index" class="kt-menu__link">
+            <i class="kt-menu__link-icon flaticon-grid-menu"></i>
+            <span class="kt-menu__link-text">@Translations.Companies</span>
+        </a>
+    </li>
+}
+
 @if (viewHelperService.ShowCompanyAuthSection())
 {
     <li class="kt-menu__item  kt-menu__item--submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover">

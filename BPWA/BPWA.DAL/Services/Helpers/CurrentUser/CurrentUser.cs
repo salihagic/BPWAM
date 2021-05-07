@@ -26,8 +26,8 @@ namespace BPWA.DAL.Services
         }
         public string CurrentCompanyName() => User.FindFirstValue(AppClaims.Meta.CurrentCompanyName);
         public bool HasAuthorizationClaim(string claim) => User.Claims.Any(x => x.Type == AppClaimsHelper.Authorization.Type && x.Value == claim);
-        public bool HasAdministrationAuthorizationClaim() => HasAuthorizationClaim(AppClaims.Authorization.Administration.GodMode) || HasGodMode();
-        public bool HasCompanyAuthorizationClaim() => HasAuthorizationClaim(AppClaims.Authorization.Administration.GodMode) || HasCompanyGodMode() || HasGodMode();
+        public bool HasAdministrationAuthorizationClaim(string claim) => HasAuthorizationClaim(claim) || HasGodMode();
+        public bool HasCompanyAuthorizationClaim(string claim) => HasAuthorizationClaim(claim) || HasCompanyGodMode() || HasGodMode();
         public bool HasGodMode() => HasAuthorizationClaim(AppClaims.Authorization.Administration.GodMode);
         public bool HasCompanyGodMode() => HasAuthorizationClaim(AppClaims.Authorization.Company.CompanyGodMode);
         public List<string> Configuration() => User.FindAll(x => x.Type == AppClaimsHelper.Configuration.Type).Select(x => x.Value).ToList();

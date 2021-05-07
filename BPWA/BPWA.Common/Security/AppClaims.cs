@@ -10,23 +10,23 @@ namespace BPWA.Common.Security
             public class Administration
             {
                 public const string GodMode = nameof(GodMode);
-                public const string CompaniesManagement = nameof(CompaniesManagement);
-                public const string RolesManagement = nameof(RolesManagement);
-                public const string UsersManagement = nameof(UsersManagement);
                 public const string CitiesManagement = nameof(CitiesManagement);
                 public const string CountriesManagement = nameof(CountriesManagement);
                 public const string CurrenciesManagement = nameof(CurrenciesManagement);
                 public const string LanguagesManagement = nameof(LanguagesManagement);
                 public const string LogsRead = nameof(LogsRead);
-                public const string NotificationsManagement = nameof(NotificationsManagement);
-                public const string GroupsManagement = nameof(GroupsManagement);
-                public const string TicketsManagement = nameof(TicketsManagement);
                 public const string TranslationsManagement = nameof(TranslationsManagement);
             }
 
             public static class Company
             {
                 public const string CompanyGodMode = nameof(CompanyGodMode);
+                public const string CompaniesManagement = nameof(CompaniesManagement);
+                public const string RolesManagement = nameof(RolesManagement);
+                public const string UsersManagement = nameof(UsersManagement);
+                public const string NotificationsManagement = nameof(NotificationsManagement);
+                public const string GroupsManagement = nameof(GroupsManagement);
+                public const string TicketsManagement = nameof(TicketsManagement);
             }
         }
 

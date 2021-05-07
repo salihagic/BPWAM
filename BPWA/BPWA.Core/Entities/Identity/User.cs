@@ -9,7 +9,8 @@ namespace BPWA.Core.Entities
         IBaseEntity<string>,
         IBaseSoftDeletableEntity,
         IBaseAuditableEntity,
-        IBaseCompanyEntity
+        IBaseCompanyEntity,
+        IBaseSoftDeletableCompanyEntity
     {
         public DateTime CreatedAtUtc { get; set; }
         public DateTime? ModifiedAtUtc { get; set; }

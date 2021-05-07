@@ -8,11 +8,13 @@ namespace BPWA.Core.Entities
         IdentityRole<string>, 
         IBaseEntity<string>,
         IBaseAuditableEntity,
-        IBaseCompanyEntity
+        IBaseCompanyEntity,
+        IBaseSoftDeletableCompanyEntity
     {
         public DateTime CreatedAtUtc { get; set; }
         public DateTime? ModifiedAtUtc { get; set; }
         public DateTime? DeletedAtUtc { get; set; }
+        public bool IsDeleted { get; set; }
         public int? CompanyId { get; set; }
 
         public Company Company { get; set; }

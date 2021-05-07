@@ -23,12 +23,13 @@ namespace BPWA.Web.Services.Services
         {
             var claims = new List<string>();
 
-            if (_currentUser.HasGodMode() || _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.RolesManagement))
+            if (_currentUser.HasGodMode() || 
+                (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.RolesManagement) && !_currentUser.CurrentCompanyId().HasValue))
             {
                 claims.AddRange(AppClaimsHelper.Authorization.Administration.All);
                 claims.AddRange(AppClaimsHelper.Authorization.Company.All);
             }
-            else if (_currentUser.HasCompanyGodMode())
+            else if (_currentUser.HasCompanyGodMode() || _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.RolesManagement))
             {
                 claims.AddRange(AppClaimsHelper.Authorization.Company.All);
             }

@@ -224,6 +224,7 @@
     }
 
     function Select2(options) {
+        options.data = JSON.parse(options.data);
         $(options.element).select2(options);
         $(options.element).val('');
         $(options.element).trigger('change');
