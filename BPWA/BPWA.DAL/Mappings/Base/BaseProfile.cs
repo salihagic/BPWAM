@@ -8,7 +8,7 @@ namespace BPWA.DAL.Mappings
     {
         public BaseProfile()
         {
-            CreateMap<IBaseEntity, IBaseDTO>()
+            CreateMap<IBaseAuditableEntity, IBaseDTO>()
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom<CreatedAtResolver>())
                 .IncludeAllDerived();
         }

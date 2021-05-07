@@ -66,10 +66,7 @@ namespace BPWA.Web.Services.Services
                 .AsNoTracking()
                 .IgnoreQueryFilters()
                 .Include(x => x.Role.RoleClaims)
-                .Where(x => !x.IsDeleted)
                 .Where(x => user.CompanyId == null ||
-                    //Level 0 company
-                    x.Id == user.CompanyId ||
                     //Level 1 company
                     x.CompanyId == user.CompanyId ||
                     //Level 2 company

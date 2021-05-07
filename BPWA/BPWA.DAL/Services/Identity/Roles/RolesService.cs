@@ -88,7 +88,7 @@ namespace BPWA.DAL.Services
             return Query
 
                 .WhereIf(!string.IsNullOrEmpty(searchModel.Name), x => x.Name.ToLower().StartsWith(searchModel.Name.ToLower()))
-                .WhereIf(searchModel.Claims.IsNotEmpty(), x => x.RoleClaims.Any(y => searchModel.Claims.Contains(y.ClaimValue) && !y.IsDeleted));
+                .WhereIf(searchModel.Claims.IsNotEmpty(), x => x.RoleClaims.Any(y => searchModel.Claims.Contains(y.ClaimValue)));
         }
 
         virtual public IQueryable<Role> BuildIncludesById(string id, IQueryable<Role> query) => query;

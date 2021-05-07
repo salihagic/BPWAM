@@ -3,7 +3,12 @@
 namespace BPWA.Core.Entities
 {
     public class BaseEntity : 
-        BaseEntity<int> { }
+        BaseEntity<int>,
+        IBaseEntity,
+        IBaseSoftDeletableEntity,
+        IBaseAuditableEntity,
+        IBaseCompanyEntity
+    { }
 
     public class BaseEntity<TKey> : 
         IBaseEntity<TKey>,
