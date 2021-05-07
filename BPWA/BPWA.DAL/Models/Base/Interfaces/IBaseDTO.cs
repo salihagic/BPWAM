@@ -1,12 +1,10 @@
-﻿using BPWA.Core.Entities;
-using System;
-using System.Collections.Generic;
+﻿using System;
 
 namespace BPWA.DAL.Models
 {
     public interface IBaseDTO : IBaseDTO<int> { }
 
-    public interface IBaseDTO<TKey>
+    public interface IBaseDTO<TKey> 
     {
         public TKey Id { get; set; }
         public DateTime CreatedAtUtc { get; set; }
@@ -16,6 +14,7 @@ namespace BPWA.DAL.Models
         public DateTime? DeletedAtUtc { get; set; }
         public DateTime? DeletedAt { get; set; }
         public bool IsDeleted { get; set; }
+        public int? CompanyId { get; set; }
 
         public CompanyDTO Company { get; set; }
     }

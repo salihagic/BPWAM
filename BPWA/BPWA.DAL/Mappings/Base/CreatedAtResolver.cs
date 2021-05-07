@@ -6,7 +6,7 @@ using System;
 
 namespace BPWA.DAL.Mappings
 {
-    public class CreatedAtResolver : IValueResolver<IBaseAuditableEntity, IBaseDTO, DateTime>
+    public class CreatedAtResolver : IValueResolver<IBaseAuditableEntity, IBaseAuditableDTO, DateTime>
     {
         private ICurrentTimezone _currentTimezone;
 
@@ -15,7 +15,7 @@ namespace BPWA.DAL.Mappings
             _currentTimezone = currentTimezone;
         }
 
-        public DateTime Resolve(IBaseAuditableEntity source, IBaseDTO destination, DateTime dateTime, ResolutionContext context)
+        public DateTime Resolve(IBaseAuditableEntity source, IBaseAuditableDTO destination, DateTime dateTime, ResolutionContext context)
         {
             return _currentTimezone.FromUtc(source.CreatedAtUtc).GetValueOrDefault();
         }
