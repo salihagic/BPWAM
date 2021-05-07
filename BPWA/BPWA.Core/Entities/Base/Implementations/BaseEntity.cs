@@ -5,18 +5,20 @@ namespace BPWA.Core.Entities
     public class BaseEntity : 
         BaseEntity<int>,
         IBaseEntity,
-        IBaseSoftDeletableCompanyEntity,
-        IBaseSoftDeletableEntity,
+        IBaseCompanyEntity,
         IBaseAuditableEntity,
-        IBaseCompanyEntity
+        IBaseSoftDeletableEntity,
+        IBaseSoftDeletableCompanyEntity,
+        IBaseSoftDeletableAuditableEntity
     { }
 
     public class BaseEntity<TKey> : 
         IBaseEntity<TKey>,
-        IBaseSoftDeletableCompanyEntity,
-        IBaseSoftDeletableEntity,
+        IBaseCompanyEntity,
         IBaseAuditableEntity,
-        IBaseCompanyEntity
+        IBaseSoftDeletableEntity,
+        IBaseSoftDeletableCompanyEntity,
+        IBaseSoftDeletableAuditableEntity
     {
         public TKey Id { get; set; }
         public DateTime CreatedAtUtc { get; set; }
