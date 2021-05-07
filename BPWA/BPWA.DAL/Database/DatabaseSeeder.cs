@@ -3,6 +3,7 @@ using BPWA.Common.Extensions;
 using BPWA.Common.Security;
 using BPWA.Core.Entities;
 using BPWA.DAL.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -11,8 +12,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using BPWA.DAL.Models;
 
 namespace BPWA.DAL.Database
 {
@@ -32,7 +31,6 @@ namespace BPWA.DAL.Database
         {
             var databaseContext = serviceProvider.GetService<DatabaseContext>();
             var databaseSettings = serviceProvider.GetService<DatabaseSettings>();
-            var environment = serviceProvider.GetService<IHostingEnvironment>();
 
             if (databaseSettings.RecreateDatabase)
             {
@@ -71,32 +69,14 @@ namespace BPWA.DAL.Database
                         .Include(x => x.UserRoles)
                         .FirstOrDefaultAsync(x => x.UserName == companyYAdminUserName);
 
-                    #region Add company (Company BPWA) Root company for superadmins
+                    #region Root roles
 
-                    var companyBPWA = new Company
-                    {
-                        Name = "Company BPWA",
-                        Roles = GetRootCompanyRoles()
-                    };
+                    var rootRoles = GetRootCompanyRoles();
 
-                    await databaseContext.Companies.AddAsync(companyBPWA);
-
+                    await databaseContext.Roles.AddRangeAsync(rootRoles);
                     await databaseContext.SaveChangesAsync();
 
-                    #endregion
-
-                    #region Add company users (Company BPWA)
-
-                    superAdminUser.UserRoles.AddRange(
-                        companyBPWA.Roles.Select(x => new UserRole
-                        {
-                            RoleId = x.Id,
-                            CompanyId = x.CompanyId
-                        }
-                    ));
-                    superAdminUser.CompanyId = companyBPWA.Id;
-                    superAdminUser.CurrentCompanyId = companyBPWA.Id;
-
+                    superAdminUser.UserRoles.AddRange(rootRoles.Select(x => new UserRole { RoleId = x.Id }));
                     await databaseContext.SaveChangesAsync();
 
                     #endregion
@@ -106,7 +86,6 @@ namespace BPWA.DAL.Database
                     var companyX = new Company
                     {
                         Name = "Company X",
-                        CompanyId = companyBPWA.Id,
                         Roles = GetCompanyRoles()
                     };
 

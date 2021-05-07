@@ -14,6 +14,8 @@ namespace BPWA.DAL.Services
         int? CurrentCompanyId();
         string CurrentCompanyName();
         bool HasAuthorizationClaim(string claim);
+        bool HasAdministrationAuthorizationClaim(string claim);
+        bool HasCompanyAuthorizationClaim(string claim);
         bool HasGodMode();
         bool HasCompanyGodMode();
         List<string> Configuration();
