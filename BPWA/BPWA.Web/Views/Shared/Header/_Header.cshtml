@@ -38,12 +38,12 @@
     <!-- begin:: Header Topbar -->
     <div class="kt-header__topbar">
 
+        <partial name="_Notifications.cshtml" />
+        <partial name="_Languages.cshtml" />
         @if (viewHelperService.ShowToggleCurrentCompanyItem())
         {
             <partial name="_Companies.cshtml" />
         }
-        <partial name="_Notifications.cshtml" />
-        <partial name="_Languages.cshtml" />
         <partial name="_Account.cshtml" />
 
     </div>

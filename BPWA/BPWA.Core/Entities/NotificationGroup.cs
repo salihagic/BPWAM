@@ -1,4 +1,6 @@
-﻿namespace BPWA.Core.Entities
+﻿using BPWA.Common.Attributes;
+
+namespace BPWA.Core.Entities
 {
     public class NotificationGroup : BaseEntity
     {
@@ -6,6 +8,7 @@
         public int GroupId { get; set; }
 
         public Notification Notification { get; set; }
+        [Translatable]
         public Group Group { get; set; }
     }
 }

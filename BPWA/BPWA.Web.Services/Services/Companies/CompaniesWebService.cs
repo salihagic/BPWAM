@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BPWA.Common.Extensions;
 using BPWA.DAL.Database;
 using BPWA.DAL.Models;
 using BPWA.DAL.Services;
@@ -22,11 +23,12 @@ namespace BPWA.Web.Services.Services
             _currentUserBaseCompany = currentUserBaseCompany;
         }
 
-        public async Task<List<CompanyDTO>> GetForToggle()
+        public async Task<List<CompanyDTO>> GetForToggle(CompanySearchModel searchModel)
         {
             var companies = await DatabaseContext.Companies
                 .IgnoreQueryFilters()
                 .Where(x => !x.IsDeleted)
+                .WhereIf(!string.IsNullOrEmpty(searchModel.Name), x => x.Name.ToLower().StartsWith(searchModel.Name.ToLower()))
                 .Where(x => _currentUserBaseCompany.Id() == null ||
                     //Level 0 company
                     x.Id == _currentUserBaseCompany.Id() ||

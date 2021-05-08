@@ -19,6 +19,7 @@ namespace BPWA.DAL.Services
         public override IQueryable<Company> BuildQueryConditions(IQueryable<Company> query, CompanySearchModel searchModel = null)
         {
             return base.BuildQueryConditions(query, searchModel)
+                       .WhereIf(!string.IsNullOrEmpty(searchModel?.SearchTerm), x => x.Name.ToLower().StartsWith(searchModel.SearchTerm.ToLower()))
                        .WhereIf(!string.IsNullOrEmpty(searchModel.Name), x => x.Name.ToLower().StartsWith(searchModel.Name.ToLower()));
         }
     }

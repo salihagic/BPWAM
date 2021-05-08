@@ -14,8 +14,9 @@ namespace BPWA.Web.Services.Services
     {
         public GroupsWebService(
             DatabaseContext databaseContext,
-            IMapper mapper
-            ) : base(databaseContext, mapper)
+            IMapper mapper,
+            ITranslationsService translationsService
+            ) : base(databaseContext, mapper, translationsService)
         {
         }
 

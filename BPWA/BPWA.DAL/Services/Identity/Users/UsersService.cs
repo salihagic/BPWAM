@@ -165,7 +165,7 @@ namespace BPWA.DAL.Services
                 return Query;
 
             return Query
-
+                .WhereIf(!string.IsNullOrEmpty(searchModel?.SearchTerm), x => x.UserName.ToLower().StartsWith(searchModel.SearchTerm.ToLower()) || x.Email.ToLower().StartsWith(searchModel.SearchTerm.ToLower()) || x.FirstName.ToLower().StartsWith(searchModel.SearchTerm.ToLower()) || x.LastName.ToLower().StartsWith(searchModel.SearchTerm.ToLower()))
                 .WhereIf(!string.IsNullOrEmpty(searchModel.UserName), x => x.UserName.ToLower().StartsWith(searchModel.UserName.ToLower()))
                 .WhereIf(!string.IsNullOrEmpty(searchModel.Email), x => x.Email.ToLower().StartsWith(searchModel.Email.ToLower()))
                 .WhereIf(!string.IsNullOrEmpty(searchModel.FirstName), x => x.FirstName.ToLower().StartsWith(searchModel.FirstName.ToLower()))

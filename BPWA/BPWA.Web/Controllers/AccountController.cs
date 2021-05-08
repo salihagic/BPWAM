@@ -1,4 +1,5 @@
 ﻿using BPWA.Common.Resources;
+using BPWA.DAL.Models;
 using BPWA.DAL.Services;
 using BPWA.Web.Helpers.Filters;
 using BPWA.Web.Services.Models;
@@ -81,9 +82,9 @@ namespace BPWA.Controllers
         public async Task<IActionResult> ToggleCurrentCompany() => View();
 
         [HttpPost]
-        public virtual async Task<IActionResult> CurrentUserCompaniesDropdown()
+        public virtual async Task<IActionResult> CurrentUserCompaniesDropdown(CompanySearchModel searchModel)
         {
-            var result = await _companiesWebService.GetForToggle();
+            var result = await _companiesWebService.GetForToggle(searchModel);
             var dropdownItems = result.Select(x => new DropdownItem
             {
                 Id = x.Id,

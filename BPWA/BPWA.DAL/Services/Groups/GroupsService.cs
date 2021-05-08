@@ -7,12 +7,14 @@ using System.Linq;
 
 namespace BPWA.DAL.Services
 {
-    public class GroupsService : BaseCRUDService<Group, GroupSearchModel, GroupDTO>, IGroupsService
+    public class GroupsService :
+        BaseTranslatableCRUDService<Group, GroupSearchModel, GroupDTO>, IGroupsService
     {
         public GroupsService(
             DatabaseContext databaseContext,
-            IMapper mapper
-            ) : base(databaseContext, mapper)
+            IMapper mapper,
+            ITranslationsService translationsService
+            ) : base(databaseContext, mapper, translationsService)
         {
         }
 
@@ -24,6 +26,7 @@ namespace BPWA.DAL.Services
                 searchModel.Description = searchModel.Description.ToLower();
 
             return base.BuildQueryConditions(Query, searchModel)
+                       .WhereIf(!string.IsNullOrEmpty(searchModel?.SearchTerm), x => x.Title.ToLower().StartsWith(searchModel.SearchTerm.ToLower()) || x.Description.ToLower().StartsWith(searchModel.SearchTerm.ToLower()))
                        .WhereIf(searchModel?.Title.IsNotEmpty(), x => x.Title.ToLower().Contains(searchModel.Title))
                        .WhereIf(searchModel?.Description.IsNotEmpty(), x => x.Description.ToLower().Contains(searchModel.Description))
                        .WhereIf(searchModel?.UserId.IsNotEmpty(), x => x.GroupUsers.Any(y => y.UserId == searchModel.UserId));

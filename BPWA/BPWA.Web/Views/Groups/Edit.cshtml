@@ -18,15 +18,29 @@
     <div class="modal-body">
 
         <div class="col-md-12 row">
-            <div class="col-md form-group">
+            <div class="translatable_form_group col-md form-group">
                 <label>@Translations.Title</label>
-                <input asp-for="Title" class="form-control m-input" placeholder="@Translations.Title">
+                <div class="input-group">
+                    <input asp-for="Title" class="translatable form-control m-input" placeholder="@Translations.Title">
+                    <div class="input-group-append">
+                        <button class="translation_btn btn btn-primary" type="button">
+                            <i class="flaticon-globe text-white"></i>
+                        </button>
+                    </div>
+                </div>
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
 
-            <div class="col-md-12 form-group">
+            <div class="translatable_form_group col-md-12 form-group">
                 <label>@Translations.Description</label>
-                <textarea asp-for="Description" class="form-control m-input" placeholder="@Translations.Description"></textarea>
+                <div class="input-group">
+                    <textarea asp-for="Description" rows="5" class="translatable form-control m-input" placeholder="@Translations.Description"></textarea>
+                    <div class="input-group-append">
+                        <button class="translation_btn btn btn-primary" type="button">
+                            <i class="flaticon-globe text-white"></i>
+                        </button>
+                    </div>
+                </div>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
         </div>
@@ -34,7 +48,7 @@
         <div class="col-md-12 row">
             <div class="col-md form-group">
                 <label>@Translations.Users</label>
-                <select asp-for="UserIds" id="modal_@nameof(GroupAddModel.UserIds)" multiple="multiple" class="form-control select2"></select>
+                <select asp-for="UserIds" id="modal_@nameof(GroupUpdateModel.UserIds)" multiple="multiple" class="form-control select2"></select>
                 <span asp-validation-for="UserIds" class="text-danger"></span>
             </div>
         </div>
@@ -51,8 +65,16 @@
 <script>
 
     Select2AjaxUsers({
-        element: '#modal_@nameof(GroupAddModel.UserIds)',
+        element: '#modal_@nameof(GroupUpdateModel.UserIds)',
         selectedItems: '@Html.Raw(Model.UserIdsDropdownItems.GetDropdownItemsJson())'
+    });
+
+    Translatable({
+        element: '#@nameof(GroupUpdateModel.Title)'
+    });
+
+    Translatable({
+        element: '#@nameof(GroupUpdateModel.Description)'
     });
 
 </script>
