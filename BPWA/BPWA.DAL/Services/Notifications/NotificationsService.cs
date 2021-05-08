@@ -36,12 +36,12 @@ namespace BPWA.DAL.Services
 
             return base.BuildQueryConditions(Query, searchModel)
                 .WhereIf(!string.IsNullOrEmpty(searchModel?.SearchTerm), x => x.Title.ToLower().StartsWith(searchModel.SearchTerm.ToLower()) || x.Description.ToLower().StartsWith(searchModel.SearchTerm.ToLower()))
-                       .WhereIf(searchModel?.Title.IsNotEmpty(), x => x.Title.ToLower().Contains(searchModel.Title))
-                       .WhereIf(searchModel?.Description.IsNotEmpty(), x => x.Description.ToLower().Contains(searchModel.Description))
-                       .WhereIf(searchModel?.NotificationType.HasValue, x => x.NotificationType == searchModel.NotificationType)
-                       .WhereIf(searchModel?.NotificationDistributionType.HasValue, x => x.NotificationDistributionType == searchModel.NotificationDistributionType)
-                       .WhereIf(searchModel?.UserId.IsNotEmpty(), x => x.UserId == searchModel.UserId)
-                       .WhereIf(searchModel?.GroupId.HasValue, x => x.NotificationGroups.Any(y => y.GroupId == searchModel.GroupId));
+                .WhereIf(searchModel?.Title.IsNotEmpty(), x => x.Title.ToLower().Contains(searchModel.Title))
+                .WhereIf(searchModel?.Description.IsNotEmpty(), x => x.Description.ToLower().Contains(searchModel.Description))
+                .WhereIf(searchModel?.NotificationType.HasValue, x => x.NotificationType == searchModel.NotificationType)
+                .WhereIf(searchModel?.NotificationDistributionType.HasValue, x => x.NotificationDistributionType == searchModel.NotificationDistributionType)
+                .WhereIf(searchModel?.UserId.IsNotEmpty(), x => x.UserId == searchModel.UserId)
+                .WhereIf(searchModel?.GroupId.HasValue, x => x.NotificationGroups.Any(y => y.GroupId == searchModel.GroupId));
         }
 
         public async Task<List<NotificationDTO>> GetForCurrentUser(NotificationSearchModel searchModel = null)
@@ -227,16 +227,16 @@ namespace BPWA.DAL.Services
 
             if (notification.NotificationDistributionType == NotificationDistributionType.SingleUser)
             {
-                var user = await DatabaseContext.Notifications
+                var userId = await DatabaseContext.Notifications
                     .Where(x => x.Id == notification.Id)
-                    .Select(x => x.User)
+                    .Select(x => x.UserId)
                     .FirstOrDefaultAsync();
 
-                if (user != null)
+                if (userId != null)
                 {
                     await DatabaseContext.NotificationLogs.AddAsync(new NotificationLog
                     {
-                        UserId = user.Id,
+                        UserId = userId,
                         NotificationId = notification.Id
                     });
                     await DatabaseContext.SaveChangesAsync();
@@ -245,7 +245,7 @@ namespace BPWA.DAL.Services
             if (notification.NotificationDistributionType == NotificationDistributionType.Group)
             {
                 var userIds = await DatabaseContext.Groups
-                    .Where(x => x.NotificationGroups.Any(y => y.GroupId == x.Id))
+                    .Where(x => x.NotificationGroups.Any(y => y.NotificationId == notification.Id))
                     .SelectMany(x => x.GroupUsers)
                     .Select(x => x.UserId)
                     .ToListAsync();

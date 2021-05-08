@@ -2,9 +2,9 @@
     Layout = null;
 }
 
-<div class="kt-header__topbar-item dropdown">
+<div id="notification_pulse_item" class="kt-header__topbar-item dropdown">
     <div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="30px,0px" aria-expanded="false">
-        <span id="notification_pulse_item" class="kt-header__topbar-icon">
+        <span class="kt-header__topbar-icon">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon">
                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                     <rect id="bound" x="0" y="0" width="24" height="24"></rect>
@@ -39,13 +39,37 @@
             <!--end: Head -->
             <div class="tab-content">
                 <div class="tab-pane active show" id="topbar_notifications_notifications" role="tabpanel">
-                    <div id="direct_notifications" class="kt-notification kt-margin-t-10 kt-margin-b-10 kt-scroll ps ps--active-y" data-scroll="true" data-height="300" data-mobile-height="200" style="height: 300px; overflow: hidden;"></div>
+                    <div id="direct_notifications" class="kt-notification kt-margin-t-10 kt-margin-b-10 kt-scroll ps ps--active-y" data-scroll="true" data-height="300" data-mobile-height="200" style="height: 300px; overflow: hidden; display: none;"></div>
+                    <div id="direct_notifications_no_content" class="kt-grid kt-grid--ver" style="min-height: 200px;">
+                        <div class="kt-grid kt-grid--hor kt-grid__item kt-grid__item--fluid kt-grid__item--middle">
+                            <div class="kt-grid__item kt-grid__item--middle kt-align-center">
+                                All caught up!
+                                <br>No new notifications.
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="tab-pane" id="topbar_notifications_events" role="tabpanel">
-                    <div id="group_notifications" class="kt-notification kt-margin-t-10 kt-margin-b-10 kt-scroll ps ps--active-y" data-scroll="true" data-height="300" data-mobile-height="200" style="height: 300px; overflow: hidden;"></div>
+                    <div id="group_notifications" class="kt-notification kt-margin-t-10 kt-margin-b-10 kt-scroll ps ps--active-y" data-scroll="true" data-height="300" data-mobile-height="200" style="height: 300px; overflow: hidden; display: none;"></div>
+                    <div id="group_notifications_no_content" class="kt-grid kt-grid--ver" style="min-height: 200px;">
+                        <div class="kt-grid kt-grid--hor kt-grid__item kt-grid__item--fluid kt-grid__item--middle">
+                            <div class="kt-grid__item kt-grid__item--middle kt-align-center">
+                                All caught up!
+                                <br>No new notifications.
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="tab-pane" id="topbar_notifications_logs" role="tabpanel">
-                    <div id="broadcast_notifications" class="kt-notification kt-margin-t-10 kt-margin-b-10 kt-scroll ps ps--active-y" data-scroll="true" data-height="300" data-mobile-height="200" style="height: 300px; overflow: hidden;"></div>
+                    <div id="broadcast_notifications" class="kt-notification kt-margin-t-10 kt-margin-b-10 kt-scroll ps ps--active-y" data-scroll="true" data-height="300" data-mobile-height="200" style="height: 300px; overflow: hidden; display: none;"></div>
+                    <div id="broadcast_notifications_no_content" class="kt-grid kt-grid--ver" style="min-height: 200px;">
+                        <div class="kt-grid kt-grid--hor kt-grid__item kt-grid__item--fluid kt-grid__item--middle">
+                            <div class="kt-grid__item kt-grid__item--middle kt-align-center">
+                                All caught up!
+                                <br>No new notifications.
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>
@@ -63,7 +87,11 @@
 
     LoadNotificationsCount();
 
-    $('#notification_pulse_item').on('click', function (e) {
+    $('#notification_pulse_item').on('hide.bs.dropdown', function () {
+        LoadNotificationsCount();
+    })
+
+    $('#notification_pulse_item').on('show.bs.dropdown', function () {
         directNotificationsSkip = 0;
         directNotificationsTake = 5;
         groupNotificationsSkip = 0;
@@ -87,14 +115,14 @@
             LoadDirectNotifications();
         }
     });
-    
+
     $('#group_notifications').on('scroll', function () {
         if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
             groupNotificationsSkip += groupNotificationsTake;
             LoadGroupNotifications();
         }
     });
-    
+
     $('#broadcast_notifications').on('scroll', function () {
         if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
             broadcastNotificationsSkip += broadcastNotificationsTake;
@@ -130,9 +158,16 @@
                 }
             },
             success: (notifications) => {
-                $.each(notifications, function (index, notification) {
-                    $('#direct_notifications').append(BuildNotificationItem(notification));
-                });
+                if (notifications.length > 0) {
+                    $('#direct_notifications').show();
+                    $('#direct_notifications_no_content').hide();
+                    $.each(notifications, function (index, notification) {
+                        $('#direct_notifications').append(BuildNotificationItem(notification));
+                    });
+                } else {
+                    $('#direct_notifications').hide();
+                    $('#direct_notifications_no_content').show();
+                }
             }
         });
     }
@@ -148,9 +183,16 @@
                 }
             },
             success: (notifications) => {
-                $.each(notifications, function (index, notification) {
-                    $('#group_notifications').append(BuildNotificationItem(notification));
-                });
+                if (notifications.length > 0) {
+                    $('#group_notifications').show();
+                    $('#group_notifications_no_content').hide();
+                    $.each(notifications, function (index, notification) {
+                        $('#group_notifications').append(BuildNotificationItem(notification));
+                    });
+                } else {
+                    $('#group_notifications').hide();
+                    $('#group_notifications_no_content').show();
+                }
             }
         });
     }
@@ -166,9 +208,16 @@
                 }
             },
             success: (notifications) => {
-                $.each(notifications, function (index, notification) {
-                    $('#broadcast_notifications').append(BuildNotificationItem(notification));
-                });
+                if (notifications.length > 0) {
+                    $('#broadcast_notifications').show();
+                    $('#broadcast_notifications_no_content').hide();
+                    $.each(notifications, function (index, notification) {
+                        $('#broadcast_notifications').append(BuildNotificationItem(notification));
+                    });
+                } else {
+                    $('#broadcast_notifications').hide();
+                    $('#broadcast_notifications_no_content').show();
+                }
             }
         });
     }

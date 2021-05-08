@@ -54,8 +54,7 @@ namespace BPWA.DAL.Services
             var translationCacheModel = new TranslationCacheModel
             {
                 Culture = model.Culture,
-                Key = model.Key,
-                KeyHash = model.Key.GetHashString()
+                Key = model.Key
             };
 
             var cacheEntry = await _memoryCache.GetOrCreateAsync(
@@ -65,13 +64,12 @@ namespace BPWA.DAL.Services
                     entry.SlidingExpiration = TimeSpan.FromDays(5);
 
                     var translation = await DatabaseContext.Translations
-                        .Where(x => x.KeyHash == translationCacheModel.KeyHash)
+                        .Where(x => x.Key == translationCacheModel.Key)
                         .Where(x => x.Culture == _currentCulture)
                         .Select(x => new TranslationCacheModel
                         {
                             Culture = x.Culture,
                             Key = x.Key,
-                            KeyHash = x.KeyHash,
                             Value = x.Value
                         })
                         .FirstOrDefaultAsync();
@@ -86,10 +84,8 @@ namespace BPWA.DAL.Services
         {
             foreach (var entity in entities)
             {
-                var keyHash = entity.Key.GetHashString();
-
                 var entityFromDatabase = await DatabaseContext.Translations
-                    .FirstOrDefaultAsync(x => x.Culture == entity.Culture && x.KeyHash == keyHash) ??
+                    .FirstOrDefaultAsync(x => x.Culture == entity.Culture && x.Key == entity.Key) ??
                     new Translation
                     {
                         Culture = entity.Culture,
@@ -101,21 +97,16 @@ namespace BPWA.DAL.Services
 
                 await UpdateEntity(entityFromDatabase);
             }
-
-            return;
         }
 
         public override async Task<Translation> AddEntity(Translation entity)
         {
-            entity.KeyHash = entity.Key.GetHashString();
-
             var result = await base.AddEntity(entity);
 
             var translationCacheModel = new TranslationCacheModel
             {
                 Culture = entity.Culture,
                 Key = entity.Key,
-                KeyHash = entity.Key.GetHashString(),
                 Value = entity.Value
             };
 
@@ -126,15 +117,12 @@ namespace BPWA.DAL.Services
 
         public override async Task<Translation> UpdateEntity(Translation entity)
         {
-            entity.KeyHash = entity.Key.GetHashString();
-
             var result = await base.UpdateEntity(entity);
 
             var translationCacheModel = new TranslationCacheModel
             {
                 Culture = entity.Culture,
                 Key = entity.Key,
-                KeyHash = entity.Key.GetHashString(),
                 Value = entity.Value
             };
 
@@ -155,7 +143,6 @@ namespace BPWA.DAL.Services
             {
                 Culture = entity.Culture,
                 Key = entity.Key,
-                KeyHash = entity.Key.GetHashString(),
                 Value = entity.Value
             };
 
@@ -173,8 +160,7 @@ namespace BPWA.DAL.Services
                     var translationCacheModel = new TranslationCacheModel
                     {
                         Culture = _currentCulture,
-                        Key = translationKey,
-                        KeyHash = translationKey.GetHashString()
+                        Key = translationKey
                     };
 
                     var cacheEntry = await _memoryCache.GetOrCreateAsync(
@@ -184,13 +170,12 @@ namespace BPWA.DAL.Services
                             entry.SlidingExpiration = TimeSpan.FromDays(5);
 
                             var translation = await DatabaseContext.Translations
-                                .Where(x => x.KeyHash == translationCacheModel.KeyHash)
+                                .Where(x => x.Key == translationCacheModel.Key)
                                 .Where(x => x.Culture == _currentCulture)
                                 .Select(x => new TranslationCacheModel
                                 {
                                     Culture = x.Culture,
                                     Key = x.Key,
-                                    KeyHash = x.KeyHash,
                                     Value = x.Value
                                 })
                                 .FirstOrDefaultAsync();
