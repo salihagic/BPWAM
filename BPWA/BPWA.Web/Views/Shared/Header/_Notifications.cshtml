@@ -39,6 +39,7 @@
             <!--end: Head -->
             <div class="tab-content">
                 <div class="tab-pane active show" id="topbar_notifications_notifications" role="tabpanel">
+                    <div id="direct_notifications_spinner_wrapper" class="spinner_wrapper"><div class="kt-spinner kt-spinner--lg kt-spinner--info"></div></div>
                     <div id="direct_notifications" class="kt-notification kt-margin-t-10 kt-margin-b-10 kt-scroll ps ps--active-y" data-scroll="true" data-height="300" data-mobile-height="200" style="height: 300px; overflow: hidden; display: none;"></div>
                     <div id="direct_notifications_no_content" class="kt-grid kt-grid--ver" style="min-height: 200px;">
                         <div class="kt-grid kt-grid--hor kt-grid__item kt-grid__item--fluid kt-grid__item--middle">
@@ -50,6 +51,7 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="topbar_notifications_events" role="tabpanel">
+                    <div id="group_notifications_spinner_wrapper" class="spinner_wrapper"><div class="kt-spinner kt-spinner--lg kt-spinner--info"></div></div>
                     <div id="group_notifications" class="kt-notification kt-margin-t-10 kt-margin-b-10 kt-scroll ps ps--active-y" data-scroll="true" data-height="300" data-mobile-height="200" style="height: 300px; overflow: hidden; display: none;"></div>
                     <div id="group_notifications_no_content" class="kt-grid kt-grid--ver" style="min-height: 200px;">
                         <div class="kt-grid kt-grid--hor kt-grid__item kt-grid__item--fluid kt-grid__item--middle">
@@ -61,6 +63,7 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="topbar_notifications_logs" role="tabpanel">
+                    <div id="broadcast_notifications_spinner_wrapper" class="spinner_wrapper"><div class="kt-spinner kt-spinner--lg kt-spinner--info"></div></div>
                     <div id="broadcast_notifications" class="kt-notification kt-margin-t-10 kt-margin-b-10 kt-scroll ps ps--active-y" data-scroll="true" data-height="300" data-mobile-height="200" style="height: 300px; overflow: hidden; display: none;"></div>
                     <div id="broadcast_notifications_no_content" class="kt-grid kt-grid--ver" style="min-height: 200px;">
                         <div class="kt-grid kt-grid--hor kt-grid__item kt-grid__item--fluid kt-grid__item--middle">
@@ -85,11 +88,18 @@
     var broadcastNotificationsSkip = 0;
     var broadcastNotificationsTake = 5;
 
-    LoadNotificationsCount();
+    function Reset() {
+        LoadNotificationsCount();
+        SetDirectElements();
+        SetGroupElements();
+        SetBroadcastElements();
+    }
+
+    Reset();
 
     $('#notification_pulse_item').on('hide.bs.dropdown', function () {
-        LoadNotificationsCount();
-    })
+        Reset();
+    });
 
     $('#notification_pulse_item').on('show.bs.dropdown', function () {
         directNotificationsSkip = 0;
@@ -130,6 +140,57 @@
         }
     });
 
+    function SetDirectElements(showSpinner = true, showNotifications = false, showNoContent = false) {
+        if (showSpinner)
+            $('#direct_notifications_spinner_wrapper').css('display', 'flex');
+        else
+            $('#direct_notifications_spinner_wrapper').css('display', 'none');
+
+        if (showNotifications)
+            $('#direct_notifications').show();
+        else 
+            $('#direct_notifications').hide();
+
+        if (showNoContent)
+            $('#direct_notifications_no_content').show();
+        else
+            $('#direct_notifications_no_content').hide();
+    }
+
+    function SetGroupElements(showSpinner = true, showNotifications = false, showNoContent = false) {
+        if (showSpinner)
+            $('#group_notifications_spinner_wrapper').css('display', 'flex');
+        else
+            $('#group_notifications_spinner_wrapper').css('display', 'none');
+
+        if (showNotifications)
+            $('#group_notifications').show();
+        else
+            $('#group_notifications').hide();
+
+        if (showNoContent)
+            $('#group_notifications_no_content').show();
+        else
+            $('#group_notifications_no_content').hide();
+    }
+    
+    function SetBroadcastElements(showSpinner = true, showNotifications = false, showNoContent = false) {
+        if (showSpinner)
+            $('#broadcast_notifications_spinner_wrapper').css('display', 'flex');
+        else
+            $('#broadcast_notifications_spinner_wrapper').css('display', 'none');
+
+        if (showNotifications)
+            $('#broadcast_notifications').show();
+        else
+            $('#broadcast_notifications').hide();
+
+        if (showNoContent)
+            $('#broadcast_notifications_no_content').show();
+        else
+            $('#broadcast_notifications_no_content').hide();
+    }
+
     function LoadNotificationsCount() {
         $.ajax({
             url: '@Url.Action("GetUnseenNotificationsCountForCurrentUser", "Notifications")',
@@ -159,14 +220,12 @@
             },
             success: (notifications) => {
                 if (notifications.length > 0) {
-                    $('#direct_notifications').show();
-                    $('#direct_notifications_no_content').hide();
+                    SetDirectElements(false, true, false);
                     $.each(notifications, function (index, notification) {
                         $('#direct_notifications').append(BuildNotificationItem(notification));
                     });
                 } else {
-                    $('#direct_notifications').hide();
-                    $('#direct_notifications_no_content').show();
+                    SetDirectElements(false, false, true);
                 }
             }
         });
@@ -184,14 +243,12 @@
             },
             success: (notifications) => {
                 if (notifications.length > 0) {
-                    $('#group_notifications').show();
-                    $('#group_notifications_no_content').hide();
+                    SetGroupElements(false, true, false);
                     $.each(notifications, function (index, notification) {
                         $('#group_notifications').append(BuildNotificationItem(notification));
                     });
                 } else {
-                    $('#group_notifications').hide();
-                    $('#group_notifications_no_content').show();
+                    SetGroupElements(false, false, true);
                 }
             }
         });
@@ -209,14 +266,12 @@
             },
             success: (notifications) => {
                 if (notifications.length > 0) {
-                    $('#broadcast_notifications').show();
-                    $('#broadcast_notifications_no_content').hide();
+                    SetBroadcastElements(false, true, false);
                     $.each(notifications, function (index, notification) {
                         $('#broadcast_notifications').append(BuildNotificationItem(notification));
                     });
                 } else {
-                    $('#broadcast_notifications').hide();
-                    $('#broadcast_notifications_no_content').show();
+                    SetBroadcastElements(false, false, true);
                 }
             }
         });

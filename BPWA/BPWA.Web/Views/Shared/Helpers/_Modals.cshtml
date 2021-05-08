@@ -1,14 +1,5 @@
 ﻿@{ Layout = null; }
 
-<style>
-    .modal_spinner {
-        display: none;
-        justify-content: center;
-        align-items: center;
-        padding: 7em 0;
-    }
-</style>
-
 <div class="modal fade" id="modal_centered" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -24,7 +15,7 @@
     var modalContent = $('#modal_centered .modal-content');
 
     function SetDefaultModalState() {
-        $(modalContent).html('<div class="modal_spinner"><div class="kt-spinner kt-spinner--lg kt-spinner--info"></div></div>');
+        $(modalContent).html('<div class="spinner_wrapper"><div class="kt-spinner kt-spinner--lg kt-spinner--info"></div></div>');
         $('.modal_spinner').css('display', 'flex');
         $(modalDialog).removeClass();
         $(modalDialog).addClass('modal-dialog modal-dialog-centered');
