@@ -48,6 +48,7 @@ namespace BPWA.Web.Services.Services
             {
                 var user = await DatabaseContext.Users
                     .AsNoTracking()
+                    .IgnoreQueryFilters()
                     .Include(x => x.City)
                     .FirstOrDefaultAsync(x => x.Id == CurrentUser.Id());
 
