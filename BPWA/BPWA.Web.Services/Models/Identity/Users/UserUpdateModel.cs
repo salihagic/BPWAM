@@ -12,9 +12,5 @@ namespace BPWA.Web.Services.Models
         public DropdownItem CityIdDropdownItem { get; set; }
         public List<DropdownItem<string>> RoleIdsDropdownItems { get; set; }
         public List<string> RoleIds => RoleIdsDropdownItems.GetIds();
-        public List<DropdownItem> CompanyIdsDropdownItems { get; set; }
-        public List<int> CompanyIds => CompanyIdsDropdownItems.GetIds();
-        public List<DropdownItem> BusinessUnitIdsDropdownItems { get; set; }
-        public List<int> BusinessUnitIds => BusinessUnitIdsDropdownItems.GetIds();
     }
 }

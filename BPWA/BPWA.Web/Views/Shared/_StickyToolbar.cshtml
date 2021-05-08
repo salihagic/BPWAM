@@ -20,27 +20,5 @@
             <i class="flaticon2-digital-marketing"></i>
         </a>
     </li>
-    @if (viewHelperService.ShowToggleCurrentCompanyItem())
-    {
-        <li class="kt-sticky-toolbar__item kt-sticky-toolbar__item--warning"
-            data-toggle="kt-tooltip"
-            title="Change current company: @(currentUser.CurrentCompanyName() ?? Translations.All)"
-            data-placement="right">
-            <a href="@Url.Action("ToggleCurrentCompany", "Account")" class="open_modal_button">
-                <i class="flaticon-grid-menu"></i>
-            </a>
-        </li>
-    }
-    @if (viewHelperService.ShowToggleCurrentBusinessUnitItem())
-    {
-        <li class="kt-sticky-toolbar__item kt-sticky-toolbar__item--warning"
-            data-toggle="kt-tooltip"
-            title="Change current business unit: @(currentUser.CurrentBusinessUnitName() ?? Translations.All)"
-            data-placement="right">
-            <a href="@Url.Action("ToggleCurrentBusinessUnit", "Account")" class="open_modal_button">
-                <i class="flaticon-grid-menu-v2"></i>
-            </a>
-        </li>
-    }
 </ul>
 <!-- end::Sticky Toolbar -->

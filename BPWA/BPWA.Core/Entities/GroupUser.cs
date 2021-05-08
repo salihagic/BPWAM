@@ -1,6 +1,6 @@
 ﻿namespace BPWA.Core.Entities
 {
-    public class GroupUser : BaseEntity, IBaseEntity
+    public class GroupUser : BaseEntity
     {
         public int GroupId { get; set; }
         public string UserId { get; set; }

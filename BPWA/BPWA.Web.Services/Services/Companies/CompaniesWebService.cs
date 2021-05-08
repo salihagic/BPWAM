@@ -3,7 +3,7 @@ using BPWA.Common.Extensions;
 using BPWA.DAL.Database;
 using BPWA.DAL.Models;
 using BPWA.DAL.Services;
-using System;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,18 +12,36 @@ namespace BPWA.Web.Services.Services
 {
     public class CompaniesWebService : CompaniesService, ICompaniesWebService
     {
+        private ICurrentUserBaseCompany _currentUserBaseCompany;
+
         public CompaniesWebService(
             DatabaseContext databaseContext,
             IMapper mapper,
-            ICurrentUser currentUser
-            ) : base(databaseContext, mapper, currentUser)
+            ICurrentUserBaseCompany currentUserBaseCompany
+            ) : base(databaseContext, mapper)
         {
+            _currentUserBaseCompany = currentUserBaseCompany;
         }
 
-        public async Task<List<CompanyDTO>> GetForCurrentUser()
+        public async Task<List<CompanyDTO>> GetForToggle(CompanySearchModel searchModel)
         {
-            var companies = DatabaseContext.Companies
-                .WhereIf(!CurrentUser.HasGodMode(), x => x.CompanyUsers.Any(y => y.UserId == CurrentUser.Id()));
+            var companies = await DatabaseContext.Companies
+                .IgnoreQueryFilters()
+                .Where(x => !x.IsDeleted)
+                .WhereIf(!string.IsNullOrEmpty(searchModel.Name), x => x.Name.ToLower().StartsWith(searchModel.Name.ToLower()))
+                .Where(x => _currentUserBaseCompany.Id() == null ||
+                    //Level 0 company
+                    x.Id == _currentUserBaseCompany.Id() ||
+                    //Level 1 company
+                    x.CompanyId == _currentUserBaseCompany.Id() ||
+                    //Level 2 company
+                    x.Company.CompanyId == _currentUserBaseCompany.Id() ||
+                    //Level 3 company
+                    x.Company.Company.CompanyId == _currentUserBaseCompany.Id() ||
+                    //Level 4 company
+                    x.Company.Company.Company.CompanyId == _currentUserBaseCompany.Id()
+                //...
+                ).ToListAsync();
 
             var companyDTOs = Mapper.Map<List<CompanyDTO>>(companies);
 

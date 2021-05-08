@@ -1,4 +1,6 @@
 ﻿using BPWA.Common.Resources;
+using BPWA.DAL.Models;
+using BPWA.DAL.Services;
 using BPWA.Web.Helpers.Filters;
 using BPWA.Web.Services.Models;
 using BPWA.Web.Services.Services;
@@ -16,20 +18,20 @@ namespace BPWA.Controllers
     {
         private readonly IUsersWebService _usersWebService;
         private readonly ICompaniesWebService _companiesWebService;
-        private readonly IBusinessUnitsWebService _businessUnitsWebService;
         private IToastNotification _toast;
+        private ICurrentUserBaseCompany _currentUserBaseCompany;
 
         public AccountController(
             IUsersWebService usersWebService,
             ICompaniesWebService companiesWebService,
-            IBusinessUnitsWebService businessUnitsWebService,
-            IToastNotification toast
+            IToastNotification toast,
+            ICurrentUserBaseCompany currentUserBaseCompany
             )
         {
             _usersWebService = usersWebService;
             _companiesWebService = companiesWebService;
-            _businessUnitsWebService = businessUnitsWebService;
             _toast = toast;
+            _currentUserBaseCompany = currentUserBaseCompany;
         }
 
         [HttpPost]
@@ -80,9 +82,23 @@ namespace BPWA.Controllers
         public async Task<IActionResult> ToggleCurrentCompany() => View();
 
         [HttpPost]
-        public virtual async Task<IActionResult> CurrentUserCompaniesDropdown()
+        public virtual async Task<IActionResult> CurrentUserCompaniesDropdown(CompanySearchModel searchModel)
         {
-            var result = await _companiesWebService.GetForCurrentUser();
+            var result = await _companiesWebService.GetForToggle(searchModel);
+            var dropdownItems = result.Select(x => new DropdownItem
+            {
+                Id = x.Id,
+                Text = x.Name,
+            }).ToList();
+
+            if (!_currentUserBaseCompany.Id().HasValue)
+            {
+                dropdownItems.Insert(0, new DropdownItem
+                {
+                    Id = 0,
+                    Text = Translations.All_companies
+                });
+            }
 
             return Ok(new
             {
@@ -90,7 +106,7 @@ namespace BPWA.Controllers
                 {
                     more = false,
                 },
-                results = result
+                results = dropdownItems
             });
         }
 
@@ -112,43 +128,6 @@ namespace BPWA.Controllers
         }
 
         #endregion Toggle current company
-
-        #region Toggle current business unit
-
-        public async Task<IActionResult> ToggleCurrentBusinessUnit() => View();
-
-        [HttpPost]
-        public virtual async Task<IActionResult> CurrentUserBusinessUnitsDropdown()
-        {
-            var result = await _businessUnitsWebService.GetForCurrentUser();
-
-            return Ok(new
-            {
-                pagination = new
-                {
-                    more = false,
-                },
-                results = result
-            });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ToggleCurrentBusinessUnit(ToggleCurrentBusinessUnitModel model, string returnUrl = "")
-        {
-            try
-            {
-                await _usersWebService.ToggleCurrentBusinessUnit(model);
-                _toast.AddSuccessToastMessage(Translations.Successfully_changed_current_business_unit);
-            }
-            catch (Exception)
-            {
-                _toast.AddErrorToastMessage(Translations.There_was_an_error_while_trying_to_change_current_business_unit);
-            }
-
-            return !string.IsNullOrEmpty(returnUrl) ? LocalRedirect(returnUrl) : RedirectToAction("Index", "Dashboard");
-        }
-
-        #endregion 
 
         #region Reset password
 

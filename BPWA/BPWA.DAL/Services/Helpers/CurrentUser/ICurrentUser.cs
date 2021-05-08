@@ -10,16 +10,14 @@ namespace BPWA.DAL.Services
         string LastName();
         string FullName();
         string TimezoneId();
-        List<int> CompanyIds();
+        bool HasMultipleCompanies();
         int? CurrentCompanyId();
         string CurrentCompanyName();
-        List<int> BusinessUnitIds();
-        int? CurrentBusinessUnitId();
-        string CurrentBusinessUnitName();
         bool HasAuthorizationClaim(string claim);
+        bool HasAdministrationAuthorizationClaim(string claim);
+        bool HasCompanyAuthorizationClaim(string claim);
         bool HasGodMode();
         bool HasCompanyGodMode();
-        bool HasBusinessUnitGodMode();
         List<string> Configuration();
     }
 }

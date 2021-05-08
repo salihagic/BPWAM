@@ -1,5 +1,6 @@
 ﻿using BPWA.Common.Security;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 
 namespace BPWA.Web.Configuration
 {
@@ -9,53 +10,18 @@ namespace BPWA.Web.Configuration
         {
             services.AddAuthorization(options =>
             {
-                var administrationClaims = AppClaimsHelper.Authorization.Administration.All;
-                var companyClaims = AppClaimsHelper.Authorization.Company.All;
-                var businessUnitClaims = AppClaimsHelper.Authorization.BusinessUnit.All;
-
-                foreach (var claim in AppClaimsHelper.Authorization.All)
+                foreach (var claim in AppClaimsHelper.Authorization.Administration.All)
                 {
-                    if(claim == AppClaims.Authorization.Administration.RolesManagement)
-                    {
-                        options.AddPolicy(claim, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type,
-                            claim,
-                            AppClaims.Authorization.BusinessUnit.BusinessUnitRolesManagement,
-                            AppClaims.Authorization.BusinessUnit.BusinessUnitGodMode,
-                            AppClaims.Authorization.Company.CompanyRolesManagement,
-                            AppClaims.Authorization.Company.CompanyGodMode,
-                            AppClaims.Authorization.Administration.GodMode));
-                    }
-                    else if (claim == AppClaims.Authorization.Administration.UsersManagement)
-                    {
-                        options.AddPolicy(claim, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type,
-                            claim,
-                            AppClaims.Authorization.BusinessUnit.BusinessUnitUsersManagement,
-                            AppClaims.Authorization.BusinessUnit.BusinessUnitGodMode,
-                            AppClaims.Authorization.Company.CompanyUsersManagement,
-                            AppClaims.Authorization.Company.CompanyGodMode,
-                            AppClaims.Authorization.Administration.GodMode));
-                    }
-                    else if (administrationClaims.Contains(claim))
-                    {
-                        options.AddPolicy(claim, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type, 
-                            claim, 
-                            AppClaims.Authorization.Administration.GodMode));
-                    }
-                    else if (companyClaims.Contains(claim))
-                    {
-                        options.AddPolicy(claim, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type,
-                            claim, 
-                            AppClaims.Authorization.Company.CompanyGodMode,
-                            AppClaims.Authorization.Administration.GodMode));
-                    }
-                    else if (businessUnitClaims.Contains(claim))
-                    {
-                        options.AddPolicy(claim, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type,
-                            claim,
-                            AppClaims.Authorization.BusinessUnit.BusinessUnitGodMode,
-                            AppClaims.Authorization.Company.CompanyGodMode,
-                            AppClaims.Authorization.Administration.GodMode));
-                    }
+                    options.AddPolicy(claim, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type,
+                        claim,
+                        AppClaims.Authorization.Administration.GodMode));
+                }
+                foreach (var claim in AppClaimsHelper.Authorization.Company.All)
+                {
+                    options.AddPolicy(claim, policy => policy.RequireClaim(AppClaimsHelper.Authorization.Type,
+                        claim,
+                        AppClaims.Authorization.Company.CompanyGodMode,
+                        AppClaims.Authorization.Administration.GodMode));
                 }
             });
 

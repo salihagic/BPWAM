@@ -20,22 +20,11 @@ namespace BPWA.DAL.Services
         public override IQueryable<Ticket> BuildQueryConditions(IQueryable<Ticket> query, TicketSearchModel searchModel = null)
         {
             return base.BuildQueryConditions(query, searchModel)
+                .WhereIf(!string.IsNullOrEmpty(searchModel?.SearchTerm), x => x.Title.ToLower().StartsWith(searchModel.SearchTerm.ToLower()) || x.Description.ToLower().StartsWith(searchModel.SearchTerm.ToLower()))
                        .WhereIf(!string.IsNullOrEmpty(searchModel.Title), x => x.Title.ToLower().StartsWith(searchModel.Title.ToLower()))
                        .WhereIf(!string.IsNullOrEmpty(searchModel.Description), x => x.Description.ToLower().Contains(searchModel.Description.ToLower()))
                        .WhereIf(searchModel.TicketTypes.IsNotEmpty(), x => searchModel.TicketTypes.Contains(x.TicketType))
                        .WhereIf(searchModel.TicketStatuses.IsNotEmpty(), x => searchModel.TicketStatuses.Contains(x.TicketStatus));
-        }
-
-        public override async Task<Ticket> AddEntity(Ticket entity)
-        {
-            var result = await base.AddEntity(entity);
-
-            await TranslationsService.Add(new Translation
-            {
-                Key = entity.Title,
-            });
-
-            return result;
         }
     }
 }

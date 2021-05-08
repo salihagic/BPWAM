@@ -2,7 +2,7 @@
 
 namespace BPWA.Core.Entities
 {
-    public class Country : BaseEntity, IBaseEntity
+    public class Country : BaseSoftDeletableEntity
     {
         public string Name { get; set; }
         public string Code { get; set; }

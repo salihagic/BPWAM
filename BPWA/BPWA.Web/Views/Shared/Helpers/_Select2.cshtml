@@ -5,7 +5,7 @@
 
     function Select2NotificationTypes(options) {
         Select2({
-            data: @Html.Raw(DropdownHelperService.GetNotificationTypes().GetDropdownItemsJson()),
+            data: '@Html.Raw(DropdownHelperService.GetNotificationTypes().GetDropdownItemsJson())',
             placeholder: '@Translations.Select_notification_type',
             ...options
         });
@@ -13,7 +13,7 @@
 
     function Select2NotificationDistributionTypes(options) {
         Select2({
-            data: @Html.Raw(DropdownHelperService.GetNotificationDistributionTypes().GetDropdownItemsJson()),
+            data: '@Html.Raw(DropdownHelperService.GetNotificationDistributionTypes().GetDropdownItemsJson())',
             placeholder: '@Translations.Select_notification_distribution_type',
             ...options
         });
@@ -21,7 +21,7 @@
 
     function Select2SystemLanguages(options) {
         Select2({
-            data: @Html.Raw(DropdownHelperService.GetSystemLanguages().GetDropdownItemsJson()),
+            data: '@Html.Raw(DropdownHelperService.GetSystemLanguages().GetDropdownItemsJson())',
             placeholder: '@Translations.Select_language',
             ...options
         });
@@ -29,7 +29,7 @@
 
     function Select2AppClaims(options) {
         Select2({
-            data: @Html.Raw(DropdownHelperService.GetAppClaims().GetDropdownItemsJson()),
+            data: '@Html.Raw(DropdownHelperService.GetAppClaims().GetDropdownItemsJson())',
             placeholder: '@Translations.Select_app_claim',
             ...options
         });
@@ -37,7 +37,7 @@
 
     function Select2TicketTypes(options) {
         Select2({
-            data: @Html.Raw(DropdownHelperService.GetTicketTypes().GetDropdownItemsJson()),
+            data: '@Html.Raw(DropdownHelperService.GetTicketTypes().GetDropdownItemsJson())',
             placeholder: '@Translations.Select_ticket_type',
             ...options
         });
@@ -45,7 +45,7 @@
 
     function Select2TicketStatuses(options) {
         Select2({
-            data: @Html.Raw(DropdownHelperService.GetTicketStatuses().GetDropdownItemsJson()),
+            data: '@Html.Raw(DropdownHelperService.GetTicketStatuses().GetDropdownItemsJson())',
             placeholder: '@Translations.Select_ticket_status',
             ...options
         });
@@ -58,25 +58,10 @@
             map: (x) => {
                 return {
                     id: x.id,
-                    text: x.name
+                    text: x.text
                 };
             },
             placeholder: '@Translations.Select_company',
-            ...options
-        });
-    }
-
-    function Select2AjaxCurrentUserBusinessUnits(options) {
-        Select2Ajax({
-            element: options.element,
-            url: '@Url.Action("CurrentUserBusinessUnitsDropdown", "Account")',
-            map: (x) => {
-                return {
-                    id: x.id,
-                    text: x.name
-                };
-            },
-            placeholder: '@Translations.Select_business_unit',
             ...options
         });
     }
@@ -122,21 +107,6 @@
                 };
             },
             placeholder: '@Translations.Select_company',
-            ...options
-        });
-    }
-
-    function Select2AjaxBusinessUnits(options) {
-        Select2Ajax({
-            element: options.element,
-            url: '@Url.Action("Dropdown", "BusinessUnits")',
-            map: (x) => {
-                return {
-                    id: x.id,
-                    text: x.name
-                };
-            },
-            placeholder: '@Translations.Select_business_unit',
             ...options
         });
     }
@@ -224,6 +194,7 @@
     }
 
     function Select2(options) {
+        options.data = JSON.parse(options.data);
         $(options.element).select2(options);
         $(options.element).val('');
         $(options.element).trigger('change');
@@ -241,13 +212,13 @@
         }
     }
 
-    function Select2Ajax(options) {
+    function Select2Ajax(options) {   
         $(options.element).select2({
             ajax: {
                 url: options.url,
                 data: options.data || function (params) {
                     return {
-                        name: params.term,
+                        searchTerm: params.term,
                         pagination: {
                             skip: (((params.page ?? 1) - 1) * 20),
                             take: 20

@@ -3,6 +3,7 @@ using BPWA.Common.Extensions;
 using BPWA.Common.Security;
 using BPWA.Core.Entities;
 using BPWA.DAL.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -11,25 +12,25 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using BPWA.DAL.Models;
 
 namespace BPWA.DAL.Database
 {
     public static class DatabaseSeeder
     {
         static string superAdminRoleName = "Super admin";
+        static string adminRoleName = "Company admin";
+
+        //Password is demo
         static string superAdminUserName = "super.admin";
-        static string companyAdminRoleName = "Company admin";
-        static string companyAdminUserName = "company.admin";
-        static string businessUnitAdminRoleName = "Business unit admin";
-        static string businessUnitAdminUserName = "businessunit.admin";
+        //Password is demo
+        static string companyXAdminUserName = "company.x.admin";
+        //Password is demo
+        static string companyYAdminUserName = "company.y.admin";
 
         public static async Task Seed(IServiceProvider serviceProvider)
         {
             var databaseContext = serviceProvider.GetService<DatabaseContext>();
             var databaseSettings = serviceProvider.GetService<DatabaseSettings>();
-            var environment = serviceProvider.GetService<IHostingEnvironment>();
 
             if (databaseSettings.RecreateDatabase)
             {
@@ -42,47 +43,43 @@ namespace BPWA.DAL.Database
             }
             if (databaseSettings.Seed)
             {
-                await SeedRoles(serviceProvider);
                 await SeedUsers(serviceProvider);
-                if (environment.IsDevelopment())
-                    await SeedCompaniesAndBusinessUnits(serviceProvider);
+                await SeedCompanies(serviceProvider);
                 //await SeedGeolocations(serviceProvider);
             }
         }
 
-        private static async Task SeedCompaniesAndBusinessUnits(IServiceProvider serviceProvider)
+        private static async Task SeedCompanies(IServiceProvider serviceProvider)
         {
             var databaseContext = serviceProvider.GetService<DatabaseContext>();
 
-            var superAdminUser = await databaseContext.Users
-                .Include(x => x.UserRoles)
-                .FirstOrDefaultAsync(x => x.UserName == superAdminUserName);
-            var companyAdminUser = await databaseContext.Users
-                .Include(x => x.UserRoles)
-                .FirstOrDefaultAsync(x => x.UserName == companyAdminUserName);
-            var businessUnitAdminUser = await databaseContext.Users
-                .Include(x => x.UserRoles)
-                .FirstOrDefaultAsync(x => x.UserName == businessUnitAdminUserName);
+            databaseContext.IgnoreOnBeforeSaveChanges();
 
             try
             {
                 if (!databaseContext.Companies.Any())
                 {
-                    /*
-                                          super.admin     company.admin                 businessunit.admin       
-                    Company X             GodMode         User, Company GodMode         -
-                    Business unit X1      GodMode         -                             User, Business unit GodMode
-                    Business unit X2      GodMode         -                             -
-                    Business unit X3      GodMode         -                             -
-                    Company Y             GodMode         -                             -
-                    Business unit Y1      GodMode         User, Business unit GodMode   User, Business unit GodMode 
-                    Business unit Y2      GodMode         User                          User
-                    Business unit Y3      GodMode         User                          User
-                    Company Z             GodMode         -                             -
-                    Business unit Z1      GodMode         -                             -
-                    Business unit Z2      GodMode         -                             -
-                    Business unit Z3      GodMode         -                             -                    
-                    */
+                    var superAdminUser = await databaseContext.Users
+                        .Include(x => x.UserRoles)
+                        .FirstOrDefaultAsync(x => x.UserName == superAdminUserName);
+                    var companyXAdminUser = await databaseContext.Users
+                        .Include(x => x.UserRoles)
+                        .FirstOrDefaultAsync(x => x.UserName == companyXAdminUserName);
+                    var companyYAdminUser = await databaseContext.Users
+                        .Include(x => x.UserRoles)
+                        .FirstOrDefaultAsync(x => x.UserName == companyYAdminUserName);
+
+                    #region Root roles
+
+                    var rootRoles = GetRootCompanyRoles();
+
+                    await databaseContext.Roles.AddRangeAsync(rootRoles);
+                    await databaseContext.SaveChangesAsync();
+
+                    superAdminUser.UserRoles.AddRange(rootRoles.Select(x => new UserRole { RoleId = x.Id }));
+                    await databaseContext.SaveChangesAsync();
+
+                    #endregion
 
                     #region Add company (Company X)
 
@@ -96,94 +93,21 @@ namespace BPWA.DAL.Database
 
                     await databaseContext.SaveChangesAsync();
 
+                    #endregion
+
                     #region Add company users (Company X)
 
-                    var companyXCompanyAdminRole = companyX.Roles.FirstOrDefault(x => x.Name == companyAdminRoleName);
-
-                    var companyXUser1 = new CompanyUser
-                    {
-                        UserId = companyAdminUser.Id
-                    };
-
-                    companyX.CompanyUsers = new List<CompanyUser>() { companyXUser1 };
-
-                    companyAdminUser.CurrentCompanyId = companyX.Id;
-                    companyAdminUser.UserRoles.Add(new UserRole
-                    {
-                        RoleId = companyXCompanyAdminRole.Id
-                    });
+                    companyXAdminUser.UserRoles.AddRange(
+                        companyX.Roles.Select(x => new UserRole
+                        {
+                            RoleId = x.Id,
+                            CompanyId = x.CompanyId
+                        }
+                    ));
+                    companyXAdminUser.CompanyId = companyX.Id;
+                    companyXAdminUser.CurrentCompanyId = companyX.Id;
 
                     await databaseContext.SaveChangesAsync();
-
-                    #endregion
-
-                    #region Add business units (Company X)
-
-                    #region Add business unit (Business unit X1)
-
-                    var businessUnitX1 = new BusinessUnit
-                    {
-                        Name = "Business Unit X1",
-                        Roles = GetBusinessUnitRoles(),
-                    };
-
-                    companyX.BusinessUnits = new List<BusinessUnit> { businessUnitX1 };
-
-                    await databaseContext.SaveChangesAsync();
-
-                    #region Add business unit users (Business unit X1)
-
-                    var businessUnitX1BusinessUnitAdminRole = businessUnitX1.Roles.FirstOrDefault(x => x.Name == businessUnitAdminRoleName);
-
-                    var businessUnitX1User1 = new BusinessUnitUser
-                    {
-                        UserId = businessUnitAdminUser.Id
-                    };
-
-                    businessUnitX1.BusinessUnitUsers = new List<BusinessUnitUser>() { businessUnitX1User1 };
-
-                    businessUnitAdminUser.CurrentCompanyId= businessUnitX1.CompanyId;
-                    businessUnitAdminUser.CurrentBusinessUnitId = businessUnitX1.Id;
-                    businessUnitAdminUser.UserRoles.Add(new UserRole
-                    {
-                        RoleId = businessUnitX1BusinessUnitAdminRole.Id
-                    });
-
-                    await databaseContext.SaveChangesAsync();
-
-                    #endregion
-
-                    #endregion
-
-                    #region Add business unit (Business unit X2)
-
-                    var businessUnitX2 = new BusinessUnit
-                    {
-                        Name = "Business Unit X2",
-                        Roles = GetBusinessUnitRoles(),
-                    };
-
-                    companyX.BusinessUnits.Add(businessUnitX2);
-
-                    await databaseContext.SaveChangesAsync();
-
-                    #endregion
-
-                    #region Add business unit (Business unit X3)
-
-                    var businessUnitX3 = new BusinessUnit
-                    {
-                        Name = "Business Unit X3",
-                        Roles = GetBusinessUnitRoles(),
-                    };
-
-                    companyX.BusinessUnits.Add(businessUnitX3);
-
-                    await databaseContext.SaveChangesAsync();
-
-                    #endregion
-
-                    #endregion
 
                     #endregion
 
@@ -192,193 +116,48 @@ namespace BPWA.DAL.Database
                     var companyY = new Company
                     {
                         Name = "Company Y",
+                        CompanyId = companyX.Id,
                         Roles = GetCompanyRoles()
                     };
 
                     await databaseContext.Companies.AddAsync(companyY);
-
-                    await databaseContext.SaveChangesAsync();
-
-                    #region Add business units (Company Y)
-
-                    #region Add business unit (Business unit Y1)
-
-                    var businessUnitY1 = new BusinessUnit
-                    {
-                        Name = "Business Unit Y1",
-                        Roles = GetBusinessUnitRoles(),
-                    };
-
-                    companyY.BusinessUnits = new List<BusinessUnit> { businessUnitY1 };
-
-                    await databaseContext.SaveChangesAsync();
-
-                    #region Add business unit users (Business unit Y1)
-
-                    var businessUnitY1BusinessUnitAdminRole = businessUnitY1.Roles.FirstOrDefault(x => x.Name == businessUnitAdminRoleName);
-
-                    var businessUnitY1User1 = new BusinessUnitUser
-                    {
-                        UserId = companyAdminUser.Id
-                    };
-                    var businessUnitY1User2 = new BusinessUnitUser
-                    {
-                        UserId = businessUnitAdminUser.Id
-                    };
-
-                    businessUnitY1.BusinessUnitUsers = new List<BusinessUnitUser>() 
-                    { 
-                        businessUnitY1User1,
-                        businessUnitY1User2,
-                    };
-
-                    businessUnitAdminUser.UserRoles.Add(new UserRole
-                    {
-                        RoleId = businessUnitY1BusinessUnitAdminRole.Id
-                    });
+                    companyY.CompanyId = companyX.Id;
 
                     await databaseContext.SaveChangesAsync();
 
                     #endregion
 
-                    #endregion
+                    #region Add company users (Company Y)
 
-                    #region Add business unit (Business unit Y2)
-
-                    var businessUnitY2 = new BusinessUnit
-                    {
-                        Name = "Business Unit Y2",
-                        Roles = GetBusinessUnitRoles(),
-                    };
-
-                    companyY.BusinessUnits.Add(businessUnitY2);
-
-                    await databaseContext.SaveChangesAsync();
-
-                    #region Add business unit users (Business unit Y2)
-
-                    var businessUnitY2User1 = new BusinessUnitUser
-                    {
-                        UserId = companyAdminUser.Id,
-                    };
-
-                    businessUnitY2.BusinessUnitUsers = new List<BusinessUnitUser>() { businessUnitY2User1 };
+                    companyYAdminUser.UserRoles.AddRange(
+                        companyY.Roles.Select(x => new UserRole
+                        {
+                            RoleId = x.Id,
+                            CompanyId = x.CompanyId
+                        }
+                    ));
+                    companyYAdminUser.CompanyId = companyY.Id;
+                    companyYAdminUser.CurrentCompanyId = companyY.Id;
 
                     await databaseContext.SaveChangesAsync();
-
-                    #endregion
-
-                    #endregion
-
-                    #region Add business unit (Business unit Y3)
-
-                    var businessUnitY3 = new BusinessUnit
-                    {
-                        Name = "Business Unit Y3",
-                        Roles = GetBusinessUnitRoles(),
-                    };
-
-                    companyY.BusinessUnits.Add(businessUnitY3);
-
-                    await databaseContext.SaveChangesAsync();
-
-                    #region Add business unit users (Business unit Y3)
-
-                    var businessUnitY3User1 = new BusinessUnitUser
-                    {
-                        UserId = companyAdminUser.Id,
-                    };
-
-                    businessUnitY3.BusinessUnitUsers = new List<BusinessUnitUser>() { businessUnitY3User1 };
-
-                    await databaseContext.SaveChangesAsync();
-
-                    #endregion
-
-                    #endregion
-
-                    #endregion
-
-                    #endregion
-
-                    #region Add company (Company Z)
-
-                    var companyZ = new Company
-                    {
-                        Name = "Company Z",
-                        Roles = GetCompanyRoles()
-                    };
-
-                    await databaseContext.Companies.AddAsync(companyZ);
-
-                    await databaseContext.SaveChangesAsync();
-
-                    #region Add business units (Company Z)
-
-                    #region Add business unit (Business unit Z1)
-
-                    var businessUnitZ1 = new BusinessUnit
-                    {
-                        Name = "Business Unit Z1",
-                        Roles = GetBusinessUnitRoles(),
-                    };
-
-                    companyZ.BusinessUnits = new List<BusinessUnit> { businessUnitZ1 };
-
-                    await databaseContext.SaveChangesAsync();
-
-                    #endregion
-
-                    #region Add business unit (Business unit Z2)
-
-                    var businessUnitZ2 = new BusinessUnit
-                    {
-                        Name = "Business Unit Z2",
-                        Roles = GetBusinessUnitRoles(),
-                    };
-
-                    companyZ.BusinessUnits.Add(businessUnitZ2);
-
-                    await databaseContext.SaveChangesAsync();
-
-                    #endregion
-
-                    #region Add business unit (Business unit Z3)
-
-                    var businessUnitZ3 = new BusinessUnit
-                    {
-                        Name = "Business Unit Z3",
-                        Roles = GetBusinessUnitRoles(),
-                    };
-
-                    companyZ.BusinessUnits.Add(businessUnitZ3);
-
-                    await databaseContext.SaveChangesAsync();
-
-                    #endregion
-
-                    #endregion
 
                     #endregion
                 }
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Console.WriteLine(e.Message);
+                databaseContext.ApplyOnBeforeSaveChanges();
+                throw;
             }
+
+            databaseContext.ApplyOnBeforeSaveChanges();
         }
 
-        private static async Task SeedRoles(IServiceProvider serviceProvider)
+        private static List<Role> GetRootCompanyRoles()
         {
-            var rolesService = serviceProvider.GetService<IRolesService>();
-
-            #region Superadmin
-
-            var superadminRole = (await rolesService.GetEntities(new RoleSearchModel { Name = superAdminRoleName }))?.FirstOrDefault();
-
-            if (superadminRole == null)
+            return new List<Role>
             {
-                superadminRole = new Role
+                new Role
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = superAdminRoleName,
@@ -391,12 +170,8 @@ namespace BPWA.DAL.Database
                             ClaimValue = AppClaims.Authorization.Administration.GodMode
                         }
                     }
-                };
-
-                await rolesService.Add(superadminRole);
-            }
-
-            #endregion Superadmin
+                }
+            };
         }
 
         private static List<Role> GetCompanyRoles()
@@ -406,35 +181,14 @@ namespace BPWA.DAL.Database
                 new Role
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = companyAdminRoleName,
-                    NormalizedName = companyAdminRoleName.ToUpper(),
+                    Name = adminRoleName,
+                    NormalizedName = adminRoleName.ToUpper(),
                     RoleClaims = new List<RoleClaim>
                     {
                         new RoleClaim
                         {
                             ClaimType = AppClaimsHelper.Authorization.Type,
                             ClaimValue = AppClaims.Authorization.Company.CompanyGodMode
-                        }
-                    }
-                }
-            };
-        }
-
-        private static List<Role> GetBusinessUnitRoles()
-        {
-            return new List<Role>
-            {
-                new Role
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = businessUnitAdminRoleName,
-                    NormalizedName = businessUnitAdminRoleName.ToUpper(),
-                    RoleClaims = new List<RoleClaim>
-                    {
-                        new RoleClaim
-                        {
-                            ClaimType = AppClaimsHelper.Authorization.Type,
-                            ClaimValue = AppClaims.Authorization.BusinessUnit.BusinessUnitGodMode
                         }
                     }
                 }
@@ -461,48 +215,46 @@ namespace BPWA.DAL.Database
                     LastName = "Admin",
                     Email = "super.admin@BPWA.com"
                 }, "demo");
-
-                await usersService.AddToRole(user, superAdminRoleName);
             }
 
             #endregion 
 
-            #region Company admin
+            #region Company X admin
 
             if (environment.IsDevelopment())
             {
-                var companyAdminUser = await databaseContext.Users.FirstOrDefaultAsync(x => x.UserName == companyAdminUserName);
+                var companyAdminUser = await databaseContext.Users.FirstOrDefaultAsync(x => x.UserName == companyXAdminUserName);
 
                 if (companyAdminUser == null)
                 {
                     var user = await usersService.AddEntity(new User
                     {
                         Id = Guid.NewGuid().ToString(),
-                        UserName = companyAdminUserName,
-                        FirstName = "Company",
+                        UserName = companyXAdminUserName,
+                        FirstName = "Company X",
                         LastName = "Admin",
-                        Email = "company.admin@BPWA.com",
+                        Email = "company.x.admin@BPWA.com",
                     }, "demo");
                 }
             }
 
-            #endregion 
+            #endregion
 
-            #region Business unit admin
+            #region Company Y admin
 
             if (environment.IsDevelopment())
             {
-                var businessUnitAdminUser = await databaseContext.Users.FirstOrDefaultAsync(x => x.UserName == businessUnitAdminUserName);
+                var subCompanyAdminUser = await databaseContext.Users.FirstOrDefaultAsync(x => x.UserName == companyYAdminUserName);
 
-                if (businessUnitAdminUser == null)
+                if (subCompanyAdminUser == null)
                 {
                     var user = await usersService.AddEntity(new User
                     {
                         Id = Guid.NewGuid().ToString(),
-                        UserName = businessUnitAdminUserName,
-                        FirstName = "BusinessUnit",
+                        UserName = companyYAdminUserName,
+                        FirstName = "Company Y",
                         LastName = "Admin",
-                        Email = "businessunit.admin@BPWA.com"
+                        Email = "company.y.admin@BPWA.com",
                     }, "demo");
                 }
             }

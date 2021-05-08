@@ -18,7 +18,7 @@ namespace BPWA.Common.Extensions
 
             var translationKeys = new List<string>();
 
-            foreach (var prop in element.GetType().GetProperties().Where(x => x.IsTranslatable() || x.PropertyType.IsClass))
+            foreach (var prop in element.GetType().GetProperties().Where(x => x.IsTranslatable()))
             {
                 var propValue = prop.GetValue(element);
 
@@ -43,7 +43,7 @@ namespace BPWA.Common.Extensions
             if (element == null)
                 return default(T);
 
-            foreach (var prop in element.GetType().GetProperties().Where(x => x.IsTranslatable() || x.PropertyType.IsClass))
+            foreach (var prop in element.GetType().GetProperties().Where(x => x.IsTranslatable()))
             {
                 var propValue = prop.GetValue(element);
 

@@ -241,6 +241,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All companies.
+        /// </summary>
+        public static string All_companies {
+            get {
+                return ResourceManager.GetString("All_companies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure.
         /// </summary>
         public static string Are_you_sure {
@@ -979,6 +988,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Groups management.
+        /// </summary>
+        public static string GroupsManagement {
+            get {
+                return ResourceManager.GetString("GroupsManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hi.
         /// </summary>
         public static string Hi {
@@ -1177,6 +1195,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Logs read.
+        /// </summary>
+        public static string LogsRead {
+            get {
+                return ResourceManager.GetString("LogsRead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Machine name.
         /// </summary>
         public static string MachineName {
@@ -1281,6 +1308,15 @@ namespace BPWA.Common.Resources {
         public static string Notifications {
             get {
                 return ResourceManager.GetString("Notifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notifications management.
+        /// </summary>
+        public static string NotificationsManagement {
+            get {
+                return ResourceManager.GetString("NotificationsManagement", resourceCulture);
             }
         }
         

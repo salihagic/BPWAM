@@ -1,13 +1,12 @@
-﻿using BPWA.Core.Entities;
+﻿using BPWA.Common.Extensions;
+using BPWA.Core.Entities;
 using BPWA.DAL.Services;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,11 +16,8 @@ namespace BPWA.DAL.Database
     {
         #region Tables
 
-        public DbSet<BusinessUnit> BusinessUnits { get; set; }
-        public DbSet<BusinessUnitUser> BusinessUnitUsers { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<Company> Companies { get; set; }
-        public DbSet<CompanyUser> CompanyUsers { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<CountryCurrency> CountryCurrencies { get; set; }
         public DbSet<CountryLanguage> CountryLanguages { get; set; }
@@ -38,61 +34,6 @@ namespace BPWA.DAL.Database
 
         #endregion
 
-        #region Configuration
-
-        void ConfigureBusinessUnit(ModelBuilder builder)
-        {
-            builder.Entity<BusinessUnit>()
-                .HasQueryFilter(x =>
-                (!_currentCompany.Id().HasValue || x.CompanyId == _currentCompany.Id())
-                && !x.IsDeleted);
-        }
-
-        void ConfigureBusinessUnitUser(ModelBuilder builder) { }
-
-        void ConfigureCity(ModelBuilder builder) { }
-
-        void ConfigureCompany(ModelBuilder builder) { }
-
-        void ConfigureCompanyUser(ModelBuilder builder) { }
-
-        void ConfigureCountry(ModelBuilder builder) { }
-
-        void ConfigureCountryCurrency(ModelBuilder builder) { }
-
-        void ConfigureCountryLanguage(ModelBuilder builder) { }
-
-        void ConfigureCurrency(ModelBuilder builder) { }
-
-        void ConfigureGroup(ModelBuilder builder) 
-        {
-            builder.Entity<Group>()
-                .HasQueryFilter(x =>
-                //Administration
-                (!_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue) ||
-                //Company
-                (_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue && x.CompanyId == _currentCompany.Id()) ||
-                //Business unit
-                (_currentCompany.Id().HasValue && _currentBusinessUnit.Id().HasValue && x.CompanyId == _currentCompany.Id() && x.BusinessUnitId == _currentBusinessUnit.Id())
-                && !x.IsDeleted);
-        }
-
-        void ConfigureGroupUser(ModelBuilder builder) { }
-
-        void ConfigureLanguage(ModelBuilder builder) { }
-
-        void ConfigureLog(ModelBuilder builder) { }
-
-        void ConfigureNotification(ModelBuilder builder) { }
-
-        void ConfigureNotificationGroup(ModelBuilder builder) { }
-
-        void ConfigureNotificationLog(ModelBuilder builder) { }
-
-        void ConfigureTicket(ModelBuilder builder) { }
-
-        void ConfigureTranslation(ModelBuilder builder) { }
-
         #region Identity
 
         void ConfigureRole(ModelBuilder builder)
@@ -101,22 +42,12 @@ namespace BPWA.DAL.Database
             builder.Entity<Role>().HasMany(x => x.RoleClaims).WithOne(x => x.Role).HasForeignKey(x => x.RoleId);
             builder.Entity<Role>().HasMany(x => x.UserRoles).WithOne(x => x.Role).HasForeignKey(x => x.RoleId);
 
-            //Removing unique index Name from Roles table and creating new index Name+CompanyId+BusinessUnitId
+            //Removing unique index Name from Roles table and creating new index Name+CompanyId
             builder.Entity<Role>(builder =>
             {
                 builder.Metadata.RemoveIndex(new[] { builder.Property(r => r.NormalizedName).Metadata });
-                builder.HasIndex(x => new { x.NormalizedName, x.CompanyId, x.BusinessUnitId }).HasName("RoleNameIndex").IsUnique();
+                builder.HasIndex(x => new { x.NormalizedName, x.CompanyId }).HasName("RoleNameIndex").IsUnique();
             });
-
-            builder.Entity<Role>()
-                .HasQueryFilter(x =>
-                //Administration
-                (!_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue)
-                //Company
-                || (_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue && x.CompanyId == _currentCompany.Id() && x.BusinessUnitId == null)
-                //Business unit
-                || (_currentCompany.Id().HasValue && _currentBusinessUnit.Id().HasValue && x.CompanyId == null && x.BusinessUnitId == _currentBusinessUnit.Id())
-                && !x.IsDeleted);
         }
 
         void ConfigureRoleClaim(ModelBuilder builder)
@@ -132,17 +63,6 @@ namespace BPWA.DAL.Database
             builder.Entity<User>().HasMany(x => x.UserClaims).WithOne(x => x.User).HasForeignKey(x => x.UserId);
             builder.Entity<User>().HasMany(x => x.UserLogins).WithOne(x => x.User).HasForeignKey(x => x.UserId);
             builder.Entity<User>().HasMany(x => x.UserTokens).WithOne(x => x.User).HasForeignKey(x => x.UserId);
-
-            //EF does not allow this for now (https://docs.microsoft.com/en-us/ef/core/querying/filters)
-            //builder.Entity<User>()
-            //    .HasQueryFilter(x =>
-            //    //Administration
-            //    (!_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue) ||
-            //    //Company
-            //    (_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue && (x.CompanyUsers.Any(y => y.CompanyId == _currentCompany.Id()) || x.BusinessUnitUsers.Any(y => y.BusinessUnit.CompanyId == _currentCompany.Id()))) ||
-            //    //Business unit
-            //    (_currentCompany.Id().HasValue && _currentBusinessUnit.Id().HasValue && x.BusinessUnitUsers.Any(y => y.BusinessUnit.Id == _currentBusinessUnit.Id()))
-            //    && !x.IsDeleted);
         }
 
         void ConfigureUserClaim(ModelBuilder builder)
@@ -162,17 +82,6 @@ namespace BPWA.DAL.Database
             builder.Entity<UserRole>().ToTable("UserRoles");
             builder.Entity<UserRole>().HasOne(x => x.User).WithMany(x => x.UserRoles).HasForeignKey(x => x.UserId);
             builder.Entity<UserRole>().HasOne(x => x.Role).WithMany(x => x.UserRoles).HasForeignKey(x => x.RoleId);
-
-            //EF does not allow this for now (https://docs.microsoft.com/en-us/ef/core/querying/filters)
-            //builder.Entity<UserRole>()
-            //    .HasQueryFilter(x =>
-            //    //Administration
-            //    (!_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue) ||
-            //    //Company
-            //    (_currentCompany.Id().HasValue && !_currentBusinessUnit.Id().HasValue && x.Role.CompanyId == _currentCompany.Id() && x.Role.BusinessUnitId == null) ||
-            //    //Business unit
-            //    (_currentCompany.Id().HasValue && _currentBusinessUnit.Id().HasValue && x.Role.CompanyId == null && x.Role.BusinessUnitId == _currentBusinessUnit.Id())
-            //    && !x.IsDeleted);
         }
 
         void ConfigureUserToken(ModelBuilder builder)
@@ -183,49 +92,22 @@ namespace BPWA.DAL.Database
 
         #endregion Identity
 
-        #endregion Configuration
-
         #region Helpers 
 
         private ICurrentCompany _currentCompany;
-        private ICurrentBusinessUnit _currentBusinessUnit;
 
         public DatabaseContext(
             DbContextOptions<DatabaseContext> options,
-            ICurrentCompany currentCompany,
-            ICurrentBusinessUnit currentBusinessUnit
+            ICurrentCompany currentCompany
             ) : base(options)
         {
             _currentCompany = currentCompany;
-            _currentBusinessUnit = currentBusinessUnit;
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            SetIsDeletedFilters(builder);
-
-            #region Configure specific models
-
-            ConfigureBusinessUnit(builder);
-            ConfigureBusinessUnitUser(builder);
-            ConfigureCity(builder);
-            ConfigureCompany(builder);
-            ConfigureCompanyUser(builder);
-            ConfigureCountry(builder);
-            ConfigureCountryCurrency(builder);
-            ConfigureCountryLanguage(builder);
-            ConfigureCurrency(builder);
-            ConfigureGroup(builder);
-            ConfigureGroupUser(builder);
-            ConfigureLanguage(builder);
-            ConfigureLog(builder);
-            ConfigureNotification(builder);
-            ConfigureNotificationGroup(builder);
-            ConfigureNotificationLog(builder);
-            ConfigureTicket(builder);
-            ConfigureTranslation(builder);
+            SetGlobalFilters(builder);
 
             #region Identity
 
@@ -238,38 +120,138 @@ namespace BPWA.DAL.Database
             ConfigureUserToken(builder);
 
             #endregion
-
-            #endregion
         }
 
-        #region IsDeleted
+        #region Filters
 
         /// <summary>
-        /// This method sets the x.IsDeleted == false filter to every query 
+        /// This method sets the filters to every query 
         /// on the entity that implements IBaseEntity interface
         /// Although this method sets the query filter, if you explicitly want
-        /// to add new filters like CompanyId or BussinessUnitId, you will
-        /// have to set IsDeleted filter by yourself for that entity
+        /// to add new filters, keep in mind that you are overriding these filters
         /// see more: https://github.com/dotnet/efcore/issues/10275
         /// </summary>
         /// <param name="builder"></param>
-        void SetIsDeletedFilters(ModelBuilder builder)
+        void SetGlobalFilters(ModelBuilder builder)
         {
-            foreach (var entity in builder.Model.GetEntityTypes().Where(x => typeof(IBaseEntity).IsAssignableFrom(x.ClrType)))
+            //IsDeleted filter for IBaseEntity entities
+            builder.ApplyGlobalFilters<IBaseSoftDeletableEntity>(entity => !entity.IsDeleted);
+
+            //More levels == worse performance
+            builder.ApplyGlobalFilters<IBaseSoftDeletableCompanyEntity>(entity =>
+            !entity.IsDeleted &&
+            //All
+            (_currentCompany.Id() == null ||
+            //Level 1 company
+            entity.CompanyId == _currentCompany.Id() ||
+            //Other levels
+            Set<Company>().IgnoreQueryFilters().Any(y => y.Id == entity.CompanyId && (
+                //Level 2 company
+                y.CompanyId == _currentCompany.Id() ||
+                //Level 3 company
+                y.Company.CompanyId == _currentCompany.Id() ||
+                //Level 4 company
+                y.Company.Company.CompanyId == _currentCompany.Id()
+            //...
+            ))
+            ));
+        }
+
+        #endregion
+
+        #region SaveChanges 
+
+        bool _executeOnBeforeSaveChanges = true;
+        public void IgnoreOnBeforeSaveChanges() { _executeOnBeforeSaveChanges = false; }
+        public void ApplyOnBeforeSaveChanges() { _executeOnBeforeSaveChanges = true; }
+
+        public override int SaveChanges()
+        {
+            OnBeforeSaveChanges();
+            return base.SaveChanges();
+        }
+
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            OnBeforeSaveChanges();
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            OnBeforeSaveChanges();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            OnBeforeSaveChanges();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        private void OnBeforeSaveChanges()
+        {
+            if (_executeOnBeforeSaveChanges)
             {
-                var parameter = Expression.Parameter(entity.ClrType);
+                var entities = ChangeTracker.Entries().Where(x => x.Entity is IBaseEntity || x.Entity is IBaseEntity<string>);
 
-                var propertyMethodInfo = typeof(EF).GetMethod("Property").MakeGenericMethod(typeof(bool));
-
-                #region IsDeleted
-
-                var isDeletedProperty = Expression.Call(propertyMethodInfo, parameter, Expression.Constant("IsDeleted"));
-                BinaryExpression isDeletedCompareExpression = Expression.MakeBinary(ExpressionType.Equal, isDeletedProperty, Expression.Constant(false));
-                var isDeletedLambda = Expression.Lambda(isDeletedCompareExpression, parameter);
-                builder.Entity(entity.ClrType).HasQueryFilter(isDeletedLambda);
-
-                #endregion
+                foreach (var entity in entities)
+                {
+                    if (entity.State == EntityState.Added)
+                        HandleEntityStateAdded(entity);
+                    else if (entity.State == EntityState.Modified)
+                        HandleEntityStateModified(entity);
+                    else if (entity.State == EntityState.Deleted)
+                        HandleEntityStateDeleted(entity);
+                }
             }
+        }
+
+        #region Handle EntityState Added
+
+        private void HandleEntityStateAdded(EntityEntry entity)
+        {
+            if (entity.Entity is IBaseAuditableEntity)
+            {
+                ((IBaseAuditableEntity)entity.Entity).CreatedAtUtc = DateTime.UtcNow;
+            }
+            if (entity.Entity is IBaseCompanyEntity)
+            {
+                ((IBaseCompanyEntity)entity.Entity).CompanyId = _currentCompany.Id();
+            }
+        }
+
+        #endregion
+
+        #region Handle EntityState Modified
+
+        private void HandleEntityStateModified(EntityEntry entity)
+        {
+            if (entity.Entity is IBaseAuditableEntity)
+            {
+                ((IBaseAuditableEntity)entity.Entity).ModifiedAtUtc = DateTime.UtcNow;
+            }
+        }
+
+        #endregion
+
+        #region Handle EntityState Deleted
+
+        private void HandleEntityStateDeleted(EntityEntry entity)
+        {
+            if (entity.Entity is IBaseSoftDeletableEntity)
+            {
+                entity.State = EntityState.Modified;
+                ((IBaseSoftDeletableEntity)entity.Entity).IsDeleted = true;
+            }
+            else if (entity.Entity is IBaseSoftDeletableAuditableEntity)
+            {
+                entity.State = EntityState.Modified;
+                ((IBaseSoftDeletableAuditableEntity)entity.Entity).IsDeleted = true;
+                ((IBaseSoftDeletableAuditableEntity)entity.Entity).DeletedAtUtc = DateTime.UtcNow;
+            }
+
+            HandleCascadeSoftDelete(entity);
         }
 
         /// <summary>
@@ -288,80 +270,22 @@ namespace BPWA.DAL.Database
                         {
                             if (dependentEntry != null)
                             {
-                                var idependentEntry = (IBaseEntity)dependentEntry;
-                                idependentEntry.IsDeleted = true;
+                                HandleEntityStateDeleted(((NavigationEntry)dependentEntry).EntityEntry);
                             }
                         }
                     }
                 }
                 else
                 {
-                    var dependentEntry = navigationEntry.CurrentValue;
-                    if (dependentEntry != null)
+                    if (navigationEntry.CurrentValue != null)
                     {
-                        var iNavigationEntry = (IBaseEntity)navigationEntry;
-                        iNavigationEntry.IsDeleted = true;
+                        HandleEntityStateDeleted(navigationEntry.EntityEntry);
                     }
                 }
             }
         }
 
-        #endregion IsDeleted
-
-        #region SaveChanges overrides
-
-        public override int SaveChanges()
-        {
-            AddTimestamps();
-            return base.SaveChanges();
-        }
-
-        public override int SaveChanges(bool acceptAllChangesOnSuccess)
-        {
-            AddTimestamps();
-            return base.SaveChanges(acceptAllChangesOnSuccess);
-        }
-
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            AddTimestamps();
-            return base.SaveChangesAsync(cancellationToken);
-        }
-
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
-        {
-            AddTimestamps();
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-        }
-
-        private void AddTimestamps()
-        {
-            var entities = ChangeTracker.Entries().Where(x => x.Entity is IBaseEntity);
-
-            foreach (var entity in entities)
-            {
-                var iEntity = (IBaseEntity)entity.Entity;
-
-                if (entity.State == EntityState.Added)
-                    iEntity.CreatedAtUtc = DateTime.UtcNow;
-                else if (entity.State == EntityState.Modified)
-                    iEntity.ModifiedAtUtc = DateTime.UtcNow;
-                else if (entity.State == EntityState.Deleted &&
-                    !HardDeleteTypes.Contains(entity.Entity.GetType()))
-                {
-                    entity.State = EntityState.Modified;
-                    iEntity.IsDeleted = true;
-                    iEntity.DeletedAtUtc = DateTime.UtcNow;
-                    HandleCascadeSoftDelete(entity);
-                }
-            }
-        }
-
-        List<Type> HardDeleteTypes => new List<Type>
-        {
-            typeof(UserRole),
-            typeof(Role),
-        };
+        #endregion 
 
         #endregion
 

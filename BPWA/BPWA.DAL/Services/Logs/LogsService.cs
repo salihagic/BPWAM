@@ -34,7 +34,8 @@ namespace BPWA.DAL.Services
             if (!string.IsNullOrEmpty(searchModel?.SearchTerm))
                 searchModel.SearchTerm = $"%{searchModel.SearchTerm}%";
 
-            return Query.WhereIf(!string.IsNullOrEmpty(searchModel?.SearchTerm), x => EF.Functions.ILike(x.Message, searchModel.SearchTerm));
+            return Query
+                .WhereIf(!string.IsNullOrEmpty(searchModel?.SearchTerm), x => EF.Functions.ILike(x.Message, searchModel.SearchTerm));
         }
 
         virtual public IQueryable<Log> BuildQueryOrdering(IQueryable<Log> Query, LogSearchModel searchModel = null)

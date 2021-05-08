@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace BPWA.Administration.Controllers
 {
-    [Authorize(Policy = AppClaims.Authorization.Administration.UsersManagement)]
+    [Authorize(Policy = AppClaims.Authorization.Company.UsersManagement)]
     public class UsersController :
         BaseCRUDController<
             User,

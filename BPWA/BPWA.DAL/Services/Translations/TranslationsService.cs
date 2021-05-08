@@ -130,7 +130,6 @@ namespace BPWA.DAL.Services
 
             var result = await base.UpdateEntity(entity);
 
-
             var translationCacheModel = new TranslationCacheModel
             {
                 Culture = entity.Culture,

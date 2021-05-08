@@ -13,7 +13,6 @@ namespace BPWA.Web.Services.Services
         Task<AccountUpdateModel> PrepareForUpdateAccount();
         Task UpdateAccount(AccountUpdateModel model);
         Task ToggleCurrentCompany(ToggleCurrentCompanyModel model);
-        Task ToggleCurrentBusinessUnit(ToggleCurrentBusinessUnitModel model);
         Task<ResetPasswordModel> PrepareForResetPassword(string userId, string resetPasswordToken);
         Task ResetPassword(ResetPasswordModel model);
         Task SignOut();

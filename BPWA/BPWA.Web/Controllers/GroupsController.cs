@@ -10,7 +10,7 @@ using NToastNotify;
 
 namespace BPWA.Administration.Controllers
 {
-    [Authorize(Policy = AppClaims.Authorization.Administration.GroupsManagement)]
+    [Authorize(Policy = AppClaims.Authorization.Company.GroupsManagement)]
     public class GroupsController :
         BaseCRUDController<
             Group,

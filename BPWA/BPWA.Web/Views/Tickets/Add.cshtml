@@ -1,6 +1,6 @@
 ﻿@inject IDropdownHelperService DropdownHelperService
 @model TicketAddModel
-@{ 
+@{
     Layout = null;
 }
 
@@ -19,16 +19,9 @@
     <div class="modal-body">
 
         <div class="col-md-12 row">
-            <div class="translatable_form_group col-md-12 form-group">
+            <div class="col-md-12 form-group">
                 <label>@Translations.Title</label>
-                <div class="input-group">
-                    <input asp-for="Title" class="translatable form-control m-input" placeholder="@Translations.Title">
-                    <div class="input-group-append">
-                        <button class="translation_btn btn btn-primary" type="button">
-                            <i class="flaticon-globe text-white"></i>
-                        </button>
-                    </div> 
-                </div>
+                <input asp-for="Title" class="form-control m-input" placeholder="@Translations.Title">
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="col-md-12 form-group">
@@ -36,16 +29,9 @@
                 <select asp-for="TicketType" id="modal_@nameof(TicketAddModel.TicketType)" class="form-control select2"></select>
                 <span asp-validation-for="TicketType" class="text-danger"></span>
             </div>
-            <div class="translatable_form_group col-md-12 form-group">
+            <div class="col-md-12 form-group">
                 <label>@Translations.Description</label>
-                <div class="input-group">
-                    <textarea asp-for="Description" rows="5" class="translatable form-control m-input" placeholder="@Translations.Description"></textarea>
-                    <div class="input-group-append">
-                        <button class="translation_btn btn btn-primary" type="button">
-                            <i class="flaticon-globe text-white"></i>
-                        </button>
-                    </div>
-                </div>
+                <textarea asp-for="Description" rows="5" class="form-control m-input" placeholder="@Translations.Description"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
         </div>
@@ -65,14 +51,6 @@
     Select2TicketTypes({
         element: '#modal_@nameof(TicketAddModel.TicketType)',
         selectedItem: '@Html.Raw(Model.TicketType.GetDropdownItemJson())'
-    });
-
-    Translatable({
-        element: '#@nameof(TicketAddModel.Title)'
-    });
-
-    Translatable({
-        element: '#@nameof(TicketAddModel.Description)'
     });
 
 </script>

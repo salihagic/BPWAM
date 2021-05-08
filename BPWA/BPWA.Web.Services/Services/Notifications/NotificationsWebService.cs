@@ -15,8 +15,9 @@ namespace BPWA.Web.Services.Services
         public NotificationsWebService(
             DatabaseContext databaseContext,
             IMapper mapper,
-            ICurrentUser currentUser
-            ) : base(databaseContext, mapper, currentUser)
+            ICurrentUser currentUser,
+            ITranslationsService translationsService
+            ) : base(databaseContext, mapper, currentUser, translationsService)
         {
         }
 
