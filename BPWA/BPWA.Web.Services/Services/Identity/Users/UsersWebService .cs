@@ -53,7 +53,7 @@ namespace BPWA.Web.Services.Services
                     .FirstOrDefaultAsync(x => x.Id == CurrentUser.Id());
 
                 var model = Mapper.Map<AccountUpdateModel>(user);
-
+                    
                 return model;
             }
             catch (Exception e)
