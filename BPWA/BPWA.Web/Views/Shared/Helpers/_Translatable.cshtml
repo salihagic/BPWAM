@@ -23,7 +23,9 @@
         $(formGroup).append(translationsWrapper);
 
         //Append translation inputs for currents input translations wrapper
-        @(Html.Raw(DropdownHelperService.GetSystemLanguages().GetDropdownItemsJson())).forEach(function (item, index) {
+        @(Html.Raw(DropdownHelperService
+        .GetSystemLanguages()
+        .GetDropdownItemsJson())).forEach(function (item, index) {
 
             var languageCulture = item.id;
             var languageName = item.text;

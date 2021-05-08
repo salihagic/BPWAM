@@ -17,6 +17,7 @@ namespace BPWA.DAL.Services
         public override IQueryable<City> BuildQueryConditions(IQueryable<City> query, CitySearchModel searchModel = null)
         {
             return base.BuildQueryConditions(query, searchModel)
+                       .WhereIf(!string.IsNullOrEmpty(searchModel?.SearchTerm), x => x.Name.ToLower().StartsWith(searchModel.SearchTerm.ToLower()))
                        .WhereIf(!string.IsNullOrEmpty(searchModel?.Name), x => x.Name.ToLower().StartsWith(searchModel.Name.ToLower()))
                        .WhereIf(searchModel?.CountryId != null, x => x.CountryId == searchModel.CountryId.Value);
         }

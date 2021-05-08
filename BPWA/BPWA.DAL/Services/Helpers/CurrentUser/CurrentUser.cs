@@ -14,7 +14,7 @@ namespace BPWA.DAL.Services
         public string LastName() => User.FindFirstValue(ClaimTypes.Surname);
         public string FullName() => $"{FirstName()} {LastName()}";
         public string TimezoneId() => User.FindFirstValue(AppClaims.Meta.TimezoneId);
-        public List<int> CompanyIds() => User.FindAll(AppClaims.Authorization.CompanyIds).Select(x => int.Parse(x.Value)).ToList();
+        public bool HasMultipleCompanies() => User.FindFirstValue(AppClaims.Meta.HasMultipleCompanies) != null;
         public int? CurrentCompanyId()
         {
             var companyIdClaim = User.FindFirstValue(AppClaims.Meta.CurrentCompanyId);
@@ -25,21 +25,11 @@ namespace BPWA.DAL.Services
             return int.Parse(companyIdClaim);
         }
         public string CurrentCompanyName() => User.FindFirstValue(AppClaims.Meta.CurrentCompanyName);
-        public List<int> BusinessUnitIds() => User.FindAll(AppClaims.Authorization.BusinessUnitIds).Select(x => int.Parse(x.Value)).ToList();
-        public int? CurrentBusinessUnitId()
-        {
-            var companyIdClaim = User.FindFirstValue(AppClaims.Meta.CurrentBusinessUnitId);
-
-            if (string.IsNullOrEmpty(companyIdClaim))
-                return null;
-
-            return int.Parse(companyIdClaim);
-        }
-        public string CurrentBusinessUnitName() => User.FindFirstValue(AppClaims.Meta.CurrentBusinessUnitName);
-        public bool HasAuthorizationClaim(string claim) => User.Claims.Any(x => x.Type == AppClaimsHelper.Authorization.Type && x.Value == claim) || HasGodMode();
-        public bool HasGodMode() => User.Claims.Any(x => x.Type == AppClaimsHelper.Authorization.Type && x.Value == AppClaims.Authorization.Administration.GodMode);
+        public bool HasAuthorizationClaim(string claim) => User.Claims.Any(x => x.Type == AppClaimsHelper.Authorization.Type && x.Value == claim);
+        public bool HasAdministrationAuthorizationClaim(string claim) => HasAuthorizationClaim(claim) || HasGodMode();
+        public bool HasCompanyAuthorizationClaim(string claim) => HasAuthorizationClaim(claim) || HasCompanyGodMode() || HasGodMode();
+        public bool HasGodMode() => HasAuthorizationClaim(AppClaims.Authorization.Administration.GodMode);
         public bool HasCompanyGodMode() => HasAuthorizationClaim(AppClaims.Authorization.Company.CompanyGodMode);
-        public bool HasBusinessUnitGodMode() => HasAuthorizationClaim(AppClaims.Authorization.BusinessUnit.BusinessUnitGodMode);
         public List<string> Configuration() => User.FindAll(x => x.Type == AppClaimsHelper.Configuration.Type).Select(x => x.Value).ToList();
 
         private readonly IHttpContextAccessor _httpContextAccessor;

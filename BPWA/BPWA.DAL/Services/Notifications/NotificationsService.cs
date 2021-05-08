@@ -12,15 +12,17 @@ using System.Threading.Tasks;
 
 namespace BPWA.DAL.Services
 {
-    public class NotificationsService : BaseCRUDService<Notification, NotificationSearchModel, NotificationDTO>, INotificationsService
+    public class NotificationsService : 
+        BaseTranslatableCRUDService<Notification, NotificationSearchModel, NotificationDTO>, INotificationsService
     {
         protected ICurrentUser _currentUser { get; }
 
         public NotificationsService(
             DatabaseContext databaseContext,
             IMapper mapper,
-            ICurrentUser currentUser
-            ) : base(databaseContext, mapper)
+            ICurrentUser currentUser,
+            ITranslationsService translationsService
+            ) : base(databaseContext, mapper, translationsService)
         {
             _currentUser = currentUser;
         }
@@ -33,6 +35,7 @@ namespace BPWA.DAL.Services
                 searchModel.Description = searchModel.Description.ToLower();
 
             return base.BuildQueryConditions(Query, searchModel)
+                .WhereIf(!string.IsNullOrEmpty(searchModel?.SearchTerm), x => x.Title.ToLower().StartsWith(searchModel.SearchTerm.ToLower()) || x.Description.ToLower().StartsWith(searchModel.SearchTerm.ToLower()))
                        .WhereIf(searchModel?.Title.IsNotEmpty(), x => x.Title.ToLower().Contains(searchModel.Title))
                        .WhereIf(searchModel?.Description.IsNotEmpty(), x => x.Description.ToLower().Contains(searchModel.Description))
                        .WhereIf(searchModel?.NotificationType.HasValue, x => x.NotificationType == searchModel.NotificationType)
@@ -66,7 +69,7 @@ namespace BPWA.DAL.Services
 
                 var notificationDTOs = Mapper.Map<List<NotificationDTO>>(notifications);
 
-                return notificationDTOs;
+                return await TranslationsService.Translate(notificationDTOs);
             }
             catch (Exception e)
             {
@@ -97,7 +100,7 @@ namespace BPWA.DAL.Services
 
                 var notificationDTOs = Mapper.Map<List<NotificationDTO>>(notifications);
 
-                return notificationDTOs;
+                return await TranslationsService.Translate(notificationDTOs);
             }
             catch (Exception e)
             {
@@ -128,7 +131,7 @@ namespace BPWA.DAL.Services
 
                 var notificationDTOs = Mapper.Map<List<NotificationDTO>>(notifications);
 
-                return notificationDTOs;
+                return await TranslationsService.Translate(notificationDTOs);
             }
             catch (Exception e)
             {
@@ -159,7 +162,7 @@ namespace BPWA.DAL.Services
 
                 var notificationDTOs = Mapper.Map<List<NotificationDTO>>(notifications);
 
-                return notificationDTOs;
+                return await TranslationsService.Translate(notificationDTOs);
             }
             catch (Exception e)
             {

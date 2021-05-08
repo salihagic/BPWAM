@@ -16,7 +16,6 @@
         #region Items
 
         bool ShowToggleCurrentCompanyItem();
-        bool ShowToggleCurrentBusinessUnitItem();
         bool ShowCompaniesItem();
         bool ShowRolesItem();
         bool ShowUsersItem();
@@ -46,32 +45,11 @@
 
         #region Items
 
-        bool ShowBusinessUnitsItem();
+        bool ShowCompanyCompaniesItem();
         bool ShowCompanyRolesItem();
         bool ShowCompanyUsersItem();
         bool ShowCompanyNotificationsItem();
         bool ShowCompanyGroupsItem();
-
-        #endregion
-
-        #endregion
-
-        #region Business unit
-
-        #region Sections
-
-        bool ShowBusinessUnitSection();
-        bool ShowBusinessUnitAuthSection();
-        bool ShowBusinessUnitNotificationsSection();
-
-        #endregion 
-
-        #region Items
-
-        bool ShowBusinessUnitRolesItem();
-        bool ShowBusinessUnitUsersItem();
-        bool ShowBusinessUnitNotificationsItem();
-        bool ShowBusinessUnitGroupsItem();
 
         #endregion
 

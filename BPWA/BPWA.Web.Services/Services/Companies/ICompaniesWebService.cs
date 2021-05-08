@@ -11,6 +11,6 @@ namespace BPWA.Web.Services.Services
         IBaseCRUDWebService<Company, CompanySearchModel, CompanyDTO, CompanyAddModel, CompanyUpdateModel>,
         ICompaniesService
     {
-        Task<List<CompanyDTO>> GetForCurrentUser();
+        Task<List<CompanyDTO>> GetForToggle(CompanySearchModel searchModel);
     }
 }

@@ -2,13 +2,12 @@
 
 namespace BPWA.Core.Entities
 {
-    public class Company : BaseEntity, IBaseEntity
+    public class Company : BaseEntity
     {
         public string Name { get; set; }
 
         public List<User> Users { get; set; }
-        public List<CompanyUser> CompanyUsers { get; set; }
         public List<Role> Roles { get; set; }
-        public List<BusinessUnit> BusinessUnits { get; set; }
+        public List<Company> Subcompanies { get; set; }
     }
 }

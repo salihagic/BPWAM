@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace BPWA.Administration.Controllers
 {
-    [Authorize(Policy = AppClaims.Authorization.Administration.TicketsManagement)]
+    [Authorize(Policy = AppClaims.Authorization.Company.TicketsManagement)]
     public class TicketsController :
         BaseCRUDController<
             Ticket,

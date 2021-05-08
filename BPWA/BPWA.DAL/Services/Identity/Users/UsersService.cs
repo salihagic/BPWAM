@@ -56,7 +56,10 @@ namespace BPWA.DAL.Services
 
         public async Task<User> AddEntity(User entity, string password)
         {
-            var result = await UserManager.CreateAsync(entity, password);
+            await DatabaseContext.Users.AddAsync(entity);
+            await DatabaseContext.SaveChangesAsync();
+
+            var result = await UserManager.AddPasswordAsync(entity, password);
 
             if (!result.Succeeded)
                 throw new ValidationException(result.Errors.Select(x => x.Description).ToArray());
@@ -162,15 +165,13 @@ namespace BPWA.DAL.Services
                 return Query;
 
             return Query
-
+                .WhereIf(!string.IsNullOrEmpty(searchModel?.SearchTerm), x => x.UserName.ToLower().StartsWith(searchModel.SearchTerm.ToLower()) || x.Email.ToLower().StartsWith(searchModel.SearchTerm.ToLower()) || x.FirstName.ToLower().StartsWith(searchModel.SearchTerm.ToLower()) || x.LastName.ToLower().StartsWith(searchModel.SearchTerm.ToLower()))
                 .WhereIf(!string.IsNullOrEmpty(searchModel.UserName), x => x.UserName.ToLower().StartsWith(searchModel.UserName.ToLower()))
                 .WhereIf(!string.IsNullOrEmpty(searchModel.Email), x => x.Email.ToLower().StartsWith(searchModel.Email.ToLower()))
                 .WhereIf(!string.IsNullOrEmpty(searchModel.FirstName), x => x.FirstName.ToLower().StartsWith(searchModel.FirstName.ToLower()))
                 .WhereIf(!string.IsNullOrEmpty(searchModel.LastName), x => x.LastName.ToLower().StartsWith(searchModel.LastName.ToLower()))
                 .WhereIf(searchModel.CityIds.IsNotEmpty(), x => searchModel.CityIds.Contains(x.CityId.GetValueOrDefault()))
-                .WhereIf(searchModel.RoleIds.IsNotEmpty(), x => searchModel.RoleIds.Any(y => x.UserRoles.Any(z => z.RoleId == y)))
-                .WhereIf(searchModel.CompanyIds.IsNotEmpty(), x => searchModel.CompanyIds.Any(y => x.CompanyUsers.Any(z => z.CompanyId == y)))
-                .WhereIf(searchModel.BusinessUnitIds.IsNotEmpty(), x => searchModel.BusinessUnitIds.Any(y => x.BusinessUnitUsers.Any(z => z.BusinessUnitId == y)));
+                .WhereIf(searchModel.RoleIds.IsNotEmpty(), x => searchModel.RoleIds.Any(y => x.UserRoles.Any(z => z.RoleId == y)));
         }
 
         virtual public IQueryable<User> BuildIncludesById(string id, IQueryable<User> query) => query;
@@ -309,7 +310,7 @@ namespace BPWA.DAL.Services
             }
             catch (Exception e)
             {
-                throw new Exception("Failed to add entity");
+                throw e;
             }
         }
 
@@ -363,8 +364,6 @@ namespace BPWA.DAL.Services
         public Task<User> IncludeRelatedEntitiesToDelete(User entity)
         {
             return DatabaseContext.Users
-                .Include(x => x.CompanyUsers)
-                .Include(x => x.BusinessUnitUsers)
                 .Include(x => x.GroupUsers)
                 .FirstOrDefaultAsync(x => x.Id == entity.Id);
         }

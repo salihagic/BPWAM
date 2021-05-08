@@ -23,20 +23,15 @@ namespace BPWA.Web.Services.Services
         {
             var claims = new List<string>();
 
-            if (_currentUser.HasGodMode() || _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Administration.RolesManagement))
+            if (_currentUser.HasGodMode() || 
+                (_currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.RolesManagement) && !_currentUser.CurrentCompanyId().HasValue))
             {
                 claims.AddRange(AppClaimsHelper.Authorization.Administration.All);
                 claims.AddRange(AppClaimsHelper.Authorization.Company.All);
-                claims.AddRange(AppClaimsHelper.Authorization.BusinessUnit.All);
             }
-            else if (_currentUser.HasCompanyGodMode() || _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.CompanyRolesManagement))
+            else if (_currentUser.HasCompanyGodMode() || _currentUser.HasAuthorizationClaim(AppClaims.Authorization.Company.RolesManagement))
             {
                 claims.AddRange(AppClaimsHelper.Authorization.Company.All);
-                claims.AddRange(AppClaimsHelper.Authorization.BusinessUnit.All);
-            }
-            else if (_currentUser.HasBusinessUnitGodMode() || _currentUser.HasAuthorizationClaim(AppClaims.Authorization.BusinessUnit.BusinessUnitRolesManagement))
-            {
-                claims.AddRange(AppClaimsHelper.Authorization.BusinessUnit.All);
             }
 
             return claims.Select(x => new DropdownItem<string>

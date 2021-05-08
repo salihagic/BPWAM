@@ -32,13 +32,4 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\Base\BaseRead\" />
-    <Folder Include="Services\Base\BaseCRUD\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Services\Helpers\CurrentBusinessUnit\ICurrentCompany.cs~RF1bf7a04.TMP" />
-  </ItemGroup>
-
 </Project>

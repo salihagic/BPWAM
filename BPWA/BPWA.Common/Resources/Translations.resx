@@ -786,4 +786,16 @@
   <data name="User" xml:space="preserve">
     <value>User</value>
   </data>
+  <data name="All_companies" xml:space="preserve">
+    <value>All companies</value>
+  </data>
+  <data name="GroupsManagement" xml:space="preserve">
+    <value>Groups management</value>
+  </data>
+  <data name="LogsRead" xml:space="preserve">
+    <value>Logs read</value>
+  </data>
+  <data name="NotificationsManagement" xml:space="preserve">
+    <value>Notifications management</value>
+  </data>
 </root>

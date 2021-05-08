@@ -4,6 +4,7 @@ namespace BPWA.DAL.Models
 {
     public class UserSearchModel : BaseSearchModel
     {
+        public string SearchTerm { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
         public string FirstName { get; set; }
