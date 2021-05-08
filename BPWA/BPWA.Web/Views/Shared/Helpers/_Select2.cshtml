@@ -58,25 +58,10 @@
             map: (x) => {
                 return {
                     id: x.id,
-                    text: x.name
+                    text: x.text
                 };
             },
             placeholder: '@Translations.Select_company',
-            ...options
-        });
-    }
-
-    function Select2AjaxCurrentUserBusinessUnits(options) {
-        Select2Ajax({
-            element: options.element,
-            url: '@Url.Action("CurrentUserBusinessUnitsDropdown", "Account")',
-            map: (x) => {
-                return {
-                    id: x.id,
-                    text: x.name
-                };
-            },
-            placeholder: '@Translations.Select_business_unit',
             ...options
         });
     }

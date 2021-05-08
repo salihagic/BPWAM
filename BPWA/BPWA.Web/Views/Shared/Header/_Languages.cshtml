@@ -1,0 +1,33 @@
+﻿@{
+    Layout = null;
+    var currentCulture = TranslationOptions.SupportedLanguages.FirstOrDefault(x => x.CultureInfo.Name == System.Threading.Thread.CurrentThread.CurrentCulture.Name);
+}
+
+<!--begin: Language bar -->
+<div class="kt-header__topbar-item kt-header__topbar-item--langs">
+    <div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="10px,0px">
+        <span class="kt-header__topbar-icon">
+            <img class="" src="@currentCulture.IconPath" alt="" />
+        </span>
+    </div>
+    <div class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround">
+        <ul class="kt-nav kt-margin-t-10 kt-margin-b-10">
+            @foreach (var language in TranslationOptions.SupportedLanguages)
+            {
+                var url = Url.Action("ChangeLanguage", "Home", new { culture = language.CultureInfo.Name, returnUrl = Url.Action() });
+                var isSelected = currentCulture.Name == language.CultureInfo.Name;
+
+                <li class="kt-nav__item @(isSelected ? "kt-nav__item--active" : "")">
+                    <a href="@url" class="kt-nav__link">
+                        <span class="kt-nav__link-icon">
+                            <img src="@language.IconPath" alt="" />
+                        </span>
+                        <span class="kt-nav__link-text">@language.Name</span>
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+<!--end: Language bar -->

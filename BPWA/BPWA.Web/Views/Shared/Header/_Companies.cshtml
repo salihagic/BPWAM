@@ -1,0 +1,35 @@
+﻿@inject ICurrentUser CurrentUser
+@{
+    Layout = null;
+    var currentCulture = TranslationOptions.SupportedLanguages.FirstOrDefault(x => x.CultureInfo.Name == System.Threading.Thread.CurrentThread.CurrentCulture.Name);
+}
+
+<!--begin: Companies bar -->
+<div class="kt-header__topbar-item kt-header__topbar-item--langs">
+    <div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="10px,0px">
+        <form asp-controller="Account"
+              asp-action="ToggleCurrentCompany"
+              method="POST"
+              class="current_company_form">
+            <select name="CompanyId" id="Global_CurrentCompanyId" class="form-control select2" style="min-width: 150px"></select>
+        </form>
+    </div>
+</div>
+
+<!--end: Companies bar -->
+
+<script>
+
+    Select2AjaxCurrentUserCompanies({
+        element: '#Global_CurrentCompanyId',
+        placeholder: 'All companies',
+        selectedItem: '@Html.Raw(CurrentUser.CurrentCompanyName().HasValue() ? (new DropdownItem<int?> { Id = CurrentUser.CurrentCompanyId(), Text = CurrentUser.CurrentCompanyName() }).GetDropdownItemJson() : "")',
+        onChange: function (element) {
+            $('.current_company_form')[0].submit();
+        }
+    });
+
+    var form = $('.current_company_form')[0];
+    $(form).attr('action', `${$(form).attr('action')}?returnUrl=${window.location.pathname}`);
+
+</script>

@@ -109,7 +109,8 @@ namespace BPWA.Web.Services.Services
                 .IgnoreQueryFilters()
                 .Any(x => x.CompanyId == user.CompanyId);
 
-            claims.Add(new Claim(AppClaims.Meta.HasMultipleCompanies, hasMultipleCompanies.ToString()));
+            if(hasMultipleCompanies)
+                claims.Add(new Claim(AppClaims.Meta.HasMultipleCompanies, hasMultipleCompanies.ToString()));
         }
     }
 }

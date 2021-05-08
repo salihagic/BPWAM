@@ -1,4 +1,5 @@
 ﻿using BPWA.Common.Resources;
+using BPWA.DAL.Services;
 using BPWA.Web.Helpers.Filters;
 using BPWA.Web.Services.Models;
 using BPWA.Web.Services.Services;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BPWA.Controllers
@@ -16,16 +18,19 @@ namespace BPWA.Controllers
         private readonly IUsersWebService _usersWebService;
         private readonly ICompaniesWebService _companiesWebService;
         private IToastNotification _toast;
+        private ICurrentUserBaseCompany _currentUserBaseCompany;
 
         public AccountController(
             IUsersWebService usersWebService,
             ICompaniesWebService companiesWebService,
-            IToastNotification toast
+            IToastNotification toast,
+            ICurrentUserBaseCompany currentUserBaseCompany
             )
         {
             _usersWebService = usersWebService;
             _companiesWebService = companiesWebService;
             _toast = toast;
+            _currentUserBaseCompany = currentUserBaseCompany;
         }
 
         [HttpPost]
@@ -79,6 +84,20 @@ namespace BPWA.Controllers
         public virtual async Task<IActionResult> CurrentUserCompaniesDropdown()
         {
             var result = await _companiesWebService.GetForToggle();
+            var dropdownItems = result.Select(x => new DropdownItem
+            {
+                Id = x.Id,
+                Text = x.Name,
+            }).ToList();
+
+            if (!_currentUserBaseCompany.Id().HasValue)
+            {
+                dropdownItems.Insert(0, new DropdownItem
+                {
+                    Id = 0,
+                    Text = Translations.All_companies
+                });
+            }
 
             return Ok(new
             {
@@ -86,7 +105,7 @@ namespace BPWA.Controllers
                 {
                     more = false,
                 },
-                results = result
+                results = dropdownItems
             });
         }
 

@@ -14,7 +14,7 @@ namespace BPWA.DAL.Services
         public string LastName() => User.FindFirstValue(ClaimTypes.Surname);
         public string FullName() => $"{FirstName()} {LastName()}";
         public string TimezoneId() => User.FindFirstValue(AppClaims.Meta.TimezoneId);
-        public bool HasMultipleCompanies() => User.FindAll(AppClaims.Meta.HasMultipleCompanies) != null;
+        public bool HasMultipleCompanies() => User.FindFirstValue(AppClaims.Meta.HasMultipleCompanies) != null;
         public int? CurrentCompanyId()
         {
             var companyIdClaim = User.FindFirstValue(AppClaims.Meta.CurrentCompanyId);

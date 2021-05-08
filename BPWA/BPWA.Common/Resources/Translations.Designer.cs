@@ -241,6 +241,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All companies.
+        /// </summary>
+        public static string All_companies {
+            get {
+                return ResourceManager.GetString("All_companies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure.
         /// </summary>
         public static string Are_you_sure {

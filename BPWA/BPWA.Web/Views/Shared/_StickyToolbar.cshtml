@@ -20,16 +20,5 @@
             <i class="flaticon2-digital-marketing"></i>
         </a>
     </li>
-    @if (viewHelperService.ShowToggleCurrentCompanyItem())
-    {
-        <li class="kt-sticky-toolbar__item kt-sticky-toolbar__item--warning"
-            data-toggle="kt-tooltip"
-            title="Change current company: @(currentUser.CurrentCompanyName() ?? Translations.All)"
-            data-placement="right">
-            <a href="@Url.Action("ToggleCurrentCompany", "Account")" class="open_modal_button">
-                <i class="flaticon-grid-menu"></i>
-            </a>
-        </li>
-    }
 </ul>
 <!-- end::Sticky Toolbar -->

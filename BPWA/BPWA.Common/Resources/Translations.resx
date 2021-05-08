@@ -786,6 +786,9 @@
   <data name="User" xml:space="preserve">
     <value>User</value>
   </data>
+  <data name="All_companies" xml:space="preserve">
+    <value>All companies</value>
+  </data>
   <data name="GroupsManagement" xml:space="preserve">
     <value>Groups management</value>
   </data>

@@ -150,6 +150,9 @@ namespace BPWA.Web.Services.Services
 
             var currentUser = await GetEntityByIdWithoutQueryFilters(CurrentUser.Id());
 
+            if (model.CompanyId == 0)
+                model.CompanyId = currentUser.CompanyId;
+
             try
             {
                 currentUser.CurrentCompanyId = model.CompanyId;
