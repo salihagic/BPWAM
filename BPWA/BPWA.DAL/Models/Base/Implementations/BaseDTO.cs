@@ -5,16 +5,20 @@ namespace BPWA.DAL.Models
     public class BaseDTO : 
         BaseDTO<int>,
         IBaseDTO,
-        IBaseSoftDeletableDTO,
+        IBaseCompanyDTO,
         IBaseAuditableDTO,
-        IBaseCompanyDTO
+        IBaseSoftDeletableDTO,
+        IBaseSoftDeletableCompanyDTO,
+        IBaseSoftDeletableAuditableDTO
     { }
 
-    public class BaseDTO<TKey> : 
+    public class BaseDTO<TKey> :
         IBaseDTO<TKey>,
-        IBaseSoftDeletableDTO,
+        IBaseCompanyDTO,
         IBaseAuditableDTO,
-        IBaseCompanyDTO
+        IBaseSoftDeletableDTO,
+        IBaseSoftDeletableCompanyDTO,
+        IBaseSoftDeletableAuditableDTO
     {
         public TKey Id { get; set; }
         public DateTime CreatedAtUtc { get; set; }

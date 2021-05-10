@@ -70,6 +70,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to About us.
+        /// </summary>
+        public static string About_us {
+            get {
+                return ResourceManager.GetString("About_us", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Account locked out.
         /// </summary>
         public static string Account_locked_out {
@@ -246,6 +255,15 @@ namespace BPWA.Common.Resources {
         public static string All_companies {
             get {
                 return ResourceManager.GetString("All_companies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Api version.
+        /// </summary>
+        public static string Api_version {
+            get {
+                return ResourceManager.GetString("Api_version", resourceCulture);
             }
         }
         
@@ -525,6 +543,15 @@ namespace BPWA.Common.Resources {
         public static string Concurrency_failure {
             get {
                 return ResourceManager.GetString("Concurrency_failure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configuration.
+        /// </summary>
+        public static string Configuration {
+            get {
+                return ResourceManager.GetString("Configuration", resourceCulture);
             }
         }
         
@@ -1218,6 +1245,15 @@ namespace BPWA.Common.Resources {
         public static string Message {
             get {
                 return ResourceManager.GetString("Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mobile version.
+        /// </summary>
+        public static string Mobile_version {
+            get {
+                return ResourceManager.GetString("Mobile_version", resourceCulture);
             }
         }
         
@@ -2073,6 +2109,15 @@ namespace BPWA.Common.Resources {
         public static string Warning {
             get {
                 return ResourceManager.GetString("Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web version.
+        /// </summary>
+        public static string Web_version {
+            get {
+                return ResourceManager.GetString("Web_version", resourceCulture);
             }
         }
         

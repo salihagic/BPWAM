@@ -2,7 +2,9 @@
 
 namespace BPWA.DAL.Models
 {
-    public class TranslationDTO : BaseDTO, IBaseDTO
+    public class TranslationDTO : 
+        BaseDTO, 
+        IBaseDTO
     {
         public string Culture { get; set; }
         public string Language => TranslationOptions.GetByCulture(Culture)?.Name;

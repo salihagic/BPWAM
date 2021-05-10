@@ -1,6 +1,8 @@
 ﻿namespace BPWA.DAL.Models
 {
-    public class CurrencyDTO : BaseDTO, IBaseDTO
+    public class CurrencyDTO :
+        BaseSoftDeletableDTO,
+        IBaseDTO
     {
         public string Code { get; set; }
         public string Symbol { get; set; }

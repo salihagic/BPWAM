@@ -18,6 +18,7 @@ namespace BPWA.DAL.Database
 
         public DbSet<City> Cities { get; set; }
         public DbSet<Company> Companies { get; set; }
+        public DbSet<Configuration> Configuration { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<CountryCurrency> CountryCurrencies { get; set; }
         public DbSet<CountryLanguage> CountryLanguages { get; set; }

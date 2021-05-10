@@ -2,7 +2,9 @@
 
 namespace BPWA.DAL.Models
 {
-    public class CompanyDTO : BaseDTO, IBaseDTO
+    public class CompanyDTO :
+        BaseDTO,
+        IBaseDTO
     {
         public string Name { get; set; }
 

@@ -12,6 +12,7 @@ namespace BPWA.Web.Configuration
         {
             services.AddScoped<ICitiesWebService, CitiesWebService>()
                     .AddScoped<ICompaniesWebService, CompaniesWebService>()
+                    .AddScoped<IConfigurationWebService, ConfigurationWebService>()
                     .AddScoped<ICountriesWebService, CountriesWebService>()
                     .AddScoped<ICurrenciesWebService, CurrenciesWebService>()
                     .AddScoped<IGroupsWebService, GroupsWebService>()

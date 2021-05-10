@@ -1,6 +1,9 @@
 ﻿namespace BPWA.DAL.Models
 {
-    public class CityDTO : BaseDTO, IBaseDTO
+    public class CityDTO : 
+        BaseSoftDeletableDTO,
+        IBaseSoftDeletableDTO,
+        IBaseDTO
     {
         public string Name { get; set; }
         public double Longitude { get; set; }

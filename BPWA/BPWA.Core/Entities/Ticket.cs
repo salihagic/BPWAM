@@ -1,5 +1,4 @@
-﻿using BPWA.Common.Attributes;
-using BPWA.Common.Enumerations;
+﻿using BPWA.Common.Enumerations;
 
 namespace BPWA.Core.Entities
 {

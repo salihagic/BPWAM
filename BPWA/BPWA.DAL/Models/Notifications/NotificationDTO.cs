@@ -5,7 +5,9 @@ using System.Collections.Generic;
 
 namespace BPWA.DAL.Models
 {
-    public class NotificationDTO : BaseDTO, IBaseDTO
+    public class NotificationDTO : 
+        BaseDTO, 
+        IBaseDTO
     {
         [Translatable]
         public string Title { get; set; }

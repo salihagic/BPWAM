@@ -46,6 +46,7 @@ namespace BPWA.DAL.Database
                 await SeedUsers(serviceProvider);
                 await SeedCompanies(serviceProvider);
                 //await SeedGeolocations(serviceProvider);
+                await SeedConfiguration(serviceProvider);
             }
         }
 
@@ -349,6 +350,23 @@ namespace BPWA.DAL.Database
             catch (Exception e)
             {
 
+            }
+        }
+
+        static async Task SeedConfiguration(IServiceProvider serviceProvider)
+        {
+            var databaseContext = serviceProvider.GetRequiredService<DatabaseContext>();
+
+            if (!databaseContext.Configuration.Any())
+            {
+                await databaseContext.Configuration.AddAsync(new Configuration
+                {
+                    ApiVersion = "1",
+                    WebVersion = "1",
+                    MobileVersion = "1",
+                });
+
+                await databaseContext.SaveChangesAsync();
             }
         }
 

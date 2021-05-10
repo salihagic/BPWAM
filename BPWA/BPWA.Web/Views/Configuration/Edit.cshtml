@@ -1,0 +1,67 @@
+﻿@model ConfigurationUpdateModel
+
+<div class="kt-portlet kt-portlet--mobile col-lg-12">
+    <form asp-controller="Configuration"
+          asp-action="Edit"
+          method="POST"
+          class="kt-form kt-form--fit">
+
+        <div class="kt-portlet__head kt-portlet__head--lg">
+            <div class="kt-portlet__head-label">
+                <span class="kt-portlet__head-icon">
+                    <i class="kt-font-brand kt-menu__link-icon flaticon-exclamation-1"></i>
+                </span>
+                <h5 class="modal-title">
+                    @Translations.Configuration
+                </h5>
+            </div>
+        </div>
+
+        <div class="modal-body">
+
+            <div class="col-md-12 row">
+                <div class="col-md-4 form-group">
+                    <label>@Translations.Api_version</label>
+                    <input asp-for="ApiVersion" class="form-control m-input" placeholder="@Translations.Api_version">
+                    <span asp-validation-for="ApiVersion" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 form-group">
+                    <label>@Translations.Web_version</label>
+                    <input asp-for="WebVersion" class="form-control m-input" placeholder="@Translations.Web_version">
+                    <span asp-validation-for="WebVersion" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 form-group">
+                    <label>@Translations.Mobile_version</label>
+                    <input asp-for="MobileVersion" class="form-control m-input" placeholder="@Translations.Mobile_version">
+                    <span asp-validation-for="MobileVersion" class="text-danger"></span>
+                </div>
+                <div class="translatable_form_group col-md-12 form-group">
+                    <label>@Translations.About_us</label>
+                    <div class="input-group">
+                        <textarea asp-for="AboutUs" rows="5" class="translatable form-control m-input" placeholder="@Translations.About_us"></textarea>
+                        <div class="input-group-append">
+                            <button class="translation_btn btn btn-primary" type="button">
+                                <i class="flaticon-globe text-white"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <span asp-validation-for="AboutUs" class="text-danger"></span>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-primary" type="submit">@Translations.Save</button>
+        </div>
+
+    </form>
+</div>
+
+<script>
+
+    Translatable({
+        element: '#@nameof(ConfigurationUpdateModel.AboutUs)'
+    });
+
+</script>

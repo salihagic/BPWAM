@@ -798,4 +798,19 @@
   <data name="NotificationsManagement" xml:space="preserve">
     <value>Notifications management</value>
   </data>
+  <data name="About_us" xml:space="preserve">
+    <value>About us</value>
+  </data>
+  <data name="Api_version" xml:space="preserve">
+    <value>Api version</value>
+  </data>
+  <data name="Configuration" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
+  <data name="Mobile_version" xml:space="preserve">
+    <value>Mobile version</value>
+  </data>
+  <data name="Web_version" xml:space="preserve">
+    <value>Web version</value>
+  </data>
 </root>

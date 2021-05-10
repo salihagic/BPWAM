@@ -54,6 +54,7 @@ namespace BPWA.Web.Services.Services
         public bool ShowTranslationsItem() => HasAdministrationAuthorizationClaim(AppClaims.Authorization.Administration.TranslationsManagement);
         public bool ShowNotificationsItem() => HasAdministrationAuthorizationClaim(AppClaims.Authorization.Company.NotificationsManagement) && DoesntHaveCurrentCompanyId();
         public bool ShowGroupsItem() => HasAdministrationAuthorizationClaim(AppClaims.Authorization.Company.GroupsManagement) && DoesntHaveCurrentCompanyId();
+        public bool ShowConfigurationItem() => HasAdministrationAuthorizationClaim(AppClaims.Authorization.Administration.ConfigurationManagement);
 
         #endregion
 

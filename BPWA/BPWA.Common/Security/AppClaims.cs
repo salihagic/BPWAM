@@ -16,6 +16,7 @@ namespace BPWA.Common.Security
                 public const string LanguagesManagement = nameof(LanguagesManagement);
                 public const string LogsRead = nameof(LogsRead);
                 public const string TranslationsManagement = nameof(TranslationsManagement);
+                public const string ConfigurationManagement = nameof(ConfigurationManagement);
             }
 
             public static class Company

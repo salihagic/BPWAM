@@ -219,3 +219,15 @@
         </a>
     </li>
 }
+
+@if (viewHelperService.ShowConfigurationItem())
+{
+    <li class="kt-menu__item " aria-haspopup="true">
+        <a asp-controller="Configuration"
+           asp-action="Edit"
+           class="kt-menu__link">
+            <i class="kt-menu__link-icon flaticon-exclamation-1"></i>
+            <span class="kt-menu__link-text">@Translations.Configuration</span>
+        </a>
+    </li>
+}

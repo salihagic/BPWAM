@@ -28,6 +28,7 @@
         bool ShowGroupsItem();
         bool ShowTicketsItem();
         bool ShowTranslationsItem();
+        bool ShowConfigurationItem();
 
         #endregion Items
 
