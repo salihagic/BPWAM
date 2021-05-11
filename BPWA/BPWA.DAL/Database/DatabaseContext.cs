@@ -16,6 +16,7 @@ namespace BPWA.DAL.Database
     {
         #region Tables
 
+        public DbSet<AccountType> AccountTypes { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<Configuration> Configuration { get; set; }

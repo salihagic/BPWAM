@@ -34,6 +34,7 @@ namespace BPWA.Administration.Controllers
         {
             try
             {
+                ResetNavigationStack();
                 BreadcrumbItem(Translations.Configuration);
 
                 var result = await _configurationService.PrepareForUpdate();

@@ -1,4 +1,5 @@
 ﻿using BPWA.Common.Configuration;
+using BPWA.Common.Enumerations;
 using BPWA.Common.Extensions;
 using BPWA.Common.Security;
 using BPWA.Core.Entities;
@@ -43,6 +44,7 @@ namespace BPWA.DAL.Database
             }
             if (databaseSettings.Seed)
             {
+                await SeedAccountTypes(serviceProvider);
                 await SeedUsers(serviceProvider);
                 await SeedCompanies(serviceProvider);
                 //await SeedGeolocations(serviceProvider);
@@ -194,6 +196,31 @@ namespace BPWA.DAL.Database
                     }
                 }
             };
+        }
+
+        private static async Task SeedAccountTypes(IServiceProvider serviceProvider) 
+        {
+            var databaseContext = serviceProvider.GetService<DatabaseContext>();
+
+            if (!databaseContext.AccountTypes.Any())
+            {
+                await databaseContext.AccountTypes.AddAsync(new AccountType 
+                {
+                    SystemAccountType = SystemAccountType.Guest,
+                    Duration = new TimeSpan(1, 0, 0, 0)
+                });
+                await databaseContext.AccountTypes.AddAsync(new AccountType 
+                {
+                    SystemAccountType = SystemAccountType.Trial,
+                    Duration = new TimeSpan(30, 0, 0, 0)
+                });
+                await databaseContext.AccountTypes.AddAsync(new AccountType
+                {
+                    SystemAccountType = SystemAccountType.Regular
+                });
+
+                await databaseContext.SaveChangesAsync();
+            }
         }
 
         private static async Task SeedUsers(IServiceProvider serviceProvider)

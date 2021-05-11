@@ -97,6 +97,24 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Account types.
+        /// </summary>
+        public static string Account_types {
+            get {
+                return ResourceManager.GetString("Account_types", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account types.
+        /// </summary>
+        public static string AccountTypes {
+            get {
+                return ResourceManager.GetString("AccountTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Actions.
         /// </summary>
         public static string Actions {
@@ -619,6 +637,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Days.
+        /// </summary>
+        public static string Days {
+            get {
+                return ResourceManager.GetString("Days", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Debug.
         /// </summary>
         public static string Debug {
@@ -754,11 +781,29 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Duration.
+        /// </summary>
+        public static string Duration {
+            get {
+                return ResourceManager.GetString("Duration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit.
         /// </summary>
         public static string Edit {
             get {
                 return ResourceManager.GetString("Edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit account type.
+        /// </summary>
+        public static string Edit_account_type {
+            get {
+                return ResourceManager.GetString("Edit_account_type", resourceCulture);
             }
         }
         
@@ -1024,6 +1069,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Guest.
+        /// </summary>
+        public static string Guest {
+            get {
+                return ResourceManager.GetString("Guest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hi.
         /// </summary>
         public static string Hi {
@@ -1038,6 +1092,24 @@ namespace BPWA.Common.Resources {
         public static string Home {
             get {
                 return ResourceManager.GetString("Home", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hours.
+        /// </summary>
+        public static string Hours {
+            get {
+                return ResourceManager.GetString("Hours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indefinite.
+        /// </summary>
+        public static string Indefinite {
+            get {
+                return ResourceManager.GetString("Indefinite", resourceCulture);
             }
         }
         
@@ -1245,6 +1317,15 @@ namespace BPWA.Common.Resources {
         public static string Message {
             get {
                 return ResourceManager.GetString("Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minutes.
+        /// </summary>
+        public static string Minutes {
+            get {
+                return ResourceManager.GetString("Minutes", resourceCulture);
             }
         }
         
@@ -1573,6 +1654,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Regular.
+        /// </summary>
+        public static string Regular {
+            get {
+                return ResourceManager.GetString("Regular", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rejected.
         /// </summary>
         public static string Rejected {
@@ -1650,6 +1740,15 @@ namespace BPWA.Common.Resources {
         public static string Search_use_precent_as_a_wildcard_anywhere_in_text {
             get {
                 return ResourceManager.GetString("Search_use_precent_as_a_wildcard_anywhere_in_text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seconds.
+        /// </summary>
+        public static string Seconds {
+            get {
+                return ResourceManager.GetString("Seconds", resourceCulture);
             }
         }
         
@@ -1771,6 +1870,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select system account type.
+        /// </summary>
+        public static string Select_system_account_type {
+            get {
+                return ResourceManager.GetString("Select_system_account_type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select ticket status.
         /// </summary>
         public static string Select_ticket_status {
@@ -1857,6 +1965,15 @@ namespace BPWA.Common.Resources {
         public static string Symbol {
             get {
                 return ResourceManager.GetString("Symbol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System account type.
+        /// </summary>
+        public static string System_account_type {
+            get {
+                return ResourceManager.GetString("System_account_type", resourceCulture);
             }
         }
         
@@ -1965,6 +2082,15 @@ namespace BPWA.Common.Resources {
         public static string TranslationsManagement {
             get {
                 return ResourceManager.GetString("TranslationsManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trial.
+        /// </summary>
+        public static string Trial {
+            get {
+                return ResourceManager.GetString("Trial", resourceCulture);
             }
         }
         

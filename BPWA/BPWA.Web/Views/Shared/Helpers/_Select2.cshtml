@@ -26,6 +26,14 @@
             ...options
         });
     }
+    
+    function Select2SystemAccountTypes(options) {
+        Select2({
+            data: '@Html.Raw(DropdownHelperService.GetSystemAccountTypes().GetDropdownItemsJson())',
+            placeholder: '@Translations.Select_system_account_type',
+            ...options
+        });
+    }
 
     function Select2AppClaims(options) {
         Select2({

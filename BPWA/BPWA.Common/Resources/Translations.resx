@@ -813,4 +813,46 @@
   <data name="Web_version" xml:space="preserve">
     <value>Web version</value>
   </data>
+  <data name="Account_types" xml:space="preserve">
+    <value>Account types</value>
+  </data>
+  <data name="AccountTypes" xml:space="preserve">
+    <value>Account types</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>Days</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="Edit_account_type" xml:space="preserve">
+    <value>Edit account type</value>
+  </data>
+  <data name="Guest" xml:space="preserve">
+    <value>Guest</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>Hours</value>
+  </data>
+  <data name="Indefinite" xml:space="preserve">
+    <value>Indefinite</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>Minutes</value>
+  </data>
+  <data name="Regular" xml:space="preserve">
+    <value>Regular</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>Seconds</value>
+  </data>
+  <data name="Select_system_account_type" xml:space="preserve">
+    <value>Select system account type</value>
+  </data>
+  <data name="System_account_type" xml:space="preserve">
+    <value>System account type</value>
+  </data>
+  <data name="Trial" xml:space="preserve">
+    <value>Trial</value>
+  </data>
 </root>

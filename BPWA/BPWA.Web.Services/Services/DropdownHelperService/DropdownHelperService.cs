@@ -60,6 +60,15 @@ namespace BPWA.Web.Services.Services
                     Text = TranslationsHelper.Translate(x.ToString())
                 }).ToList();
         }
+        public List<DropdownItem<string>> GetSystemAccountTypes()
+        {
+            return Enum.GetValues(typeof(SystemAccountType)).Cast<SystemAccountType>()
+                .Select(x => new DropdownItem<string>
+                {
+                    Id = x.ToString(),
+                    Text = TranslationsHelper.Translate(x.ToString())
+                }).ToList();
+        }
 
         public List<DropdownItem<string>> GetSystemLanguages()
         {

@@ -220,6 +220,18 @@
     </li>
 }
 
+@if (viewHelperService.ShowAccountTypesItem())
+{
+    <li class="kt-menu__item " aria-haspopup="true">
+        <a asp-controller="AccountTypes"
+           asp-action="Index"
+           class="kt-menu__link">
+            <i class="kt-menu__link-icon flaticon2-menu-4"></i>
+            <span class="kt-menu__link-text">@Translations.Account_types</span>
+        </a>
+    </li>
+}
+
 @if (viewHelperService.ShowConfigurationItem())
 {
     <li class="kt-menu__item " aria-haspopup="true">
