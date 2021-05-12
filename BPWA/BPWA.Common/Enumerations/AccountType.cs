@@ -1,6 +1,6 @@
 ﻿namespace BPWA.Common.Enumerations
 {
-    public enum SystemAccountType
+    public enum AccountType
     {
         Guest,
         Trial,

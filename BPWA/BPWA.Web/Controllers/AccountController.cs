@@ -16,19 +16,19 @@ namespace BPWA.Controllers
     [Authorize]
     public class AccountController : BaseController
     {
-        private readonly IUsersWebService _usersWebService;
+        private readonly IAccountsWebService _accountsWebService;
         private readonly ICompaniesWebService _companiesWebService;
         private IToastNotification _toast;
         private ICurrentUserBaseCompany _currentUserBaseCompany;
 
         public AccountController(
-            IUsersWebService usersWebService,
+            IAccountsWebService accountsWebService,
             ICompaniesWebService companiesWebService,
             IToastNotification toast,
             ICurrentUserBaseCompany currentUserBaseCompany
             )
         {
-            _usersWebService = usersWebService;
+            _accountsWebService = accountsWebService;
             _companiesWebService = companiesWebService;
             _toast = toast;
             _currentUserBaseCompany = currentUserBaseCompany;
@@ -37,7 +37,7 @@ namespace BPWA.Controllers
         [HttpPost]
         public async Task UpdateTimezone(int timezoneUtcOffsetInMinutes)
         {
-            await _usersWebService.UpdateTimezoneForCurrentUser(timezoneUtcOffsetInMinutes);
+            await _accountsWebService.UpdateTimezoneForCurrentUser(timezoneUtcOffsetInMinutes);
         }
 
         #region Update account
@@ -46,7 +46,7 @@ namespace BPWA.Controllers
         {
             BreadcrumbItem(Translations.My_profile);
 
-            var result = await _usersWebService.PrepareForUpdateAccount();
+            var result = await _accountsWebService.PrepareForUpdate();
 
             return View(result);
         }
@@ -61,7 +61,7 @@ namespace BPWA.Controllers
 
             try
             {
-                await _usersWebService.UpdateAccount(model);
+                await _accountsWebService.Update(model);
 
                 _toast.AddSuccessToastMessage("Successfully edited my profile");
                 return RedirectToAction(nameof(Edit));
@@ -115,7 +115,7 @@ namespace BPWA.Controllers
         {
             try
             {
-                await _usersWebService.ToggleCurrentCompany(model);
+                await _accountsWebService.ToggleCurrentCompany(model);
                 _toast.AddSuccessToastMessage(Translations.Successfully_changed_current_company);
 
             }
@@ -134,7 +134,7 @@ namespace BPWA.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(string userId, string token)
         {
-            var result = await _usersWebService.PrepareForResetPassword(userId, token);
+            var result = await _accountsWebService.PrepareForResetPassword(userId, token);
 
             var model = result;
 
@@ -154,7 +154,7 @@ namespace BPWA.Controllers
 
             try
             {
-                await _usersWebService.ResetPassword(model);
+                await _accountsWebService.ResetPassword(model);
 
                 _toast.AddSuccessToastMessage(Translations.Successfully_changed_password);
                 return RedirectToAction("Login", "Authentication");

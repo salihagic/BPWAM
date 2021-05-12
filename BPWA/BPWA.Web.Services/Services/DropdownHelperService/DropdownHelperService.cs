@@ -62,7 +62,7 @@ namespace BPWA.Web.Services.Services
         }
         public List<DropdownItem<string>> GetSystemAccountTypes()
         {
-            return Enum.GetValues(typeof(SystemAccountType)).Cast<SystemAccountType>()
+            return Enum.GetValues(typeof(AccountType)).Cast<AccountType>()
                 .Select(x => new DropdownItem<string>
                 {
                     Id = x.ToString(),

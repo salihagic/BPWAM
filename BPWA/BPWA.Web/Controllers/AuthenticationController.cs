@@ -6,22 +6,21 @@ using BPWA.Web.Services.Services;
 using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BPWA.Controllers
 {
     public class AuthenticationController : Controller
     {
-        private readonly IUsersWebService _usersWebService;
+        private readonly IAccountsWebService _accountsWebService;
         private readonly IToastNotification _toast;
 
         public AuthenticationController(
-            IUsersWebService usersWebService,
+            IAccountsWebService accountsWebService,
             IToastNotification toast
             )
         {
-            _usersWebService = usersWebService;
+            _accountsWebService = accountsWebService;
             _toast = toast;
         }
 
@@ -35,7 +34,7 @@ namespace BPWA.Controllers
 
             try
             {
-                var result = await _usersWebService.SignIn(model.UserName, model.Password);
+                var result = await _accountsWebService.SignIn(model.UserName, model.Password);
 
                 return !string.IsNullOrEmpty(returnUrl) ? LocalRedirect(returnUrl) : RedirectToAction("Index", "Dashboard");
             }
@@ -55,7 +54,7 @@ namespace BPWA.Controllers
 
         public async Task<IActionResult> Logout()
         {
-            await _usersWebService.SignOut();
+            await _accountsWebService.SignOut();
 
             return RedirectToAction("Login");
         }

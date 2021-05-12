@@ -24,22 +24,23 @@ namespace BPWA.Administration.Controllers
             string
             >
     {
-        private IUsersWebService _usersWebService;
+        private IAccountsWebService _accountsWebService;
 
         public UsersController(
             IUsersWebService service,
             IToastNotification toast,
-            IMapper mapper
+            IMapper mapper,
+            IAccountsWebService accountsWebService
             ) :
             base(service, mapper, toast)
         {
-            _usersWebService = service;
+            _accountsWebService = accountsWebService;
         }
 
         [HttpPost, Transaction]
         public virtual async Task<IActionResult> SendPasswordResetToken(string userId)
         {
-            await _usersWebService.SendPasswordResetToken(userId);
+            await _accountsWebService.SendPasswordResetToken(userId);
 
             return Ok();
         }

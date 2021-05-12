@@ -2,7 +2,6 @@
 using BPWA.Common.Configuration;
 using BPWA.Common.Exceptions;
 using BPWA.Common.Extensions;
-using BPWA.Common.Resources;
 using BPWA.Common.Services;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
@@ -13,10 +12,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Threading.Tasks;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Net;
+using System.Threading.Tasks;
 
 namespace BPWA.DAL.Services
 {
@@ -65,96 +63,6 @@ namespace BPWA.DAL.Services
                 throw new ValidationException(result.Errors.Select(x => x.Description).ToArray());
 
             return entity;
-        }
-
-        public async Task<UserDTO> AddToRole(User entity, string roleName)
-        {
-            var result = await UserManager.AddToRoleAsync(entity, roleName);
-
-            if (!result.Succeeded)
-                throw new ValidationException(result.Errors.Select(x => x.Description).ToArray());
-
-            var userDTO = Mapper.Map<UserDTO>(entity);
-
-            return userDTO;
-        }
-
-        public async Task<User> GetEntityByUserNameOrEmail(string userName)
-        {
-            try
-            {
-                var user = (await UserManager.FindByNameAsync(userName)) ?? (await UserManager.FindByEmailAsync(userName));
-
-                if (user == null)
-                    throw new Exception(Translations.User_name_or_email_invalid);
-
-                return user;
-            }
-            catch (Exception e)
-            {
-                throw new Exception(Translations.User_name_or_email_invalid);
-            }
-        }
-
-        public async Task<UserDTO> SignIn(string userName, string password)
-        {
-            var userResult = await GetEntityByUserNameOrEmail(userName);
-
-            var result = await SignInManager.PasswordSignInAsync(userResult, password, true, false);
-
-            if (!result.Succeeded)
-            {
-                if (result.IsLockedOut)
-                    throw new Exception(Translations.Account_locked_out);
-                else if (result.IsNotAllowed)
-                    throw new Exception(Translations.Login_not_allowed);
-                else if (result.RequiresTwoFactor)
-                    throw new Exception(Translations.Login_required_two_factor);
-                else
-                    throw new Exception(Translations.User_name_or_email_invalid);
-            }
-
-            var userDTO = Mapper.Map<UserDTO>(userResult);
-
-            return userDTO;
-        }
-
-        public async Task UpdateTimezoneForCurrentUser(int timezoneUtcOffsetInMinutes)
-        {
-            var userResult = await GetEntityById(CurrentUser.Id());
-
-            var timezoneInfo = TimeZoneInfo.GetSystemTimeZones()
-                                               .Where(x => x.BaseUtcOffset == (new TimeSpan(0, timezoneUtcOffsetInMinutes, 0)))
-                                               .FirstOrDefault();
-
-            if (timezoneInfo != null)
-            {
-                userResult.TimezoneId = timezoneInfo.Id;
-                var result = await Update(userResult);
-            }
-        }
-
-        public async Task SendPasswordResetToken(string userId)
-        {
-            var user = await UserManager.FindByIdAsync(userId);
-
-            if (user == null)
-                throw new Exception("Failed to load user");
-
-            var token = await UserManager.GeneratePasswordResetTokenAsync(user);
-
-            var passwordResetUrl = GeneratePasswordResetUrl(user, token);
-
-            await EmailService.Send(user.Email,
-                                      "Change your password",
-                                      $"You requested a reset of your password.\n\n\nClick on the following link to set your new password: {passwordResetUrl}");
-
-            return;
-        }
-
-        protected string GeneratePasswordResetUrl(User user, string token)
-        {
-            return $"{RouteSettings.WebUrl}{RouteSettings.PasswordResetUrl}?userId={WebUtility.UrlEncode(user.Id)}&token={WebUtility.UrlEncode(token)}";
         }
 
         #region Base
@@ -442,7 +350,7 @@ namespace BPWA.DAL.Services
                         parameter);
 
                 currentRelatedItems = await query.Where(predicate).ToListAsync();
-            }            
+            }
 
             //Delete
             var relatedItemsToDelete = currentRelatedItems.Where(x => !itemIds?.Any(y => relatedEntityKeySelector.Compile().Invoke(x).Equals(y)) ?? true).ToList();
