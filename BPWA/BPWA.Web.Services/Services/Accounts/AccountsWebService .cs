@@ -1,14 +1,20 @@
 ﻿using AutoMapper;
 using BPWA.Common.Configuration;
+using BPWA.Common.Enumerations;
+using BPWA.Common.Exceptions;
 using BPWA.Common.Resources;
+using BPWA.Common.Security;
 using BPWA.Common.Services;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
+using BPWA.DAL.Models;
 using BPWA.DAL.Services;
 using BPWA.Web.Services.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BPWA.Web.Services.Services
@@ -37,6 +43,71 @@ namespace BPWA.Web.Services.Services
                 usersService
                 )
         {
+        }
+
+        public async Task<UserDTO> RegisterGuestAccountAndSignIn()
+        {
+            var guestCompaniesCount = await DatabaseContext.Companies
+                .IgnoreQueryFilters()
+                .Where(x => !x.IsDeleted)
+                .Where(x => x.AccountType == AccountType.Guest)
+                .CountAsync();
+
+            var company = new Company
+            {
+                Name = $"Guest Company {guestCompaniesCount}",
+                AccountType = AccountType.Guest,
+                Roles = new List<Role>
+                {
+                    new Role
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Name = "Company admin",
+                        NormalizedName = "Company admin".ToUpper(),
+                        RoleClaims = new List<RoleClaim>
+                        {
+                            new RoleClaim
+                            {
+                                ClaimType = AppClaimsHelper.Authorization.Type,
+                                ClaimValue = AppClaims.Authorization.Company.CompanyGodMode
+                            }
+                        }
+                    }
+                }
+            };
+
+            await DatabaseContext.Companies.AddAsync(company);
+            await DatabaseContext.SaveChangesAsyncWithoutCompanyId();
+
+            var companyAdmin = new User
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserName = $"guest.admin.{guestCompaniesCount}",
+                NormalizedUserName = $"guest.admin.{guestCompaniesCount}".ToUpper(),
+                Email = $"guest.admin.{guestCompaniesCount}@BPWAM.com",
+                NormalizedEmail = $"guest.admin.{guestCompaniesCount}@BPWAM.com".ToUpper(),
+                FirstName = "Guest",
+                LastName = "Admin",
+                CompanyId = company.Id,
+                CurrentCompanyId = company.Id,
+                UserRoles = company.Roles.Select(x => new UserRole
+                {
+                    RoleId = x.Id,
+                    CompanyId = x.CompanyId
+                }).ToList(),
+            };
+
+            await DatabaseContext.Users.AddAsync(companyAdmin);
+            await DatabaseContext.SaveChangesAsyncWithoutCompanyId();
+
+            var result = await UserManager.AddPasswordAsync(companyAdmin, "demo");
+
+            if (!result.Succeeded)
+                throw new ValidationException(result.Errors.Select(x => x.Description).ToArray());
+
+            await SignInManager.SignInAsync(companyAdmin, true);
+
+            return Mapper.Map<UserDTO>(companyAdmin);
         }
 
         #region Update account 
@@ -148,6 +219,29 @@ namespace BPWA.Web.Services.Services
                 throw new Exception("Failed to load user");
 
             var result = await UserManager.ResetPasswordAsync(user, model.Token, model.Password);
+        }
+        
+        public async Task<UserDTO> SignIn(string userName, string password)
+        {
+            var userResult = await GetUserByUserNameOrEmail(userName);
+
+            var result = await SignInManager.PasswordSignInAsync(userResult, password, true, false);
+
+            if (!result.Succeeded)
+            {
+                if (result.IsLockedOut)
+                    throw new Exception(Translations.Account_locked_out);
+                else if (result.IsNotAllowed)
+                    throw new Exception(Translations.Login_not_allowed);
+                else if (result.RequiresTwoFactor)
+                    throw new Exception(Translations.Login_required_two_factor);
+                else
+                    throw new Exception(Translations.User_name_or_email_invalid);
+            }
+
+            var userDTO = Mapper.Map<UserDTO>(userResult);
+
+            return userDTO;
         }
 
         public async Task SignOut()

@@ -27,9 +27,9 @@
         });
     }
     
-    function Select2SystemAccountTypes(options) {
+    function Select2AccountTypes(options) {
         Select2({
-            data: '@Html.Raw(DropdownHelperService.GetSystemAccountTypes().GetDropdownItemsJson())',
+            data: '@Html.Raw(DropdownHelperService.GetAccountTypes().GetDropdownItemsJson())',
             placeholder: '@Translations.Select_system_account_type',
             ...options
         });

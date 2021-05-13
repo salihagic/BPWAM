@@ -10,7 +10,7 @@ namespace BPWA.Web.Services.Services
         List<DropdownItem<string>> GetTicketTypes();
         List<DropdownItem<string>> GetTicketStatuses();
         List<DropdownItem<string>> GetSystemLanguages();
-        List<DropdownItem<string>> GetSystemAccountTypes();
+        List<DropdownItem<string>> GetAccountTypes();
         List<DropdownItem<string>> GetNotificationTypes();
         List<DropdownItem<string>> GetNotificationDistributionTypes();
         List<DropdownItem<string>> GetNotificationDistributionTypes1();

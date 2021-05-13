@@ -1,5 +1,7 @@
-﻿using BPWA.Common.Security;
+﻿using BPWA.Common.Enumerations;
+using BPWA.Common.Security;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.Security.Claims;
 
 namespace BPWA.DAL.Services
@@ -14,6 +16,18 @@ namespace BPWA.DAL.Services
                 return null;
 
             return int.Parse(companyIdClaim);
+        }
+
+        public bool IsGuest() => AccountType() == Common.Enumerations.AccountType.Guest;
+
+        public AccountType? AccountType()
+        {
+            var companyAccountType = User?.FindFirstValue(AppClaims.Meta.BaseCompanyAccountType);
+
+            if (string.IsNullOrEmpty(companyAccountType))
+                return null;
+
+            return Enum.Parse<AccountType>(companyAccountType);
         }
 
         private readonly IHttpContextAccessor _httpContextAccessor;

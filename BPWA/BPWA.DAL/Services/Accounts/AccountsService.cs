@@ -4,7 +4,6 @@ using BPWA.Common.Resources;
 using BPWA.Common.Services;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
-using BPWA.DAL.Models;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Linq;
@@ -61,29 +60,6 @@ namespace BPWA.DAL.Services
             {
                 throw new Exception(Translations.User_name_or_email_invalid);
             }
-        }
-
-        public async Task<UserDTO> SignIn(string userName, string password)
-        {
-            var userResult = await GetUserByUserNameOrEmail(userName);
-
-            var result = await SignInManager.PasswordSignInAsync(userResult, password, true, false);
-
-            if (!result.Succeeded)
-            {
-                if (result.IsLockedOut)
-                    throw new Exception(Translations.Account_locked_out);
-                else if (result.IsNotAllowed)
-                    throw new Exception(Translations.Login_not_allowed);
-                else if (result.RequiresTwoFactor)
-                    throw new Exception(Translations.Login_required_two_factor);
-                else
-                    throw new Exception(Translations.User_name_or_email_invalid);
-            }
-
-            var userDTO = Mapper.Map<UserDTO>(userResult);
-
-            return userDTO;
         }
 
         public async Task UpdateTimezoneForCurrentUser(int timezoneUtcOffsetInMinutes)

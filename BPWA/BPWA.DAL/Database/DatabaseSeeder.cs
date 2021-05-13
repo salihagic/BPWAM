@@ -55,19 +55,20 @@ namespace BPWA.DAL.Database
         {
             var databaseContext = serviceProvider.GetService<DatabaseContext>();
 
-            databaseContext.IgnoreOnBeforeSaveChanges();
-
             try
             {
                 if (!databaseContext.Companies.Any())
                 {
                     var superAdminUser = await databaseContext.Users
+                        .IgnoreQueryFilters()
                         .Include(x => x.UserRoles)
                         .FirstOrDefaultAsync(x => x.UserName == superAdminUserName);
                     var companyXAdminUser = await databaseContext.Users
+                        .IgnoreQueryFilters()
                         .Include(x => x.UserRoles)
                         .FirstOrDefaultAsync(x => x.UserName == companyXAdminUserName);
                     var companyYAdminUser = await databaseContext.Users
+                        .IgnoreQueryFilters()
                         .Include(x => x.UserRoles)
                         .FirstOrDefaultAsync(x => x.UserName == companyYAdminUserName);
 
@@ -76,10 +77,10 @@ namespace BPWA.DAL.Database
                     var rootRoles = GetRootCompanyRoles();
 
                     await databaseContext.Roles.AddRangeAsync(rootRoles);
-                    await databaseContext.SaveChangesAsync();
+                    await databaseContext.SaveChangesAsyncWithoutCompanyId();
 
                     superAdminUser.UserRoles.AddRange(rootRoles.Select(x => new UserRole { RoleId = x.Id }));
-                    await databaseContext.SaveChangesAsync();
+                    await databaseContext.SaveChangesAsyncWithoutCompanyId();
 
                     #endregion
 
@@ -88,12 +89,13 @@ namespace BPWA.DAL.Database
                     var companyX = new Company
                     {
                         Name = "Company X",
+                        AccountType = AccountType.Regular,
                         Roles = GetCompanyRoles()
                     };
 
                     await databaseContext.Companies.AddAsync(companyX);
 
-                    await databaseContext.SaveChangesAsync();
+                    await databaseContext.SaveChangesAsyncWithoutCompanyId();
 
                     #endregion
 
@@ -109,7 +111,7 @@ namespace BPWA.DAL.Database
                     companyXAdminUser.CompanyId = companyX.Id;
                     companyXAdminUser.CurrentCompanyId = companyX.Id;
 
-                    await databaseContext.SaveChangesAsync();
+                    await databaseContext.SaveChangesAsyncWithoutCompanyId();
 
                     #endregion
 
@@ -119,13 +121,14 @@ namespace BPWA.DAL.Database
                     {
                         Name = "Company Y",
                         CompanyId = companyX.Id,
+                        AccountType = AccountType.Regular,
                         Roles = GetCompanyRoles()
                     };
 
                     await databaseContext.Companies.AddAsync(companyY);
                     companyY.CompanyId = companyX.Id;
 
-                    await databaseContext.SaveChangesAsync();
+                    await databaseContext.SaveChangesAsyncWithoutCompanyId();
 
                     #endregion
 
@@ -141,18 +144,15 @@ namespace BPWA.DAL.Database
                     companyYAdminUser.CompanyId = companyY.Id;
                     companyYAdminUser.CurrentCompanyId = companyY.Id;
 
-                    await databaseContext.SaveChangesAsync();
+                    await databaseContext.SaveChangesAsyncWithoutCompanyId();
 
                     #endregion
                 }
             }
             catch (Exception exception)
             {
-                databaseContext.ApplyOnBeforeSaveChanges();
                 throw;
             }
-
-            databaseContext.ApplyOnBeforeSaveChanges();
         }
 
         private static List<Role> GetRootCompanyRoles()
@@ -205,7 +205,9 @@ namespace BPWA.DAL.Database
 
             #region Super admin
 
-            var superAdminUser = await databaseContext.Users.FirstOrDefaultAsync(x => x.UserName == superAdminUserName);
+            var superAdminUser = await databaseContext.Users
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(x => x.UserName == superAdminUserName);
 
             if (superAdminUser == null)
             {
@@ -225,7 +227,9 @@ namespace BPWA.DAL.Database
 
             if (environment.IsDevelopment())
             {
-                var companyAdminUser = await databaseContext.Users.FirstOrDefaultAsync(x => x.UserName == companyXAdminUserName);
+                var companyAdminUser = await databaseContext.Users
+                    .IgnoreQueryFilters()
+                    .FirstOrDefaultAsync(x => x.UserName == companyXAdminUserName);
 
                 if (companyAdminUser == null)
                 {
@@ -246,7 +250,9 @@ namespace BPWA.DAL.Database
 
             if (environment.IsDevelopment())
             {
-                var subCompanyAdminUser = await databaseContext.Users.FirstOrDefaultAsync(x => x.UserName == companyYAdminUserName);
+                var subCompanyAdminUser = await databaseContext.Users
+                    .IgnoreQueryFilters()
+                    .FirstOrDefaultAsync(x => x.UserName == companyYAdminUserName);
 
                 if (subCompanyAdminUser == null)
                 {

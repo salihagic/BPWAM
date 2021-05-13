@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using BPWA.Common.Enumerations;
 using BPWA.Common.Extensions;
+using BPWA.Core.Entities;
 using BPWA.DAL.Database;
 using BPWA.DAL.Models;
 using BPWA.DAL.Services;
@@ -13,14 +15,17 @@ namespace BPWA.Web.Services.Services
     public class CompaniesWebService : CompaniesService, ICompaniesWebService
     {
         private ICurrentUserBaseCompany _currentUserBaseCompany;
+        private IAccountsWebService _accountsWebService;
 
         public CompaniesWebService(
             DatabaseContext databaseContext,
             IMapper mapper,
-            ICurrentUserBaseCompany currentUserBaseCompany
+            ICurrentUserBaseCompany currentUserBaseCompany,
+            IAccountsWebService accountsWebService
             ) : base(databaseContext, mapper)
         {
             _currentUserBaseCompany = currentUserBaseCompany;
+            _accountsWebService = accountsWebService;
         }
 
         public async Task<List<CompanyDTO>> GetForToggle(CompanySearchModel searchModel)
@@ -28,24 +33,52 @@ namespace BPWA.Web.Services.Services
             var companies = await DatabaseContext.Companies
                 .IgnoreQueryFilters()
                 .Where(x => !x.IsDeleted)
-                .WhereIf(!string.IsNullOrEmpty(searchModel.Name), x => x.Name.ToLower().StartsWith(searchModel.Name.ToLower()))
-                .Where(x => _currentUserBaseCompany.Id() == null ||
-                    //Level 0 company
-                    x.Id == _currentUserBaseCompany.Id() ||
-                    //Level 1 company
-                    x.CompanyId == _currentUserBaseCompany.Id() ||
-                    //Level 2 company
-                    x.Company.CompanyId == _currentUserBaseCompany.Id() ||
-                    //Level 3 company
-                    x.Company.Company.CompanyId == _currentUserBaseCompany.Id() ||
-                    //Level 4 company
-                    x.Company.Company.Company.CompanyId == _currentUserBaseCompany.Id()
+                .WhereIf(searchModel.SearchTerm.IsNotEmpty(), x => x.Name.ToLower().StartsWith(searchModel.SearchTerm.ToLower()))
+                .Where(x =>
+                //All
+                ((_currentUserBaseCompany.Id() == null && x.AccountType == AccountType.Regular) ||
+                //Level 0 company
+                (x.Id == _currentUserBaseCompany.Id() && (_currentUserBaseCompany.IsGuest() || x.AccountType == AccountType.Regular)) ||
+                //Level 1 company
+                (x.CompanyId == _currentUserBaseCompany.Id() && (_currentUserBaseCompany.IsGuest() || x.AccountType == AccountType.Regular)) ||
+                //Level 2 company
+                (x.Company.CompanyId == _currentUserBaseCompany.Id() && (_currentUserBaseCompany.IsGuest() || x.AccountType == AccountType.Regular)) ||
+                //Level 3 company
+                (x.Company.Company.CompanyId == _currentUserBaseCompany.Id() && (_currentUserBaseCompany.IsGuest() || x.AccountType == AccountType.Regular)) ||
+                //Level 4 company
+                (x.Company.Company.Company.CompanyId == _currentUserBaseCompany.Id() && (_currentUserBaseCompany.IsGuest() || x.AccountType == AccountType.Regular))
                 //...
-                ).ToListAsync();
+                )).ToListAsync();
 
             var companyDTOs = Mapper.Map<List<CompanyDTO>>(companies);
 
             return companyDTOs;
+        }
+
+        public override async Task<Company> AddEntity(Company entity)
+        {
+            entity.AccountType = _currentUserBaseCompany.AccountType() ?? AccountType.Regular;
+            var result = await base.AddEntity(entity);
+
+            await _accountsWebService.RefreshSignIn();
+
+            return result;
+        }
+
+        public override async Task<Company> UpdateEntity(Company entity)
+        {
+            var result = await base.UpdateEntity(entity);
+
+            await _accountsWebService.RefreshSignIn();
+
+            return result;
+        }
+
+        public override async Task Delete(Company entity)
+        {
+            await base.Delete(entity);
+
+            await _accountsWebService.RefreshSignIn();
         }
     }
 }

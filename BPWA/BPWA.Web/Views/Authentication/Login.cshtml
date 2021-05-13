@@ -139,7 +139,9 @@
                             <div style="margin-top: 1em"></div>
                             <div><a href="javascript:;" id="kt_login_signup" class="kt-login__account-link">Sign Up!</a></div>
                             <div><span>Or</span></div>
-                            <div><a href="javascript:;" id="kt_login_signup" class="kt-login__account-link">Try it out as a guest!</a></div>
+                            <div><a asp-controller="Account"
+                                    asp-action="RegisterGuestAccountAndSignIn"
+                                    class="kt-login__account-link">Try it out as a guest!</a></div>
                         </div>
                     </div>
                 </div>

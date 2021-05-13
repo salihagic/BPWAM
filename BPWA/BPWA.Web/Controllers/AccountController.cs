@@ -34,6 +34,20 @@ namespace BPWA.Controllers
             _currentUserBaseCompany = currentUserBaseCompany;
         }
 
+        [AllowAnonymous]
+        public async Task<IActionResult> RegisterGuestAccountAndSignIn()
+        {
+            try
+            {
+                await _accountsWebService.RegisterGuestAccountAndSignIn();
+
+                return RedirectToAction("Index", "Dashboard");
+            }
+            catch (Exception exception) {}
+
+            return RedirectToAction("Login", "Authentication");
+        }
+
         [HttpPost]
         public async Task UpdateTimezone(int timezoneUtcOffsetInMinutes)
         {
@@ -117,7 +131,6 @@ namespace BPWA.Controllers
             {
                 await _accountsWebService.ToggleCurrentCompany(model);
                 _toast.AddSuccessToastMessage(Translations.Successfully_changed_current_company);
-
             }
             catch (Exception)
             {

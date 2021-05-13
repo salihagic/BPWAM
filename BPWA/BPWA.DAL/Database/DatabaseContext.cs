@@ -1,4 +1,5 @@
-﻿using BPWA.Common.Extensions;
+﻿using BPWA.Common.Enumerations;
+using BPWA.Common.Extensions;
 using BPWA.Core.Entities;
 using BPWA.DAL.Services;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -96,13 +97,16 @@ namespace BPWA.DAL.Database
         #region Helpers 
 
         private ICurrentCompany _currentCompany;
+        private ICurrentUserBaseCompany _currentUserBaseCompany;
 
         public DatabaseContext(
             DbContextOptions<DatabaseContext> options,
-            ICurrentCompany currentCompany
+            ICurrentCompany currentCompany,
+            ICurrentUserBaseCompany currentUserBaseCompany
             ) : base(options)
         {
             _currentCompany = currentCompany;
+            _currentUserBaseCompany = currentUserBaseCompany;
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -135,24 +139,49 @@ namespace BPWA.DAL.Database
         /// <param name="builder"></param>
         void SetGlobalFilters(ModelBuilder builder)
         {
-            //IsDeleted filter for IBaseEntity entities
+            //IsDeleted filter for soft deletable entities
             builder.ApplyGlobalFilters<IBaseSoftDeletableEntity>(entity => !entity.IsDeleted);
 
+            //Filter for Company related entities
             //More levels == worse performance
             builder.ApplyGlobalFilters<IBaseSoftDeletableCompanyEntity>(entity =>
             !entity.IsDeleted &&
             //All
-            (_currentCompany.Id() == null ||
-            //Level 1 company
+            ((_currentCompany.Id() == null && entity.Company.AccountType == AccountType.Regular) ||
+            //Level 0 company
             entity.CompanyId == _currentCompany.Id() ||
             //Other levels
             Set<Company>().IgnoreQueryFilters().Any(y => y.Id == entity.CompanyId && (
+                //Level 1 company
+                (y.Id == _currentCompany.Id() && (_currentUserBaseCompany.IsGuest() || y.AccountType == AccountType.Regular)) ||
                 //Level 2 company
-                y.CompanyId == _currentCompany.Id() ||
+                (y.CompanyId == _currentCompany.Id() && (_currentUserBaseCompany.IsGuest() || y.Company.AccountType == AccountType.Regular)) ||
                 //Level 3 company
-                y.Company.CompanyId == _currentCompany.Id() ||
+                (y.Company.CompanyId == _currentCompany.Id() && (_currentUserBaseCompany.IsGuest() || y.Company.Company.AccountType == AccountType.Regular)) ||
                 //Level 4 company
-                y.Company.Company.CompanyId == _currentCompany.Id()
+                (y.Company.Company.CompanyId == _currentCompany.Id() && (_currentUserBaseCompany.IsGuest() || y.Company.Company.Company.AccountType == AccountType.Regular))
+            //...
+            ))
+            ));
+
+            //Filter for Companies
+            //More levels == worse performance
+            builder.ApplyGlobalFilters<Company>(entity =>
+            !entity.IsDeleted &&
+            //All
+            ((_currentCompany.Id() == null && entity.AccountType == AccountType.Regular) ||
+            //Level 0 company
+            (_currentCompany.Id() != null && entity.CompanyId == _currentCompany.Id()) ||
+            //Other levels
+            Set<Company>().IgnoreQueryFilters().Any(y => y.Id == entity.CompanyId && (
+                //Level 1 company
+                (y.Id == _currentCompany.Id() && (_currentUserBaseCompany.IsGuest() || y.AccountType == AccountType.Regular)) ||
+                //Level 2 company
+                (_currentCompany.Id() != null && y.CompanyId == _currentCompany.Id() && (_currentUserBaseCompany.IsGuest() || y.Company.AccountType == AccountType.Regular)) ||
+                //Level 3 company
+                (_currentCompany.Id() != null && y.Company.CompanyId == _currentCompany.Id() && (_currentUserBaseCompany.IsGuest() || y.Company.Company.AccountType == AccountType.Regular)) ||
+                //Level 4 company
+                (_currentCompany.Id() != null && y.Company.Company.CompanyId == _currentCompany.Id() && (_currentUserBaseCompany.IsGuest() || y.Company.Company.Company.AccountType == AccountType.Regular))
             //...
             ))
             ));
@@ -162,9 +191,39 @@ namespace BPWA.DAL.Database
 
         #region SaveChanges 
 
-        bool _executeOnBeforeSaveChanges = true;
-        public void IgnoreOnBeforeSaveChanges() { _executeOnBeforeSaveChanges = false; }
-        public void ApplyOnBeforeSaveChanges() { _executeOnBeforeSaveChanges = true; }
+        bool _ignoreCompanyId = false;
+
+        public int SaveChangesWithoutCompanyId()
+        {
+            _ignoreCompanyId = true;
+            var result = base.SaveChanges();
+            _ignoreCompanyId = false;
+            return result;
+        }
+
+        public int SaveChangesWithoutCompanyId(bool acceptAllChangesOnSuccess)
+        {
+            _ignoreCompanyId = true;
+            var result = base.SaveChanges(acceptAllChangesOnSuccess);
+            _ignoreCompanyId = false;
+            return result;
+        }
+
+        public async Task<int> SaveChangesAsyncWithoutCompanyId(CancellationToken cancellationToken = default)
+        {
+            _ignoreCompanyId = true;
+            var result = await base.SaveChangesAsync(cancellationToken);
+            _ignoreCompanyId = false;
+            return result;
+        }
+
+        public async Task<int> SaveChangesAsyncWithoutCompanyId(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            _ignoreCompanyId = true;
+            var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+            _ignoreCompanyId = false;
+            return result;
+        }
 
         public override int SaveChanges()
         {
@@ -192,19 +251,16 @@ namespace BPWA.DAL.Database
 
         private void OnBeforeSaveChanges()
         {
-            if (_executeOnBeforeSaveChanges)
-            {
-                var entities = ChangeTracker.Entries().Where(x => x.Entity is IBaseEntity || x.Entity is IBaseEntity<string>);
+            var entities = ChangeTracker.Entries().Where(x => x.Entity is IBaseEntity || x.Entity is IBaseEntity<string>);
 
-                foreach (var entity in entities)
-                {
-                    if (entity.State == EntityState.Added)
-                        HandleEntityStateAdded(entity);
-                    else if (entity.State == EntityState.Modified)
-                        HandleEntityStateModified(entity);
-                    else if (entity.State == EntityState.Deleted)
-                        HandleEntityStateDeleted(entity);
-                }
+            foreach (var entity in entities)
+            {
+                if (entity.State == EntityState.Added)
+                    HandleEntityStateAdded(entity);
+                else if (entity.State == EntityState.Modified)
+                    HandleEntityStateModified(entity);
+                else if (entity.State == EntityState.Deleted)
+                    HandleEntityStateDeleted(entity);
             }
         }
 
@@ -216,7 +272,7 @@ namespace BPWA.DAL.Database
             {
                 ((IBaseAuditableEntity)entity.Entity).CreatedAtUtc = DateTime.UtcNow;
             }
-            if (entity.Entity is IBaseCompanyEntity)
+            if (entity.Entity is IBaseCompanyEntity && !_ignoreCompanyId)
             {
                 ((IBaseCompanyEntity)entity.Entity).CompanyId = _currentCompany.Id();
             }

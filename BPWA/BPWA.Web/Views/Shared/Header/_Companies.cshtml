@@ -26,7 +26,7 @@
         selectedItem: '@Html.Raw(CurrentUser.CurrentCompanyName().HasValue() ? (new DropdownItem<int?> { Id = CurrentUser.CurrentCompanyId(), Text = CurrentUser.CurrentCompanyName() }).GetDropdownItemJson() : "")',
         onChange: function (element) {
             $('.current_company_form')[0].submit();
-        }
+        },
     });
 
     var form = $('.current_company_form')[0];

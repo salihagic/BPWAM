@@ -1,4 +1,5 @@
-﻿using BPWA.Common.Extensions;
+﻿using BPWA.Common.Enumerations;
+using BPWA.Common.Extensions;
 using BPWA.Common.Security;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
@@ -66,7 +67,10 @@ namespace BPWA.Web.Services.Services
                 .AsNoTracking()
                 .IgnoreQueryFilters()
                 .Include(x => x.Role.RoleClaims)
-                .Where(x => user.CompanyId == null ||
+                .Where(x =>
+                    !x.IsDeleted && (
+                    //All
+                    user.CompanyId == null ||
                     //Level 1 company
                     x.CompanyId == user.CompanyId ||
                     //Level 2 company
@@ -76,7 +80,7 @@ namespace BPWA.Web.Services.Services
                     //Level 4 company
                     x.Company.Company.Company.CompanyId == user.CompanyId
                 //...
-                ).Select(x => x.Role).ToListAsync();
+                )).Select(x => x.Role).ToListAsync();
 
             if (roles.IsNotEmpty())
             {
@@ -103,13 +107,21 @@ namespace BPWA.Web.Services.Services
             if (user.CompanyId.HasValue)
             {
                 claims.Add(new Claim(AppClaims.Meta.BaseCompanyId, user.CompanyId.ToString()));
+
+                var baseCompanyAccountType = (await _databaseContext.Companies
+                    .IgnoreQueryFilters()
+                    .Where(x => x.Id == user.CompanyId)
+                    .Select(x => x.AccountType)
+                    .FirstOrDefaultAsync());
+
+                claims.Add(new Claim(AppClaims.Meta.BaseCompanyAccountType, baseCompanyAccountType.ToString()));
             }
 
             bool hasMultipleCompanies = _databaseContext.Companies
                 .IgnoreQueryFilters()
                 .Any(x => x.CompanyId == user.CompanyId);
 
-            if(hasMultipleCompanies)
+            if (hasMultipleCompanies)
                 claims.Add(new Claim(AppClaims.Meta.HasMultipleCompanies, hasMultipleCompanies.ToString()));
         }
     }

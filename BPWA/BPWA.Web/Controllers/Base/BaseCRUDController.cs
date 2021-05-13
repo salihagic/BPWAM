@@ -190,7 +190,7 @@ namespace BPWA.Controllers
 
                 return Ok();
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return BadRequest();
             }

@@ -44,6 +44,7 @@ namespace BPWA.Common.Security
             public static string CurrentCompanyId = nameof(CurrentCompanyId);
             public static string CurrentCompanyName = nameof(CurrentCompanyName);
             public static string BaseCompanyId = nameof(BaseCompanyId);
+            public static string BaseCompanyAccountType = nameof(BaseCompanyAccountType);
             public static string HasMultipleCompanies = nameof(HasMultipleCompanies);
         }
     }
