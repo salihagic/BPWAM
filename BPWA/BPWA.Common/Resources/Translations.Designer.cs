@@ -628,6 +628,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Current password.
+        /// </summary>
+        public static string Current_password {
+            get {
+                return ResourceManager.GetString("Current_password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dashboard.
         /// </summary>
         public static string Dashboard {
@@ -1362,6 +1371,24 @@ namespace BPWA.Common.Resources {
         public static string Name {
             get {
                 return ResourceManager.GetString("Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New password.
+        /// </summary>
+        public static string New_password {
+            get {
+                return ResourceManager.GetString("New_password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New password confirmation.
+        /// </summary>
+        public static string New_password_confirmation {
+            get {
+                return ResourceManager.GetString("New_password_confirmation", resourceCulture);
             }
         }
         

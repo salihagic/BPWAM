@@ -855,4 +855,13 @@
   <data name="Trial" xml:space="preserve">
     <value>Trial</value>
   </data>
+  <data name="Current_password" xml:space="preserve">
+    <value>Current password</value>
+  </data>
+  <data name="New_password" xml:space="preserve">
+    <value>New password</value>
+  </data>
+  <data name="New_password_confirmation" xml:space="preserve">
+    <value>New password confirmation</value>
+  </data>
 </root>

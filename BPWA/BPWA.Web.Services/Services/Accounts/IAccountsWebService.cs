@@ -7,6 +7,7 @@ namespace BPWA.Web.Services.Services
 {
     public interface IAccountsWebService : IAccountsService
     {
+        Task ChangePassword(ChangePasswordModel model);
         Task<UserDTO> RegisterGuestAccountAndSignIn();
         Task ConvertFromGuestToRegular();
         Task<AccountUpdateModel> PrepareForUpdate();

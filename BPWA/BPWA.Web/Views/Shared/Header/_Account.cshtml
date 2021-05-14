@@ -49,6 +49,16 @@
                     </div>
                 </div>
             </a>
+            <a href="@Url.Action("ChangePassword", "Account")" class="open_modal_button kt-notification__item">
+                <div class="kt-notification__item-icon">
+                    <i class="flaticon-lock kt-font-success"></i>
+                </div>
+                <div class="kt-notification__item-details">
+                    <div class="kt-notification__item-title kt-font-bold">
+                        @Translations.Change_password
+                    </div>
+                </div>
+            </a>
             @if (viewHelperService.ShowConvertFromGuestToRegularItem())
             {
                 <a href="@Url.Action("ConvertFromGuestToRegular", "Account")" class="kt-notification__item">

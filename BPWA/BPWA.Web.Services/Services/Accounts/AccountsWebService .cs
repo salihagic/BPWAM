@@ -49,6 +49,16 @@ namespace BPWA.Web.Services.Services
             _currentBaseCompany = currentBaseCompany;
         }
 
+        public async Task ChangePassword(ChangePasswordModel model)
+        {
+            var user = await GetUserByIdWithoutQueryFilters(CurrentUser.Id());
+
+            var result = await UserManager.ChangePasswordAsync(user, model.Password, model.NewPassword);
+
+            if (!result.Succeeded)
+                throw new ValidationException(result.Errors.Select(x => x.Description).ToArray());
+        }
+
         public async Task<UserDTO> RegisterGuestAccountAndSignIn()
         {
             var guestCompaniesCount = await DatabaseContext.Companies

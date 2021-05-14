@@ -41,7 +41,7 @@ namespace BPWA.Controllers
             catch (ValidationException e)
             {
                 _toast.AddErrorToastMessage(e.Message);
-                ModelState.AddErrors(e.Errors);
+                ModelState.AddErrors(e.Messages);
             }
             catch (Exception e)
             {

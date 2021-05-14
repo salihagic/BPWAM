@@ -1,6 +1,8 @@
-﻿using BPWA.Common.Resources;
+﻿using BPWA.Common.Exceptions;
+using BPWA.Common.Resources;
 using BPWA.DAL.Models;
 using BPWA.DAL.Services;
+using BPWA.Web.Helpers;
 using BPWA.Web.Helpers.Filters;
 using BPWA.Web.Services.Models;
 using BPWA.Web.Services.Services;
@@ -33,6 +35,37 @@ namespace BPWA.Controllers
             _toast = toast;
             _currentBaseCompany = currentBaseCompany;
         }
+
+        #region Change password
+
+        public async Task<IActionResult> ChangePassword() => View(new ChangePasswordModel());
+
+        [HttpPost, Transaction]
+        public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            try
+            {
+                await _accountsWebService.ChangePassword(model);
+
+                _toast.AddSuccessToastMessage("Successfully changed password");
+                return Json(new { success = true });
+            }
+            catch (ValidationException exception)
+            {
+                _toast.AddErrorToastMessage(exception.Message);
+            }
+            catch (Exception exception)
+            {
+                _toast.AddErrorToastMessage("Failed to change password");
+            }
+
+            return View(model);
+        }
+
+        #endregion 
 
         [AllowAnonymous]
         public async Task<IActionResult> RegisterGuestAccountAndSignIn()
