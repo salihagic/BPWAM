@@ -82,6 +82,7 @@ namespace BPWA.Web.Services.Services
 
         #region Items
 
+        public bool ShowConvertFromGuestToRegularItem() => _currentBaseCompany.IsGuest();
         public bool ShowCompanyCompaniesItem() => HasCompanyAuthorizationClaim(AppClaims.Authorization.Company.CompaniesManagement);
         public bool ShowCompanyRolesItem() => HasCompanyAuthorizationClaim(AppClaims.Authorization.Company.RolesManagement);
         public bool ShowCompanyUsersItem() => HasCompanyAuthorizationClaim(AppClaims.Authorization.Company.UsersManagement);
@@ -100,10 +101,15 @@ namespace BPWA.Web.Services.Services
         bool HasCurrentCompanyId() =>  _currentUser.CurrentCompanyId().HasValue;
 
         private ICurrentUser _currentUser;
+        private ICurrentBaseCompany _currentBaseCompany;
 
-        public ViewHelperService(ICurrentUser currentUser)
+        public ViewHelperService(
+            ICurrentUser currentUser,
+            ICurrentBaseCompany currentBaseCompany
+            )
         {
             _currentUser = currentUser;
+            _currentBaseCompany = currentBaseCompany;
         }
 
         #endregion

@@ -19,19 +19,19 @@ namespace BPWA.Controllers
         private readonly IAccountsWebService _accountsWebService;
         private readonly ICompaniesWebService _companiesWebService;
         private IToastNotification _toast;
-        private ICurrentUserBaseCompany _currentUserBaseCompany;
+        private ICurrentBaseCompany _currentBaseCompany;
 
         public AccountController(
             IAccountsWebService accountsWebService,
             ICompaniesWebService companiesWebService,
             IToastNotification toast,
-            ICurrentUserBaseCompany currentUserBaseCompany
+            ICurrentBaseCompany currentBaseCompany
             )
         {
             _accountsWebService = accountsWebService;
             _companiesWebService = companiesWebService;
             _toast = toast;
-            _currentUserBaseCompany = currentUserBaseCompany;
+            _currentBaseCompany = currentBaseCompany;
         }
 
         [AllowAnonymous]
@@ -43,9 +43,28 @@ namespace BPWA.Controllers
 
                 return RedirectToAction("Index", "Dashboard");
             }
-            catch (Exception exception) {}
+            catch (Exception exception) { }
 
             return RedirectToAction("Login", "Authentication");
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ConvertFromGuestToRegular()
+        {
+            try
+            {
+                await _accountsWebService.ConvertFromGuestToRegular();
+
+                _toast.AddSuccessToastMessage("Successfully converted from guest to regular account type");
+
+                return RedirectToAction("Index", "Dashboard");
+            }
+            catch (Exception exception)
+            {
+                _toast.AddSuccessToastMessage("Failed to convert from guest to regular account type");
+            }
+
+            return RedirectToAction("Index", "Dashboard");
         }
 
         [HttpPost]
@@ -105,7 +124,7 @@ namespace BPWA.Controllers
                 Text = x.Name,
             }).ToList();
 
-            if (!_currentUserBaseCompany.Id().HasValue)
+            if (!_currentBaseCompany.Id().HasValue)
             {
                 dropdownItems.Insert(0, new DropdownItem
                 {

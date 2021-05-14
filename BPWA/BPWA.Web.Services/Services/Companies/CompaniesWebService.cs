@@ -14,17 +14,17 @@ namespace BPWA.Web.Services.Services
 {
     public class CompaniesWebService : CompaniesService, ICompaniesWebService
     {
-        private ICurrentUserBaseCompany _currentUserBaseCompany;
+        private ICurrentBaseCompany _currentBaseCompany;
         private IAccountsWebService _accountsWebService;
 
         public CompaniesWebService(
             DatabaseContext databaseContext,
             IMapper mapper,
-            ICurrentUserBaseCompany currentUserBaseCompany,
+            ICurrentBaseCompany currentBaseCompany,
             IAccountsWebService accountsWebService
             ) : base(databaseContext, mapper)
         {
-            _currentUserBaseCompany = currentUserBaseCompany;
+            _currentBaseCompany = currentBaseCompany;
             _accountsWebService = accountsWebService;
         }
 
@@ -36,17 +36,17 @@ namespace BPWA.Web.Services.Services
                 .WhereIf(searchModel.SearchTerm.IsNotEmpty(), x => x.Name.ToLower().StartsWith(searchModel.SearchTerm.ToLower()))
                 .Where(x =>
                 //All
-                ((_currentUserBaseCompany.Id() == null && x.AccountType == AccountType.Regular) ||
+                ((_currentBaseCompany.Id() == null && x.AccountType == AccountType.Regular) ||
                 //Level 0 company
-                (x.Id == _currentUserBaseCompany.Id() && (_currentUserBaseCompany.IsGuest() || x.AccountType == AccountType.Regular)) ||
+                (x.Id == _currentBaseCompany.Id() && (_currentBaseCompany.IsGuest() || x.AccountType == AccountType.Regular)) ||
                 //Level 1 company
-                (x.CompanyId == _currentUserBaseCompany.Id() && (_currentUserBaseCompany.IsGuest() || x.AccountType == AccountType.Regular)) ||
+                (x.CompanyId == _currentBaseCompany.Id() && (_currentBaseCompany.IsGuest() || x.AccountType == AccountType.Regular)) ||
                 //Level 2 company
-                (x.Company.CompanyId == _currentUserBaseCompany.Id() && (_currentUserBaseCompany.IsGuest() || x.AccountType == AccountType.Regular)) ||
+                (x.Company.CompanyId == _currentBaseCompany.Id() && (_currentBaseCompany.IsGuest() || x.AccountType == AccountType.Regular)) ||
                 //Level 3 company
-                (x.Company.Company.CompanyId == _currentUserBaseCompany.Id() && (_currentUserBaseCompany.IsGuest() || x.AccountType == AccountType.Regular)) ||
+                (x.Company.Company.CompanyId == _currentBaseCompany.Id() && (_currentBaseCompany.IsGuest() || x.AccountType == AccountType.Regular)) ||
                 //Level 4 company
-                (x.Company.Company.Company.CompanyId == _currentUserBaseCompany.Id() && (_currentUserBaseCompany.IsGuest() || x.AccountType == AccountType.Regular))
+                (x.Company.Company.Company.CompanyId == _currentBaseCompany.Id() && (_currentBaseCompany.IsGuest() || x.AccountType == AccountType.Regular))
                 //...
                 )).ToListAsync();
 
@@ -57,7 +57,7 @@ namespace BPWA.Web.Services.Services
 
         public override async Task<Company> AddEntity(Company entity)
         {
-            entity.AccountType = _currentUserBaseCompany.AccountType() ?? AccountType.Regular;
+            entity.AccountType = _currentBaseCompany.AccountType() ?? AccountType.Regular;
             var result = await base.AddEntity(entity);
 
             await _accountsWebService.RefreshSignIn();

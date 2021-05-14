@@ -2,7 +2,7 @@
 
 namespace BPWA.DAL.Services
 {
-    public interface ICurrentUserBaseCompany
+    public interface ICurrentBaseCompany
     {
         int? Id();
         bool IsGuest();

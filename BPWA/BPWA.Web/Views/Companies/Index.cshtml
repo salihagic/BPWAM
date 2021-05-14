@@ -68,7 +68,8 @@
                             url: `@Url.Action("Edit", "Companies")/${row.id}`
                         },
                         delete: {
-                            url: `@Url.Action("Delete", "Companies")/${row.id}`
+                            url: `@Url.Action("Delete", "Companies")/${row.id}`,
+                            reload: true
                         }
                     }),
                     ...DatatableActionsColumnOptions(),

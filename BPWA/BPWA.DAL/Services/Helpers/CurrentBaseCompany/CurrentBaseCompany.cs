@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace BPWA.DAL.Services
 {
-    public class CurrentUserBaseCompany : ICurrentUserBaseCompany
+    public class CurrentBaseCompany : ICurrentBaseCompany
     {
         public int? Id()
         {
@@ -33,7 +33,7 @@ namespace BPWA.DAL.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private ClaimsPrincipal User => _httpContextAccessor.HttpContext?.User;
 
-        public CurrentUserBaseCompany(IHttpContextAccessor httpContextAccessor)
+        public CurrentBaseCompany(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }

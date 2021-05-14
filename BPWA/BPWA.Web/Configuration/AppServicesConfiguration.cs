@@ -30,7 +30,7 @@ namespace BPWA.Web.Configuration
                     .AddScoped<IRolesService, RolesService>()
             #endregion 
             #region Helpers
-                    .AddScoped<ICurrentUserBaseCompany, CurrentUserBaseCompany>()
+                    .AddScoped<ICurrentBaseCompany, CurrentBaseCompany>()
                     .AddScoped<ICurrentCompany, CurrentCompany>()
                     .AddScoped<ICurrentTimezone, CurrentTimezone>()
                     .AddScoped<ICurrentUser, CurrentUser>()

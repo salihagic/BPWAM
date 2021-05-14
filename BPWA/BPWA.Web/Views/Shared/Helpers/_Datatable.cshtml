@@ -36,6 +36,7 @@
         DatatableDeleteRow({
             url: `${$(this).attr('href')}`,
             searchFormElement: '.datatable_search_form',
+            reload: $(this).attr('data-reload')
         });
     });
 
@@ -65,13 +66,16 @@
 
     function DatatableDeleteButton(options) {
         return `
-                <a href="${options.url}" class="btn btn-sm btn-clean btn-icon btn-icon-sm datatable_delete_button" title="@Translations.Delete">\
+                <a href="${options.url}" data-reload=${options.reload} class="btn btn-sm btn-clean btn-icon btn-icon-sm datatable_delete_button" title="@Translations.Delete">\
                     <i class="flaticon2-trash"></i>\
                 </a>\
             `;
     }
 
     function DatatableDeleteRow(options) {
+        var shouldReload = options.reload;
+        console.log(`options.reload: ${options.reload}`);
+
         Swal.fire({
             title: '@Translations.Are_you_sure?',
             text: "@Html.Raw(Translations.You_wont_be_able_to_revert_this)!",
@@ -93,6 +97,10 @@
                             '@Translations.Record_has_been_deleted.',
                             'success'
                         );
+
+                        if (shouldReload) {
+                            location.reload();
+                        }
 
                         $(options.searchFormElement).submit();
                     }

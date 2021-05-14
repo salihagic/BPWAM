@@ -1,4 +1,5 @@
 ﻿@inject ICurrentUser currentUser
+@inject IViewHelperService viewHelperService
 @{
     Layout = null;
     var currentUserFullName = currentUser.FullName();
@@ -48,6 +49,22 @@
                     </div>
                 </div>
             </a>
+            @if (viewHelperService.ShowConvertFromGuestToRegularItem())
+            {
+                <a href="@Url.Action("ConvertFromGuestToRegular", "Account")" class="kt-notification__item">
+                    <div class="kt-notification__item-icon">
+                        <i class="flaticon-grid-menu kt-font-success"></i>
+                    </div>
+                    <div class="kt-notification__item-details">
+                        <div class="kt-notification__item-title kt-font-bold">
+                            Convert guest account to a regular one
+                        </div>
+                        <div class="kt-notification__item-time">
+                            By choosing this option you will keep the company and all related data even after the 24h period, your data will not be lost
+                        </div>
+                    </div>
+                </a>
+            }
             <div class="kt-notification__custom">
                 <a asp-area="" asp-controller="Authentication" asp-action="Logout" class="btn btn-label-brand btn-sm btn-bold">Sign Out</a>
             </div>

@@ -119,7 +119,9 @@ namespace BPWA.Web.Services.Services
 
             bool hasMultipleCompanies = _databaseContext.Companies
                 .IgnoreQueryFilters()
-                .Any(x => x.CompanyId == user.CompanyId);
+                .Where(x => !x.IsDeleted)
+                .Where(x => x.CompanyId == user.CompanyId)
+                .Any();
 
             if (hasMultipleCompanies)
                 claims.Add(new Claim(AppClaims.Meta.HasMultipleCompanies, hasMultipleCompanies.ToString()));

@@ -97,16 +97,16 @@ namespace BPWA.DAL.Database
         #region Helpers 
 
         private ICurrentCompany _currentCompany;
-        private ICurrentUserBaseCompany _currentUserBaseCompany;
+        private ICurrentBaseCompany _currentBaseCompany;
 
         public DatabaseContext(
             DbContextOptions<DatabaseContext> options,
             ICurrentCompany currentCompany,
-            ICurrentUserBaseCompany currentUserBaseCompany
+            ICurrentBaseCompany currentBaseCompany
             ) : base(options)
         {
             _currentCompany = currentCompany;
-            _currentUserBaseCompany = currentUserBaseCompany;
+            _currentBaseCompany = currentBaseCompany;
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -153,13 +153,13 @@ namespace BPWA.DAL.Database
             //Other levels
             Set<Company>().IgnoreQueryFilters().Any(y => y.Id == entity.CompanyId && (
                 //Level 1 company
-                (y.Id == _currentCompany.Id() && (_currentUserBaseCompany.IsGuest() || y.AccountType == AccountType.Regular)) ||
+                (y.Id == _currentCompany.Id() && (_currentBaseCompany.IsGuest() || y.AccountType == AccountType.Regular)) ||
                 //Level 2 company
-                (y.CompanyId == _currentCompany.Id() && (_currentUserBaseCompany.IsGuest() || y.Company.AccountType == AccountType.Regular)) ||
+                (y.CompanyId == _currentCompany.Id() && (_currentBaseCompany.IsGuest() || y.Company.AccountType == AccountType.Regular)) ||
                 //Level 3 company
-                (y.Company.CompanyId == _currentCompany.Id() && (_currentUserBaseCompany.IsGuest() || y.Company.Company.AccountType == AccountType.Regular)) ||
+                (y.Company.CompanyId == _currentCompany.Id() && (_currentBaseCompany.IsGuest() || y.Company.Company.AccountType == AccountType.Regular)) ||
                 //Level 4 company
-                (y.Company.Company.CompanyId == _currentCompany.Id() && (_currentUserBaseCompany.IsGuest() || y.Company.Company.Company.AccountType == AccountType.Regular))
+                (y.Company.Company.CompanyId == _currentCompany.Id() && (_currentBaseCompany.IsGuest() || y.Company.Company.Company.AccountType == AccountType.Regular))
             //...
             ))
             ));
@@ -175,13 +175,13 @@ namespace BPWA.DAL.Database
             //Other levels
             Set<Company>().IgnoreQueryFilters().Any(y => y.Id == entity.CompanyId && (
                 //Level 1 company
-                (y.Id == _currentCompany.Id() && (_currentUserBaseCompany.IsGuest() || y.AccountType == AccountType.Regular)) ||
+                (y.Id == _currentCompany.Id() && (_currentBaseCompany.IsGuest() || y.AccountType == AccountType.Regular)) ||
                 //Level 2 company
-                (_currentCompany.Id() != null && y.CompanyId == _currentCompany.Id() && (_currentUserBaseCompany.IsGuest() || y.Company.AccountType == AccountType.Regular)) ||
+                (_currentCompany.Id() != null && y.CompanyId == _currentCompany.Id() && (_currentBaseCompany.IsGuest() || y.Company.AccountType == AccountType.Regular)) ||
                 //Level 3 company
-                (_currentCompany.Id() != null && y.Company.CompanyId == _currentCompany.Id() && (_currentUserBaseCompany.IsGuest() || y.Company.Company.AccountType == AccountType.Regular)) ||
+                (_currentCompany.Id() != null && y.Company.CompanyId == _currentCompany.Id() && (_currentBaseCompany.IsGuest() || y.Company.Company.AccountType == AccountType.Regular)) ||
                 //Level 4 company
-                (_currentCompany.Id() != null && y.Company.Company.CompanyId == _currentCompany.Id() && (_currentUserBaseCompany.IsGuest() || y.Company.Company.Company.AccountType == AccountType.Regular))
+                (_currentCompany.Id() != null && y.Company.Company.CompanyId == _currentCompany.Id() && (_currentBaseCompany.IsGuest() || y.Company.Company.Company.AccountType == AccountType.Regular))
             //...
             ))
             ));

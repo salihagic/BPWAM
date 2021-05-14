@@ -46,6 +46,7 @@
 
         #region Items
 
+        bool ShowConvertFromGuestToRegularItem();
         bool ShowCompanyCompaniesItem();
         bool ShowCompanyRolesItem();
         bool ShowCompanyUsersItem();

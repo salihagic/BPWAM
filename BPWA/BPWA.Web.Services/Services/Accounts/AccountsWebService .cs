@@ -23,6 +23,8 @@ namespace BPWA.Web.Services.Services
         AccountsService,
         IAccountsWebService
     {
+        private ICurrentBaseCompany _currentBaseCompany;
+
         public AccountsWebService(
             DatabaseContext databaseContext,
             IMapper mapper,
@@ -31,7 +33,8 @@ namespace BPWA.Web.Services.Services
             ICurrentUser currentUser,
             IEmailService emailService,
             RouteSettings routeSettings,
-            IUsersService usersService
+            IUsersService usersService,
+            ICurrentBaseCompany currentBaseCompany
             ) : base(
                 databaseContext,
                 mapper,
@@ -43,6 +46,7 @@ namespace BPWA.Web.Services.Services
                 usersService
                 )
         {
+            _currentBaseCompany = currentBaseCompany;
         }
 
         public async Task<UserDTO> RegisterGuestAccountAndSignIn()
@@ -108,6 +112,35 @@ namespace BPWA.Web.Services.Services
             await SignInManager.SignInAsync(companyAdmin, true);
 
             return Mapper.Map<UserDTO>(companyAdmin);
+        }
+
+        public async Task ConvertFromGuestToRegular()
+        {
+            var companies = await DatabaseContext.Companies
+                .IgnoreQueryFilters()
+                .Where(x => !x.IsDeleted)
+                .Where(x =>
+                //All
+                ((_currentBaseCompany.Id() == null && x.AccountType == AccountType.Regular) ||
+                //Level 0 company
+                (x.Id == _currentBaseCompany.Id() && (_currentBaseCompany.IsGuest() || x.AccountType == AccountType.Regular)) ||
+                //Level 1 company
+                (x.CompanyId == _currentBaseCompany.Id() && (_currentBaseCompany.IsGuest() || x.AccountType == AccountType.Regular)) ||
+                //Level 2 company
+                (x.Company.CompanyId == _currentBaseCompany.Id() && (_currentBaseCompany.IsGuest() || x.AccountType == AccountType.Regular)) ||
+                //Level 3 company
+                (x.Company.Company.CompanyId == _currentBaseCompany.Id() && (_currentBaseCompany.IsGuest() || x.AccountType == AccountType.Regular)) ||
+                //Level 4 company
+                (x.Company.Company.Company.CompanyId == _currentBaseCompany.Id() && (_currentBaseCompany.IsGuest() || x.AccountType == AccountType.Regular))
+                //...
+                )).ToListAsync();
+
+            companies.ForEach(x => x.AccountType = AccountType.Regular);
+
+            DatabaseContext.Companies.UpdateRange(companies);
+            await DatabaseContext.SaveChangesAsync();
+
+            await RefreshSignIn();
         }
 
         #region Update account 
