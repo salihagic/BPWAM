@@ -192,61 +192,69 @@ namespace BPWA.DAL.Database
 
         #region SaveChanges 
 
-        bool _ignoreCompanyId = false;
+        private DatabaseContextOptions _options = new DatabaseContextOptions();
 
-        public int SaveChangesWithoutCompanyId()
+        /// <summary>
+        /// Allows the user to disable automatic attaching of the 
+        /// CompanyId while persisting changes to the database for
+        /// all entities that implement IBaseCompanyEntity
+        /// </summary>
+        /// <returns>DatabaseContext</returns>
+        public DatabaseContext IgnoreCompanyStamps()
         {
-            _ignoreCompanyId = true;
-            var result = base.SaveChanges();
-            _ignoreCompanyId = false;
-            return result;
+            _options.IgnoreCompanyStampsOnSaveChanges = true;
+            return this;
         }
 
-        public int SaveChangesWithoutCompanyId(bool acceptAllChangesOnSuccess)
+        /// <summary>
+        /// Allows the user to disable automatic attaching of the 
+        /// DateTime stamps while persisting changes to the database for
+        /// all entities that implement IBaseAuditableEntity
+        /// </summary>
+        /// <returns>DatabaseContext</returns>
+        public DatabaseContext IgnoreAuditableStamps()
         {
-            _ignoreCompanyId = true;
-            var result = base.SaveChanges(acceptAllChangesOnSuccess);
-            _ignoreCompanyId = false;
-            return result;
+            _options.IgnoreAuditableStampsOnSaveChanges = true;
+            return this;
         }
 
-        public async Task<int> SaveChangesAsyncWithoutCompanyId(CancellationToken cancellationToken = default)
+        /// <summary>
+        /// Allows the user to disable automatic attaching of the 
+        /// DateTime stamps and IsDeleted value while persisting changes 
+        /// to the database for all entities that implement IBaseSoftDeletableEntity
+        /// </summary>
+        /// <returns>DatabaseContext</returns>
+        public DatabaseContext IgnoreSoftDeletableStamps()
         {
-            _ignoreCompanyId = true;
-            var result = await base.SaveChangesAsync(cancellationToken);
-            _ignoreCompanyId = false;
-            return result;
-        }
-
-        public async Task<int> SaveChangesAsyncWithoutCompanyId(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
-        {
-            _ignoreCompanyId = true;
-            var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-            _ignoreCompanyId = false;
-            return result;
+            _options.IgnoreSoftDeletableStampsOnSaveChanges = true;
+            return this;
         }
 
         public override int SaveChanges()
         {
             OnBeforeSaveChanges();
+            _options.Reset();
             return base.SaveChanges();
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
             OnBeforeSaveChanges();
+            _options.Reset();
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             OnBeforeSaveChanges();
+            _options.Reset();
             return base.SaveChangesAsync(cancellationToken);
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
             OnBeforeSaveChanges();
+            _options.Reset();
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
@@ -269,13 +277,13 @@ namespace BPWA.DAL.Database
 
         private void HandleEntityStateAdded(EntityEntry entity)
         {
-            if (entity.Entity is IBaseAuditableEntity)
+            if (entity.Entity is IBaseAuditableEntity && !_options.IgnoreAuditableStampsOnSaveChanges)
             {
                 ((IBaseAuditableEntity)entity.Entity).CreatedAtUtc = DateTime.UtcNow;
             }
-            if (entity.Entity is IBaseCompanyEntity && !_ignoreCompanyId)
+            if (entity.Entity is IBaseCompanyEntity && !_options.IgnoreCompanyStampsOnSaveChanges)
             {
-                ((IBaseCompanyEntity)entity.Entity).CompanyId = _currentCompany.Id();
+                ((IBaseCompanyEntity)entity.Entity).CompanyId ??= _currentCompany.Id();
             }
         }
 
@@ -285,7 +293,7 @@ namespace BPWA.DAL.Database
 
         private void HandleEntityStateModified(EntityEntry entity)
         {
-            if (entity.Entity is IBaseAuditableEntity)
+            if (entity.Entity is IBaseAuditableEntity && !_options.IgnoreAuditableStampsOnSaveChanges)
             {
                 ((IBaseAuditableEntity)entity.Entity).ModifiedAtUtc = DateTime.UtcNow;
             }
@@ -297,7 +305,7 @@ namespace BPWA.DAL.Database
 
         private void HandleEntityStateDeleted(EntityEntry entity)
         {
-            if (entity.Entity is IBaseSoftDeletableEntity)
+            if (entity.Entity is IBaseSoftDeletableEntity && !_options.IgnoreSoftDeletableStampsOnSaveChanges)
             {
                 entity.State = EntityState.Modified;
                 ((IBaseSoftDeletableEntity)entity.Entity).IsDeleted = true;
@@ -305,8 +313,10 @@ namespace BPWA.DAL.Database
             else if (entity.Entity is IBaseSoftDeletableAuditableEntity)
             {
                 entity.State = EntityState.Modified;
-                ((IBaseSoftDeletableAuditableEntity)entity.Entity).IsDeleted = true;
-                ((IBaseSoftDeletableAuditableEntity)entity.Entity).DeletedAtUtc = DateTime.UtcNow;
+                if (!_options.IgnoreSoftDeletableStampsOnSaveChanges)
+                    ((IBaseSoftDeletableAuditableEntity)entity.Entity).IsDeleted = true;
+                if (!_options.IgnoreAuditableStampsOnSaveChanges)
+                    ((IBaseSoftDeletableAuditableEntity)entity.Entity).DeletedAtUtc = DateTime.UtcNow;
             }
 
             HandleCascadeSoftDelete(entity);

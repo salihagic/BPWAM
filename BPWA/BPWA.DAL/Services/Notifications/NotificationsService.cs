@@ -13,7 +13,8 @@ using System.Threading.Tasks;
 namespace BPWA.DAL.Services
 {
     public class NotificationsService : 
-        BaseTranslatableCRUDService<Notification, NotificationSearchModel, NotificationDTO>, INotificationsService
+        BaseTranslatableCRUDService<Notification, NotificationSearchModel, NotificationDTO>, 
+        INotificationsService
     {
         protected ICurrentUser _currentUser { get; }
 

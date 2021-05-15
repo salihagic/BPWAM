@@ -3,5 +3,6 @@
     public enum NotificationType
     {
         Info,
+        GuestAccountExpiration,
     }
 }

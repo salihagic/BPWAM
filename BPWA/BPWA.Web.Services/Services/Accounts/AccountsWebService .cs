@@ -24,6 +24,9 @@ namespace BPWA.Web.Services.Services
         IAccountsWebService
     {
         private ICurrentBaseCompany _currentBaseCompany;
+        private ICompanyActivityStatusLogsService _companyActivityStatusLogsService;
+        private INotificationsService _notificationsWebService;
+        private AppSettings _appSettings;
 
         public AccountsWebService(
             DatabaseContext databaseContext,
@@ -34,7 +37,10 @@ namespace BPWA.Web.Services.Services
             IEmailService emailService,
             RouteSettings routeSettings,
             IUsersService usersService,
-            ICurrentBaseCompany currentBaseCompany
+            ICurrentBaseCompany currentBaseCompany,
+            ICompanyActivityStatusLogsService companyActivityStatusLogsService,
+            INotificationsWebService notificationsWebService,
+            AppSettings appSettings
             ) : base(
                 databaseContext,
                 mapper,
@@ -47,6 +53,9 @@ namespace BPWA.Web.Services.Services
                 )
         {
             _currentBaseCompany = currentBaseCompany;
+            _companyActivityStatusLogsService = companyActivityStatusLogsService;
+            _notificationsWebService = notificationsWebService;
+            _appSettings = appSettings;
         }
 
         public async Task ChangePassword(ChangePasswordModel model)
@@ -66,6 +75,8 @@ namespace BPWA.Web.Services.Services
                 .Where(x => !x.IsDeleted)
                 .Where(x => x.AccountType == AccountType.Guest)
                 .CountAsync();
+
+            #region Add company
 
             var company = new Company
             {
@@ -91,7 +102,21 @@ namespace BPWA.Web.Services.Services
             };
 
             await DatabaseContext.Companies.AddAsync(company);
-            await DatabaseContext.SaveChangesAsyncWithoutCompanyId();
+            await DatabaseContext.IgnoreCompanyStamps().SaveChangesAsync();
+
+            #endregion
+
+            #region Add activity status
+
+            await _companyActivityStatusLogsService.Add(new CompanyActivityStatusLog
+            {
+                CompanyId = company.Id,
+                ActivityStatus = ActivityStatus.Active
+            });
+
+            #endregion
+
+            #region Add admin user
 
             var companyAdmin = new User
             {
@@ -112,7 +137,7 @@ namespace BPWA.Web.Services.Services
             };
 
             await DatabaseContext.Users.AddAsync(companyAdmin);
-            await DatabaseContext.SaveChangesAsyncWithoutCompanyId();
+            await DatabaseContext.IgnoreCompanyStamps().SaveChangesAsync();
 
             var result = await UserManager.AddPasswordAsync(companyAdmin, "demo");
 
@@ -120,6 +145,26 @@ namespace BPWA.Web.Services.Services
                 throw new ValidationException(result.Errors.Select(x => x.Description).ToArray());
 
             await SignInManager.SignInAsync(companyAdmin, true);
+
+            #endregion
+
+            #region Add notification and send email
+
+            var expirationDateTime = DateTime.UtcNow.Add(_appSettings.GuestAccountLifespan);
+
+            var expirationDateTimeString = $"{expirationDateTime.ToString("dd.MM.yyyy HH:mm:ss")} UTC"; 
+
+            await _notificationsWebService.Add(new Notification
+            {
+                NotificationDistributionType = NotificationDistributionType.SingleUser,
+                CompanyId = company.Id,
+                UserId = companyAdmin.Id,
+                NotificationType = NotificationType.GuestAccountExpiration,
+                Title = "Account expiration",
+                Description = $"Your company {company.Name} and all related data will be deleted at {expirationDateTimeString} if you do not convert the company account type to a regular one.",
+            });
+
+            #endregion
 
             return Mapper.Map<UserDTO>(companyAdmin);
         }
@@ -150,7 +195,22 @@ namespace BPWA.Web.Services.Services
             DatabaseContext.Companies.UpdateRange(companies);
             await DatabaseContext.SaveChangesAsync();
 
+            await DeleteGuestAccountExpirationNotifications(_currentBaseCompany.Id().GetValueOrDefault());
+
             await RefreshSignIn();
+        }
+
+        async Task DeleteGuestAccountExpirationNotifications(int companyId)
+        {
+            var notifications = await DatabaseContext.Notifications
+                .Include(x => x.NotificationLogs)
+                .Where(x => x.NotificationType == NotificationType.GuestAccountExpiration)
+                .Where(x => x.CompanyId == companyId)
+                .ToListAsync();
+
+            DatabaseContext.RemoveRange(notifications);
+
+            await DatabaseContext.SaveChangesAsync();
         }
 
         #region Update account 

@@ -78,10 +78,10 @@ namespace BPWA.DAL.Database
                     var rootRoles = GetRootCompanyRoles();
 
                     await databaseContext.Roles.AddRangeAsync(rootRoles);
-                    await databaseContext.SaveChangesAsyncWithoutCompanyId();
+                    await databaseContext.IgnoreCompanyStamps().SaveChangesAsync();
 
                     superAdminUser.UserRoles.AddRange(rootRoles.Select(x => new UserRole { RoleId = x.Id }));
-                    await databaseContext.SaveChangesAsyncWithoutCompanyId();
+                    await databaseContext.IgnoreCompanyStamps().SaveChangesAsync();
 
                     #endregion
 
@@ -103,7 +103,7 @@ namespace BPWA.DAL.Database
 
                     await databaseContext.Companies.AddAsync(companyX);
 
-                    await databaseContext.SaveChangesAsyncWithoutCompanyId();
+                    await databaseContext.IgnoreCompanyStamps().SaveChangesAsync();
 
                     await companyActivityStatusLogsService.Add(new CompanyActivityStatusLog
                     {
@@ -125,7 +125,7 @@ namespace BPWA.DAL.Database
                     companyXAdminUser.CompanyId = companyX.Id;
                     companyXAdminUser.CurrentCompanyId = companyX.Id;
 
-                    await databaseContext.SaveChangesAsyncWithoutCompanyId();
+                    await databaseContext.IgnoreCompanyStamps().SaveChangesAsync();
 
                     #endregion
 
@@ -149,7 +149,7 @@ namespace BPWA.DAL.Database
                     await databaseContext.Companies.AddAsync(companyY);
                     companyY.CompanyId = companyX.Id;
 
-                    await databaseContext.SaveChangesAsyncWithoutCompanyId();
+                    await databaseContext.IgnoreCompanyStamps().SaveChangesAsync();
 
                     await companyActivityStatusLogsService.Add(new CompanyActivityStatusLog
                     {
@@ -171,7 +171,7 @@ namespace BPWA.DAL.Database
                     companyYAdminUser.CompanyId = companyY.Id;
                     companyYAdminUser.CurrentCompanyId = companyY.Id;
 
-                    await databaseContext.SaveChangesAsyncWithoutCompanyId();
+                    await databaseContext.IgnoreCompanyStamps().SaveChangesAsync();
 
                     #endregion
                 }

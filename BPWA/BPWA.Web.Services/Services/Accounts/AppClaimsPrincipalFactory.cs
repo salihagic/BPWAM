@@ -68,7 +68,9 @@ namespace BPWA.Web.Services.Services
                 .IgnoreQueryFilters()
                 .Include(x => x.Role.RoleClaims)
                 .Where(x =>
-                    !x.IsDeleted && (
+                    !x.IsDeleted && 
+                    x.UserId == user.Id && 
+                    (
                     //All
                     user.CompanyId == null || x.CompanyId == null ||
                     //Level 1 company
