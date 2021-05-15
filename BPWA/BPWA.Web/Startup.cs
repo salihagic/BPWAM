@@ -1,4 +1,5 @@
 using BPWA.Web.Configuration;
+using BPWA.Web.Helpers.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +28,7 @@ namespace BPWA
                     .ConfigureAutoMapper()
                     .AddHttpContextAccessor()
                     .AddSession()
+                    .AddHttpClient()
                     .ConfigureLocalization()
                     .AddControllersWithViews() //returns IMvcBuilder
                     .ConfigureNewtonsoftJson()
@@ -62,6 +64,8 @@ namespace BPWA
 
             app.UseRequestLocalization(app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>().Value);
             app.UseNToastNotify();
+
+            app.UseMiddleware<ActivityStatusMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

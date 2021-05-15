@@ -21,8 +21,9 @@ namespace BPWA.Web.Services.Services
             DatabaseContext databaseContext,
             IMapper mapper,
             ICurrentBaseCompany currentBaseCompany,
-            IAccountsWebService accountsWebService
-            ) : base(databaseContext, mapper)
+            IAccountsWebService accountsWebService,
+            ICompanyActivityStatusLogsService companyActivityStatusLogsService
+            ) : base(databaseContext, mapper, companyActivityStatusLogsService)
         {
             _currentBaseCompany = currentBaseCompany;
             _accountsWebService = accountsWebService;

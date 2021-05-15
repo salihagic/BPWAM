@@ -10,7 +10,13 @@ namespace BPWA.Web.Configuration
     {
         public static IServiceCollection ConfigureAppSettings(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<DatabaseSettings>(configuration.GetSection("DatabaseSettings")) 
+            services.Configure<AppSettings>(configuration.GetSection("AppSettings")) 
+                    .AddSingleton(resolver => resolver.GetRequiredService<IOptions<AppSettings>>().Value)
+                    .Configure<BackgroundServicesSettings>(configuration.GetSection("BackgroundServicesSettings")) 
+                    .AddSingleton(resolver => resolver.GetRequiredService<IOptions<BackgroundServicesSettings>>().Value)
+                    .Configure<CacheSettings>(configuration.GetSection("CacheSettings")) 
+                    .AddSingleton(resolver => resolver.GetRequiredService<IOptions<CacheSettings>>().Value)
+                    .Configure<DatabaseSettings>(configuration.GetSection("DatabaseSettings")) 
                     .AddSingleton(resolver => resolver.GetRequiredService<IOptions<DatabaseSettings>>().Value)
                     .Configure<EmailSettings>(configuration.GetSection("EmailSettings"))
                     .AddSingleton(resolver => resolver.GetRequiredService<IOptions<EmailSettings>>().Value)

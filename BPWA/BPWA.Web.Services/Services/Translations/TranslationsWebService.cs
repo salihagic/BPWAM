@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using BPWA.Common.Configuration;
 using BPWA.Common.Extensions;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
-using BPWA.DAL.Models;
 using BPWA.DAL.Services;
 using BPWA.Web.Services.Models;
 using Microsoft.Extensions.Caching.Memory;
@@ -17,8 +17,9 @@ namespace BPWA.Web.Services.Services
         public TranslationsWebService(
             DatabaseContext databaseContext,
             IMapper mapper,
-            IMemoryCache memoryCache
-            ) : base(databaseContext, mapper, memoryCache)
+            IMemoryCache memoryCache,
+            CacheSettings cacheSettings
+            ) : base(databaseContext, mapper, memoryCache, cacheSettings)
         {
         }
 
@@ -30,7 +31,7 @@ namespace BPWA.Web.Services.Services
 
             await AddOrUpdateRange(entities);
 
-            return ;
+            return;
         }
     }
 }

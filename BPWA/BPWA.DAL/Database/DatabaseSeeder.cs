@@ -54,6 +54,7 @@ namespace BPWA.DAL.Database
         private static async Task SeedCompanies(IServiceProvider serviceProvider)
         {
             var databaseContext = serviceProvider.GetService<DatabaseContext>();
+            var companyActivityStatusLogsService = serviceProvider.GetService<ICompanyActivityStatusLogsService>();
 
             try
             {
@@ -90,12 +91,25 @@ namespace BPWA.DAL.Database
                     {
                         Name = "Company X",
                         AccountType = AccountType.Regular,
-                        Roles = GetCompanyRoles()
+                        Roles = GetCompanyRoles(),
+                        CompanyActivityStatusLogs = new List<CompanyActivityStatusLog>
+                        {
+                            new CompanyActivityStatusLog
+                            {
+                                ActivityStatus = ActivityStatus.Active
+                            }
+                        }
                     };
 
                     await databaseContext.Companies.AddAsync(companyX);
 
                     await databaseContext.SaveChangesAsyncWithoutCompanyId();
+
+                    await companyActivityStatusLogsService.Add(new CompanyActivityStatusLog
+                    {
+                        CompanyId = companyX.Id,
+                        ActivityStatus = ActivityStatus.Active
+                    });
 
                     #endregion
 
@@ -122,13 +136,26 @@ namespace BPWA.DAL.Database
                         Name = "Company Y",
                         CompanyId = companyX.Id,
                         AccountType = AccountType.Regular,
-                        Roles = GetCompanyRoles()
+                        Roles = GetCompanyRoles(),
+                        CompanyActivityStatusLogs = new List<CompanyActivityStatusLog>
+                        {
+                            new CompanyActivityStatusLog
+                            {
+                                ActivityStatus = ActivityStatus.Active
+                            }
+                        }
                     };
 
                     await databaseContext.Companies.AddAsync(companyY);
                     companyY.CompanyId = companyX.Id;
 
                     await databaseContext.SaveChangesAsyncWithoutCompanyId();
+
+                    await companyActivityStatusLogsService.Add(new CompanyActivityStatusLog
+                    {
+                        CompanyId = companyY.Id,
+                        ActivityStatus = ActivityStatus.Active
+                    });
 
                     #endregion
 

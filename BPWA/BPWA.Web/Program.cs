@@ -1,3 +1,4 @@
+using BPWA.Background.Services;
 using BPWA.DAL.Database;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -93,6 +94,12 @@ namespace BPWA
                     webBuilder.UseConfiguration(Configuration)
                               .UseSerilog()
                               .UseStartup<Startup>();
+                })
+                .ConfigureServices(services =>
+                {
+                    services.AddHostedService<AccountDeactivationService>();
+                    services.AddHostedService<GuestAccountsDeleterService>();
+                    services.AddHostedService<AccountDeactivationNotificationsService>();
                 });
     }
 }

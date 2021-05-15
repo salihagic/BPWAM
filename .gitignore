@@ -33,3 +33,5 @@
 /BPWA/BPWA.Web/bin/Release/net5.0
 /BPWA/BPWA.Web/Properties/PublishProfiles
 /BPWA/BPWA.Web.Services/bin/Release/net5.0
+/BPWA/BPWA.Background.Services/bin/Debug/net5.0
+/BPWA/BPWA.Background.Services/obj

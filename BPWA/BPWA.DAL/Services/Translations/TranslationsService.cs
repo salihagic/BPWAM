@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BPWA.Common.Configuration;
 using BPWA.Common.Extensions;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
@@ -17,15 +18,19 @@ namespace BPWA.DAL.Services
     public class TranslationsService : BaseCRUDService<Translation, TranslationSearchModel, TranslationDTO>, ITranslationsService
     {
         private IMemoryCache _memoryCache;
+        private CacheSettings _cacheSettings;
+
         private string _currentCulture => CultureInfo.CurrentCulture.Name;
 
         public TranslationsService(
             DatabaseContext databaseContext,
             IMapper mapper,
-            IMemoryCache memoryCache
+            IMemoryCache memoryCache,
+            CacheSettings cacheSettings
             ) : base(databaseContext, mapper)
         {
             _memoryCache = memoryCache;
+            _cacheSettings = cacheSettings;
         }
 
         public async Task<T> Translate<T>(T element)
@@ -61,7 +66,7 @@ namespace BPWA.DAL.Services
                 translationCacheModel.CacheKey,
                 async entry =>
                 {
-                    entry.SlidingExpiration = TimeSpan.FromDays(5);
+                    entry.SlidingExpiration = _cacheSettings.TranslationDuration;
 
                     var translation = await DatabaseContext.Translations
                         .Where(x => x.Key == translationCacheModel.Key)

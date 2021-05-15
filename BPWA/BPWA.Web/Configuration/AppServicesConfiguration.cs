@@ -13,6 +13,7 @@ namespace BPWA.Web.Configuration
             services.AddScoped<IAccountsWebService, AccountsWebService>()
                     .AddScoped<ICitiesWebService, CitiesWebService>()
                     .AddScoped<ICompaniesWebService, CompaniesWebService>()
+                    .AddScoped<ICompanyActivityStatusLogsService, CompanyActivityStatusLogsService>()
                     .AddScoped<IConfigurationWebService, ConfigurationWebService>()
                     .AddScoped<ICountriesWebService, CountriesWebService>()
                     .AddScoped<ICurrenciesWebService, CurrenciesWebService>()

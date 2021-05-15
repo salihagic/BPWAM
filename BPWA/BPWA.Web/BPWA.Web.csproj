@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BPWA.Background.Services\BPWA.Background.Services.csproj" />
     <ProjectReference Include="..\BPWA.Common\BPWA.Common.csproj" />
     <ProjectReference Include="..\BPWA.Web.Services\BPWA.Web.Services.csproj" />
   </ItemGroup>

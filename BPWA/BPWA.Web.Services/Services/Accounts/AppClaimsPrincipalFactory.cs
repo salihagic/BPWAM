@@ -70,7 +70,7 @@ namespace BPWA.Web.Services.Services
                 .Where(x =>
                     !x.IsDeleted && (
                     //All
-                    user.CompanyId == null ||
+                    user.CompanyId == null || x.CompanyId == null ||
                     //Level 1 company
                     x.CompanyId == user.CompanyId ||
                     //Level 2 company

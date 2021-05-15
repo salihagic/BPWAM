@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BPWA.Web.Services", "BPWA.W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BPWA.Api.Services", "BPWA.Api.Services\BPWA.Api.Services.csproj", "{85FB4D08-7864-412E-ABD0-48E1F4EBF7A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BPWA.Common", "BPWA.Common\BPWA.Common.csproj", "{D793040B-FB73-439D-ADD9-897A65BC08D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BPWA.Common", "BPWA.Common\BPWA.Common.csproj", "{D793040B-FB73-439D-ADD9-897A65BC08D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BPWA.Background.Services", "BPWA.Background.Services\BPWA.Background.Services.csproj", "{A80A5D75-6511-4481-B770-CA9FFAD7B4D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{D793040B-FB73-439D-ADD9-897A65BC08D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D793040B-FB73-439D-ADD9-897A65BC08D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D793040B-FB73-439D-ADD9-897A65BC08D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A80A5D75-6511-4481-B770-CA9FFAD7B4D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A80A5D75-6511-4481-B770-CA9FFAD7B4D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A80A5D75-6511-4481-B770-CA9FFAD7B4D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A80A5D75-6511-4481-B770-CA9FFAD7B4D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
