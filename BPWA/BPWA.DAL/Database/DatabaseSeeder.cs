@@ -91,25 +91,12 @@ namespace BPWA.DAL.Database
                     {
                         Name = "Company X",
                         AccountType = AccountType.Regular,
-                        Roles = GetCompanyRoles(),
-                        CompanyActivityStatusLogs = new List<CompanyActivityStatusLog>
-                        {
-                            new CompanyActivityStatusLog
-                            {
-                                ActivityStatus = ActivityStatus.Active
-                            }
-                        }
+                        Roles = GetCompanyRoles()
                     };
 
                     await databaseContext.Companies.AddAsync(companyX);
 
                     await databaseContext.IgnoreCompanyStamps().SaveChangesAsync();
-
-                    await companyActivityStatusLogsService.Add(new CompanyActivityStatusLog
-                    {
-                        CompanyId = companyX.Id,
-                        ActivityStatus = ActivityStatus.Active
-                    });
 
                     #endregion
 
@@ -136,26 +123,13 @@ namespace BPWA.DAL.Database
                         Name = "Company Y",
                         CompanyId = companyX.Id,
                         AccountType = AccountType.Regular,
-                        Roles = GetCompanyRoles(),
-                        CompanyActivityStatusLogs = new List<CompanyActivityStatusLog>
-                        {
-                            new CompanyActivityStatusLog
-                            {
-                                ActivityStatus = ActivityStatus.Active
-                            }
-                        }
+                        Roles = GetCompanyRoles()
                     };
 
                     await databaseContext.Companies.AddAsync(companyY);
                     companyY.CompanyId = companyX.Id;
 
                     await databaseContext.IgnoreCompanyStamps().SaveChangesAsync();
-
-                    await companyActivityStatusLogsService.Add(new CompanyActivityStatusLog
-                    {
-                        CompanyId = companyY.Id,
-                        ActivityStatus = ActivityStatus.Active
-                    });
 
                     #endregion
 

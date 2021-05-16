@@ -73,15 +73,21 @@
             padding-top: 1em;
         }
 
-            .validation-summary-errors ul {
-                color: red;
-            }
+        .validation-summary-errors ul {
+            color: red;
+        }
 
         .kt-login__wrapper {
             display: flex;
             justify-content: center;
             align-items: center;
         }
+
+        .basic_header {
+            background-color: transparent;
+            border-bottom: 0;
+        }
+
     </style>
 </head>
 
@@ -91,9 +97,29 @@
 
     <!-- begin:: Page -->
     <div class="kt-grid kt-grid--ver kt-grid--root">
+
         <div class="kt-grid kt-grid--hor kt-grid--root  kt-login kt-login--v4 kt-login--signin" id="kt_login">
 
             <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor" style="background-image: url(../assets/media/bg/bg-2.jpg);">
+                <!-- begin:: Header -->
+                <div class="kt-header kt-grid__item basic_header">
+
+                    <div class="kt-header-menu-wrapper" id="kt_header_menu_wrapper">
+                        <div id="kt_header_menu" class="kt-header-menu kt-header-menu-mobile kt-header-menu--layout-default ">
+                        </div>
+                    </div>
+
+                    <!-- begin:: Header Topbar -->
+                    <div class="kt-header__topbar">
+
+                        <partial name="../Shared/Header/_Languages.cshtml" />
+                        <partial name="../Shared/Header/_Account.cshtml" />
+
+                    </div>
+
+                    <!-- end:: Header Topbar -->
+                </div>
+                <!-- end:: Header -->
                 <div class="kt-grid__item kt-grid__item--fluid kt-login__wrapper">
                     <div class="kt-login__container">
                         <div class="kt-login__logo">

@@ -107,7 +107,9 @@ namespace BPWA.Web.Services.Services
             await _companyActivityStatusLogsService.Add(new CompanyActivityStatusLog
             {
                 CompanyId = company.Id,
-                ActivityStatus = ActivityStatus.Active
+                ActivityStatus = ActivityStatus.Active,
+                ActivityStartUtc = DateTime.UtcNow,
+                ActivityEndUtc = DateTime.UtcNow + _appSettings.AccountLifespan
             });
 
             #endregion

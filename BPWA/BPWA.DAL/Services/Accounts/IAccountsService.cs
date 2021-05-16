@@ -7,5 +7,6 @@ namespace BPWA.DAL.Services
         Task UpdateTimezoneForCurrentUser(int timezoneUtcOffsetInMinutes);
         Task SendPasswordResetToken(string userId);
         Task DeleteExpiredGuestAccounts();
+        Task SendAccountDeactivationWarningNotifications();
     }
 }

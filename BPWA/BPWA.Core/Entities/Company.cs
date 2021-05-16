@@ -7,10 +7,7 @@ namespace BPWA.Core.Entities
     {
         public string Name { get; set; }
         public AccountType AccountType { get; set; }
-        /// <summary>
-        /// Refers ActivityStatus in CompanyActivityStatusLogs last created record
-        /// </summary>
-        public ActivityStatus ActivityStatus { get; set; }
+        public string Email { get; set; }
 
         public List<User> Users { get; set; }
         public List<Role> Roles { get; set; }

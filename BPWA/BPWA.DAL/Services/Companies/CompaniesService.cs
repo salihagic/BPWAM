@@ -4,12 +4,15 @@ using BPWA.Common.Extensions;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
 using BPWA.DAL.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace BPWA.DAL.Services
 {
-    public class CompaniesService : BaseCRUDService<Company, CompanySearchModel, CompanyDTO>, ICompaniesService
+    public class CompaniesService : 
+        BaseCRUDService<Company, CompanySearchModel, CompanyDTO>, 
+        ICompaniesService
     {
         private ICompanyActivityStatusLogsService _companyActivityStatusLogsService;
 
@@ -40,6 +43,13 @@ namespace BPWA.DAL.Services
             });
 
             return entity;
+        }
+
+        public async Task<bool> Exists(int companyId)
+        {
+            return await DatabaseContext.Companies
+                .IgnoreQueryFilters()
+                .AnyAsync(x => !x.IsDeleted && x.Id == companyId);
         }
     }
 }

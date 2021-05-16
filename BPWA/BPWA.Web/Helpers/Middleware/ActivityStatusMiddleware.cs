@@ -11,15 +11,20 @@ namespace BPWA.Web.Helpers.Middleware
         private readonly RequestDelegate _next;
         private ICompanyActivityStatusLogsService _companyActivityStatusLogsService;
         private ICurrentBaseCompany _currentBaseCompany;
-        private List<ActivityStatusAllowedRoute> _allowedRoutes = new List<ActivityStatusAllowedRoute>
+        private ICompaniesService _companiesService;
+        private static List<ActivityStatusAllowedRoute> _allowedRoutes = new List<ActivityStatusAllowedRoute>
         {
             new ActivityStatusAllowedRoute { Controller = "Account", Action = "Deactivated" },
             new ActivityStatusAllowedRoute { Controller = "Authentication", Action = "Login" },
             new ActivityStatusAllowedRoute { Controller = "Account", Action = "Edit" },
+            new ActivityStatusAllowedRoute { Controller = "Account", Action = "ChangePassword" },
             new ActivityStatusAllowedRoute { Controller = "Account", Action = "RegisterGuestAccountAndSignIn" },
+            new ActivityStatusAllowedRoute { Controller = "Home", Action = "ChangeLanguage" },
         };
-        private ActivityStatusAllowedRoute DefaultRoute =
+        private static ActivityStatusAllowedRoute DefaultRoute =
             new ActivityStatusAllowedRoute { Controller = "Account", Action = "Deactivated" };
+        private static ActivityStatusAllowedRoute LoginRoute =
+            new ActivityStatusAllowedRoute { Controller = "Authentication", Action = "Login" };
 
         public ActivityStatusMiddleware(RequestDelegate next)
         {
@@ -29,11 +34,13 @@ namespace BPWA.Web.Helpers.Middleware
         public async Task InvokeAsync(
             HttpContext context,
             ICompanyActivityStatusLogsService companyActivityStatusLogsService,
-            ICurrentBaseCompany currentBaseCompany
+            ICurrentBaseCompany currentBaseCompany,
+            ICompaniesService companiesService
             )
         {
             _companyActivityStatusLogsService = companyActivityStatusLogsService;
             _currentBaseCompany = currentBaseCompany;
+            _companiesService = companiesService;
 
             var doesNotHaveBaseCompanyId = !_currentBaseCompany.Id().HasValue;
             var isBaseCompanyActive = await _companyActivityStatusLogsService.IsActive(_currentBaseCompany.Id().GetValueOrDefault());
@@ -43,9 +50,18 @@ namespace BPWA.Web.Helpers.Middleware
             var isAllowedRoute = _allowedRoutes.Any(x => x.Controller == controller && x.Action == action);
 
             if (doesNotHaveBaseCompanyId || isBaseCompanyActive || isAllowedRoute)
+            {
                 await _next.Invoke(context);
+            }
             else
-                context.Response.Redirect(DefaultRoute.Location);
+            {
+                var exists = await _companiesService.Exists(_currentBaseCompany.Id().GetValueOrDefault());
+
+                if (exists)
+                    context.Response.Redirect(DefaultRoute.Location);
+                else
+                    context.Response.Redirect(LoginRoute.Location);
+            }
         }
     }
 }

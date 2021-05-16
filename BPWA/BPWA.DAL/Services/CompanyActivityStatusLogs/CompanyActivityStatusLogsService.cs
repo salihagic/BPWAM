@@ -52,7 +52,11 @@ namespace BPWA.DAL.Services
 
                     var entity = await GetLastEntityByCompanyId(companyId);
 
-                    return Mapper.Map<CompanyActivityStatusCacheModel>(entity);
+                    return Mapper.Map<CompanyActivityStatusCacheModel>(entity) ?? new CompanyActivityStatusCacheModel
+                    {
+                        CompanyId = companyId,
+                        ActivityStatus = ActivityStatus.Active
+                    };
                 });
 
             return cacheEntry;
@@ -71,7 +75,7 @@ namespace BPWA.DAL.Services
         {
             var cacheModel = await GetLastByCompanyId(companyId);
 
-            return cacheModel != null && cacheModel.ActivityStatus == ActivityStatus.Active;
+            return cacheModel.ActivityStatus == ActivityStatus.Active;
         }
 
         public override async Task<CompanyActivityStatusLog> AddEntity(CompanyActivityStatusLog entity)

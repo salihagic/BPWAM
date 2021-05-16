@@ -127,11 +127,32 @@ namespace BPWA.DAL.Services
             if (companies.Any())
             {
                 DatabaseContext.RemoveRange(companies);
-                //await DatabaseContext.SaveChangesAsync();
                 await DatabaseContext.IgnoreSoftDeletableStamps().SaveChangesAsync();
 
                 foreach (var company in companies)
                     await CompanyActivityStatusLogsService.NotifyClientsForCacheUpdate(company.Id);
+            }
+        }
+
+        public async Task SendAccountDeactivationWarningNotifications()
+        {
+            if (!AppSettings.AccountLifespan.HasValue)
+                return;
+
+            var activeCompaniesSoonToExpire = await DatabaseContext.Companies
+                .IgnoreQueryFilters()
+                .Where(x => !x.IsDeleted)
+                .Where(x => x.AccountType == AccountType.Regular)
+                .Where(x => (x.CompanyActivityStatusLogs
+                    .Where(x => x.ActivityStatus == ActivityStatus.Active)
+                    .OrderBy(x => x.ActivityEndUtc)
+                    .Last().ActivityEndUtc - AppSettings.AccountDeactivationNotificationMargin) < DateTime.UtcNow
+                    )
+                .ToListAsync();
+
+            if (activeCompaniesSoonToExpire.Any())
+            {
+                //Send notification and email
             }
         }
     }
