@@ -1,4 +1,6 @@
 ﻿using BPWA.Common.Configuration;
+using BPWA.DAL.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,35 +14,39 @@ namespace BPWA.Background.Services
         private int executionCount = 0;
         private readonly ILogger<GuestAccountsDeleterService> _logger;
         private readonly BackgroundServicesSettings _backgroundServicesSettings;
+        private readonly IServiceProvider _serviceProvider;
         private Timer _timer;
 
         public GuestAccountsDeleterService(
             ILogger<GuestAccountsDeleterService> logger,
-            BackgroundServicesSettings backgroundServicesSettings
+            BackgroundServicesSettings backgroundServicesSettings,
+            IServiceProvider serviceProvider
             )
         {
             _logger = logger;
             _backgroundServicesSettings = backgroundServicesSettings;
+            _serviceProvider = serviceProvider;
         }
 
         public Task StartAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Guest accounts deleter service running.");
 
-            _timer = new Timer(
-                DoWork, 
-                null, 
-                TimeSpan.Zero,
+            _timer = new Timer(DoWork, null, TimeSpan.Zero,
                 _backgroundServicesSettings.GuestAccountsDeleterServiceRepeatingPeriod);
 
             return Task.CompletedTask;
         }
 
-        private void DoWork(object state)
+        private async void DoWork(object state)
         {
             var count = Interlocked.Increment(ref executionCount);
 
-            //Execute work here
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var accountsService = scope.ServiceProvider.GetService<IAccountsService>();
+                await accountsService.DeleteExpiredGuestAccounts();
+            }
 
             _logger.LogInformation("Guest accounts deleter service is working. Count: {Count}", count);
         }

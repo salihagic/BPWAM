@@ -11,6 +11,7 @@ namespace BPWA.Web.Configuration
         public static IServiceCollection ConfigureAppServices(this IServiceCollection services)
         {
             services.AddScoped<IAccountsWebService, AccountsWebService>()
+                    .AddScoped<IAccountsService, AccountsService>()
                     .AddScoped<ICitiesWebService, CitiesWebService>()
                     .AddScoped<ICompaniesWebService, CompaniesWebService>()
                     .AddScoped<ICompanyActivityStatusLogsService, CompanyActivityStatusLogsService>()

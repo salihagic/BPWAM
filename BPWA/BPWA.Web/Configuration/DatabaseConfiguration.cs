@@ -11,7 +11,7 @@ namespace BPWA.Web.Configuration
         public static IServiceCollection ConfigureDatabase(this IServiceCollection services, IConfiguration configuration)
         {
             var databaseSettings = services.BuildServiceProvider().GetRequiredService<DatabaseSettings>();
-
+ 
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseNpgsql(databaseSettings.ConnectionString));
 

@@ -16,6 +16,7 @@ namespace BPWA.Web.Helpers.Middleware
             new ActivityStatusAllowedRoute { Controller = "Account", Action = "Deactivated" },
             new ActivityStatusAllowedRoute { Controller = "Authentication", Action = "Login" },
             new ActivityStatusAllowedRoute { Controller = "Account", Action = "Edit" },
+            new ActivityStatusAllowedRoute { Controller = "Account", Action = "RegisterGuestAccountAndSignIn" },
         };
         private ActivityStatusAllowedRoute DefaultRoute =
             new ActivityStatusAllowedRoute { Controller = "Account", Action = "Deactivated" };
@@ -34,19 +35,17 @@ namespace BPWA.Web.Helpers.Middleware
             _companyActivityStatusLogsService = companyActivityStatusLogsService;
             _currentBaseCompany = currentBaseCompany;
 
-            if (!_currentBaseCompany.Id().HasValue ||
-                await _companyActivityStatusLogsService.IsActive(_currentBaseCompany.Id().GetValueOrDefault()) ||
-                _allowedRoutes.Any(x =>
-                    x.Controller == context.Request.RouteValues["Controller"]?.ToString() &&
-                    x.Action == context.Request.RouteValues["Action"]?.ToString()
-                ))
-            {
+            var doesNotHaveBaseCompanyId = !_currentBaseCompany.Id().HasValue;
+            var isBaseCompanyActive = await _companyActivityStatusLogsService.IsActive(_currentBaseCompany.Id().GetValueOrDefault());
+
+            var controller = context.Request.RouteValues["Controller"]?.ToString();
+            var action = context.Request.RouteValues["Action"]?.ToString();
+            var isAllowedRoute = _allowedRoutes.Any(x => x.Controller == controller && x.Action == action);
+
+            if (doesNotHaveBaseCompanyId || isBaseCompanyActive || isAllowedRoute)
                 await _next.Invoke(context);
-            }
             else
-            {
                 context.Response.Redirect(DefaultRoute.Location);
-            }
         }
     }
 }

@@ -49,7 +49,9 @@ namespace BPWA.Web.Services.Services
                 currentUser,
                 emailService,
                 routeSettings,
-                usersService
+                usersService,
+                appSettings,
+                companyActivityStatusLogsService
                 )
         {
             _currentBaseCompany = currentBaseCompany;
@@ -70,17 +72,11 @@ namespace BPWA.Web.Services.Services
 
         public async Task<UserDTO> RegisterGuestAccountAndSignIn()
         {
-            var guestCompaniesCount = await DatabaseContext.Companies
-                .IgnoreQueryFilters()
-                .Where(x => !x.IsDeleted)
-                .Where(x => x.AccountType == AccountType.Guest)
-                .CountAsync();
-
             #region Add company
 
             var company = new Company
             {
-                Name = $"Guest Company {guestCompaniesCount}",
+                Name = $"Guest Company",
                 AccountType = AccountType.Guest,
                 Roles = new List<Role>
                 {
@@ -121,10 +117,10 @@ namespace BPWA.Web.Services.Services
             var companyAdmin = new User
             {
                 Id = Guid.NewGuid().ToString(),
-                UserName = $"guest.admin.{guestCompaniesCount}",
-                NormalizedUserName = $"guest.admin.{guestCompaniesCount}".ToUpper(),
-                Email = $"guest.admin.{guestCompaniesCount}@BPWAM.com",
-                NormalizedEmail = $"guest.admin.{guestCompaniesCount}@BPWAM.com".ToUpper(),
+                UserName = $"guest.admin.{company.Id}",
+                NormalizedUserName = $"guest.admin.{company.Id}".ToUpper(),
+                Email = $"guest.admin.{company.Id}@BPWAM.com",
+                NormalizedEmail = $"guest.admin.{company.Id}@BPWAM.com".ToUpper(),
                 FirstName = "Guest",
                 LastName = "Admin",
                 CompanyId = company.Id,

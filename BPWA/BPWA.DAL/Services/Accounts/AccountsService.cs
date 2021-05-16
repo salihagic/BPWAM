@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using BPWA.Common.Configuration;
+using BPWA.Common.Enumerations;
 using BPWA.Common.Resources;
 using BPWA.Common.Services;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -24,6 +26,9 @@ namespace BPWA.DAL.Services
         protected readonly RouteSettings RouteSettings;
         protected readonly IUsersService UsersService;
 
+        public AppSettings AppSettings { get; }
+        public ICompanyActivityStatusLogsService CompanyActivityStatusLogsService { get; }
+
         public AccountsService(
             DatabaseContext databaseContext,
             IMapper mapper,
@@ -32,7 +37,9 @@ namespace BPWA.DAL.Services
             ICurrentUser currentUser,
             IEmailService emailService,
             RouteSettings routeSettings,
-            IUsersService usersService
+            IUsersService usersService,
+            AppSettings appSettings,
+            ICompanyActivityStatusLogsService companyActivityStatusLogsService
             )
         {
             DatabaseContext = databaseContext;
@@ -43,13 +50,18 @@ namespace BPWA.DAL.Services
             EmailService = emailService;
             RouteSettings = routeSettings;
             UsersService = usersService;
+            AppSettings = appSettings;
+            CompanyActivityStatusLogsService = companyActivityStatusLogsService;
         }
 
         public async Task<User> GetUserByUserNameOrEmail(string userName)
         {
             try
             {
-                var user = (await UserManager.FindByNameAsync(userName)) ?? (await UserManager.FindByEmailAsync(userName));
+                var user = await DatabaseContext.Users
+                    .IgnoreQueryFilters()
+                    .Where(x => x.UserName == userName || x.Email == userName)
+                    .FirstOrDefaultAsync();
 
                 if (user == null)
                     throw new Exception(Translations.User_name_or_email_invalid);
@@ -98,6 +110,29 @@ namespace BPWA.DAL.Services
         protected string GeneratePasswordResetUrl(User user, string token)
         {
             return $"{RouteSettings.WebUrl}{RouteSettings.PasswordResetUrl}?userId={WebUtility.UrlEncode(user.Id)}&token={WebUtility.UrlEncode(token)}";
+        }
+
+        public async Task DeleteExpiredGuestAccounts()
+        {
+            var companies = await DatabaseContext.Companies
+                .IgnoreQueryFilters()
+                .Include(x => x.Subcompanies)
+                .Include(x => x.CompanyActivityStatusLogs)
+                .Include(x => x.Users)
+                .Where(x => !x.IsDeleted)
+                .Where(x => x.AccountType == AccountType.Guest)
+                .Where(x => (x.CreatedAtUtc + AppSettings.GuestAccountLifespan) < DateTime.UtcNow)
+                .ToListAsync();
+
+            if (companies.Any())
+            {
+                DatabaseContext.RemoveRange(companies);
+                //await DatabaseContext.SaveChangesAsync();
+                await DatabaseContext.IgnoreSoftDeletableStamps().SaveChangesAsync();
+
+                foreach (var company in companies)
+                    await CompanyActivityStatusLogsService.NotifyClientsForCacheUpdate(company.Id);
+            }
         }
     }
 }

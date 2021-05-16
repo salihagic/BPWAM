@@ -97,41 +97,14 @@
                 <div class="kt-grid__item kt-grid__item--fluid kt-login__wrapper">
                     <div class="kt-login__container">
                         <div class="kt-login__logo">
-                            <a href="@Url.Action("Index", "Home")">
+                            <a href="@Url.Action("Login", "Authentication")">
                                 <img src="~/assets/media/logos/logo-5.png">
                             </a>
                         </div>
                         <div class="kt-login__signin">
                             <div class="kt-login__head">
-                                <h3 class="kt-login__title">@Translations.Reset_password</h3>
+                                <h3 class="kt-login__title">Account deactivated</h3>
                             </div>
-
-                            <form asp-controller="Account"
-                                  asp-action="ResetPassword"
-                                  method="POST"
-                                  class="kt-form kt-form--fit">
-
-                                <input asp-for="UserId" type="hidden" />
-                                <input asp-for="Token" type="hidden" />
-
-                                <div class="col-md-12 row">
-                                    <div class="col-md-12 form-group">
-                                        <label>@Translations.Password</label>
-                                        <input asp-for="Password" class="form-control m-input" placeholder="@Translations.Password">
-                                        <span asp-validation-for="Password" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 row">
-                                    <div class="col-md-12 form-group">
-                                        <label>@Translations.Password_confirmed</label>
-                                        <input asp-for="PasswordConfirmed" class="form-control m-input" placeholder="@Translations.Password_confirmed">
-                                        <span asp-validation-for="PasswordConfirmed" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="kt-login__actions">
-                                    <button class="btn btn-brand btn-pill kt-login__btn-primary">@Translations.Save</button>
-                                </div>
-                            </form>
                         </div>
                     </div>
                 </div>

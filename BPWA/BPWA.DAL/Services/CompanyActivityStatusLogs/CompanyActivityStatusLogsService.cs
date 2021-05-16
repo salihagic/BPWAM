@@ -6,6 +6,7 @@ using BPWA.DAL.Database;
 using BPWA.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -70,7 +71,7 @@ namespace BPWA.DAL.Services
         {
             var cacheModel = await GetLastByCompanyId(companyId);
 
-            return cacheModel == null || cacheModel.ActivityStatus == ActivityStatus.Active;
+            return cacheModel != null && cacheModel.ActivityStatus == ActivityStatus.Active;
         }
 
         public override async Task<CompanyActivityStatusLog> AddEntity(CompanyActivityStatusLog entity)
@@ -82,7 +83,7 @@ namespace BPWA.DAL.Services
             return result;
         }
 
-        protected async Task NotifyClientsForCacheUpdate(int companyId)
+        public async Task NotifyClientsForCacheUpdate(int companyId)
         {
             //Refresh cache item for WEB application
             await RefreshCacheByCompanyId(companyId);
@@ -93,13 +94,19 @@ namespace BPWA.DAL.Services
             await client.SendAsync(request);
         }
 
-        protected async Task RefreshCacheByCompanyId(int companyId)
+        public async Task RefreshCacheByCompanyId(int companyId)
         {
             var entity = await GetLastEntityByCompanyId(companyId);
 
-            var cacheModel = Mapper.Map<CompanyActivityStatusCacheModel>(entity);
+            var cacheModel = Mapper.Map<CompanyActivityStatusCacheModel>(entity) ?? new CompanyActivityStatusCacheModel
+            {
+                CompanyId = companyId
+            };
 
-            _memoryCache.Set(cacheModel.CacheKey, cacheModel);
+            if (entity == null)
+                _memoryCache.Remove(cacheModel.CacheKey);
+            else
+                _memoryCache.Set(cacheModel.CacheKey, cacheModel);
         }
     }
 }

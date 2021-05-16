@@ -5,6 +5,7 @@ using BPWA.DAL.Services;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Linq;
@@ -114,6 +115,7 @@ namespace BPWA.DAL.Database
         {
             base.OnModelCreating(builder);
             SetGlobalFilters(builder);
+            SetGlobalCascadeDelete(builder);
 
             #region Identity
 
@@ -128,7 +130,7 @@ namespace BPWA.DAL.Database
             #endregion
         }
 
-        #region Filters
+        #region Global
 
         /// <summary>
         /// This method sets the filters to every query 
@@ -188,6 +190,16 @@ namespace BPWA.DAL.Database
             ));
         }
 
+        void SetGlobalCascadeDelete(ModelBuilder builder)
+        {
+            var fks = builder.Model.GetEntityTypes()
+                .SelectMany(x => x.GetForeignKeys())
+                .Where(fk => !fk.IsOwnership);
+
+            foreach (var fk in fks)
+                fk.DeleteBehavior = DeleteBehavior.Cascade;
+        }
+
         #endregion
 
         #region SaveChanges 
@@ -232,29 +244,23 @@ namespace BPWA.DAL.Database
 
         public override int SaveChanges()
         {
-            OnBeforeSaveChanges();
-            _options.Reset();
             return base.SaveChanges();
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
             OnBeforeSaveChanges();
-            _options.Reset();
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            OnBeforeSaveChanges();
-            _options.Reset();
             return base.SaveChangesAsync(cancellationToken);
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
             OnBeforeSaveChanges();
-            _options.Reset();
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
@@ -271,6 +277,8 @@ namespace BPWA.DAL.Database
                 else if (entity.State == EntityState.Deleted)
                     HandleEntityStateDeleted(entity);
             }
+
+            _options.Reset();
         }
 
         #region Handle EntityState Added
@@ -310,16 +318,15 @@ namespace BPWA.DAL.Database
                 entity.State = EntityState.Modified;
                 ((IBaseSoftDeletableEntity)entity.Entity).IsDeleted = true;
             }
-            else if (entity.Entity is IBaseSoftDeletableAuditableEntity)
+            else if (entity.Entity is IBaseSoftDeletableAuditableEntity && !_options.IgnoreSoftDeletableStampsOnSaveChanges)
             {
                 entity.State = EntityState.Modified;
-                if (!_options.IgnoreSoftDeletableStampsOnSaveChanges)
-                    ((IBaseSoftDeletableAuditableEntity)entity.Entity).IsDeleted = true;
-                if (!_options.IgnoreAuditableStampsOnSaveChanges)
-                    ((IBaseSoftDeletableAuditableEntity)entity.Entity).DeletedAtUtc = DateTime.UtcNow;
+                ((IBaseSoftDeletableAuditableEntity)entity.Entity).IsDeleted = true;
+                ((IBaseSoftDeletableAuditableEntity)entity.Entity).DeletedAtUtc = DateTime.UtcNow;
             }
 
-            HandleCascadeSoftDelete(entity);
+            if (!_options.IgnoreSoftDeletableStampsOnSaveChanges)
+                HandleCascadeSoftDelete(entity);
         }
 
         /// <summary>
@@ -338,7 +345,7 @@ namespace BPWA.DAL.Database
                         {
                             if (dependentEntry != null)
                             {
-                                HandleEntityStateDeleted(((NavigationEntry)dependentEntry).EntityEntry);
+                                HandleEntityStateDeleted(collectionEntry.FindEntry(dependentEntry));
                             }
                         }
                     }
