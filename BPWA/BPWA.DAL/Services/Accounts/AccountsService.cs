@@ -2,6 +2,7 @@
 using BPWA.Common.Configuration;
 using BPWA.Common.Enumerations;
 using BPWA.Common.Resources;
+using BPWA.Common.Security;
 using BPWA.Common.Services;
 using BPWA.Core.Entities;
 using BPWA.DAL.Database;
@@ -28,6 +29,7 @@ namespace BPWA.DAL.Services
 
         public AppSettings AppSettings { get; }
         public ICompanyActivityStatusLogsService CompanyActivityStatusLogsService { get; }
+        public INotificationsService NotificationsService { get; }
 
         public AccountsService(
             DatabaseContext databaseContext,
@@ -39,7 +41,8 @@ namespace BPWA.DAL.Services
             RouteSettings routeSettings,
             IUsersService usersService,
             AppSettings appSettings,
-            ICompanyActivityStatusLogsService companyActivityStatusLogsService
+            ICompanyActivityStatusLogsService companyActivityStatusLogsService,
+            INotificationsService notificationsService
             )
         {
             DatabaseContext = databaseContext;
@@ -52,6 +55,7 @@ namespace BPWA.DAL.Services
             UsersService = usersService;
             AppSettings = appSettings;
             CompanyActivityStatusLogsService = companyActivityStatusLogsService;
+            NotificationsService = notificationsService;
         }
 
         public async Task<User> GetUserByUserNameOrEmail(string userName)
@@ -142,6 +146,8 @@ namespace BPWA.DAL.Services
             var activeCompaniesSoonToExpire = await DatabaseContext.Companies
                 .IgnoreQueryFilters()
                 .Where(x => !x.IsDeleted)
+                //Only parent companies get notified
+                .Where(x => x.CompanyId == null)
                 .Where(x => x.AccountType == AccountType.Regular)
                 .Where(x => (x.CompanyActivityStatusLogs
                     .Where(x => x.ActivityStatus == ActivityStatus.Active)
@@ -153,6 +159,46 @@ namespace BPWA.DAL.Services
             if (activeCompaniesSoonToExpire.Any())
             {
                 //Send notification and email
+                foreach (var company in activeCompaniesSoonToExpire)
+                {
+                    #region Add notification and send email
+
+                    var companyActivityStatus = await DatabaseContext.CompanyActivityStatusLogs
+                        .IgnoreQueryFilters()
+                        .Where(x => !x.IsDeleted)
+                        .Where(x => x.CompanyId == company.Id)
+                        .Where(x => x.ActivityStatus == ActivityStatus.Active)
+                        .OrderBy(x => x.ActivityEndUtc)
+                        .LastAsync();
+
+                    var companyAdmin = await DatabaseContext.Users
+                        .IgnoreQueryFilters()
+                        .Where(x => !x.IsDeleted)
+                        .Where(x => x.CompanyId == company.Id)
+                        .Where(x => x.UserRoles.Any(y => y.Role.CompanyId == company.Id && y.Role.RoleClaims.Any(z => z.ClaimValue == AppClaims.Authorization.Company.CompanyGodMode)))
+                        .FirstOrDefaultAsync();
+
+                    var expirationDateTime = companyActivityStatus.ActivityEndUtc.GetValueOrDefault();
+
+                    var expirationDateTimeString = $"{expirationDateTime.ToString("dd.MM.yyyy HH:mm:ss")} UTC";
+
+                    var notification = new Notification
+                    {
+                        NotificationDistributionType = NotificationDistributionType.SingleUser,
+                        CompanyId = company.Id,
+                        UserId = companyAdmin.Id,
+                        NotificationType = NotificationType.GuestAccountExpiration,
+                        Title = "Company expiration",
+                        Description = $"Your company {company.Name} and all related data will be deactivated at {expirationDateTimeString} if you do extend the account duration.",
+                    };
+
+                    await NotificationsService.Add(notification);
+
+                    await EmailService.Send(company.Email, notification.Title, notification.Description);
+                    await EmailService.Send(companyAdmin.Email, notification.Title, notification.Description);
+
+                    #endregion
+                }
             }
         }
     }

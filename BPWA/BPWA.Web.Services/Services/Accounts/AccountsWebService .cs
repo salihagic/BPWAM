@@ -146,7 +146,7 @@ namespace BPWA.Web.Services.Services
 
             #endregion
 
-            #region Add notification and send email
+            #region Add notification
 
             var expirationDateTime = DateTime.UtcNow.Add(_appSettings.GuestAccountLifespan);
 
