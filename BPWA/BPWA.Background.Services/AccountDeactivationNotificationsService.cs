@@ -11,21 +11,21 @@ namespace BPWA.Background.Services
 {
     public class AccountDeactivationNotificationsService : IHostedService, IDisposable
     {
-        private int executionCount = 0;
-        private readonly ILogger<AccountDeactivationNotificationsService> _logger;
-        private readonly BackgroundServicesSettings _backgroundServicesSettings;
-        private readonly IServiceProvider _serviceProvider;
         private Timer _timer;
+        private int executionCount = 0;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly BackgroundServicesSettings _backgroundServicesSettings;
+        private readonly ILogger<AccountDeactivationNotificationsService> _logger;
 
         public AccountDeactivationNotificationsService(
-            ILogger<AccountDeactivationNotificationsService> logger,
+            IServiceProvider serviceProvider,
             BackgroundServicesSettings backgroundServicesSettings,
-            IServiceProvider serviceProvider
+            ILogger<AccountDeactivationNotificationsService> logger
             )
         {
             _logger = logger;
-            _backgroundServicesSettings = backgroundServicesSettings;
             _serviceProvider = serviceProvider;
+            _backgroundServicesSettings = backgroundServicesSettings;
         }
 
         public Task StartAsync(CancellationToken stoppingToken)

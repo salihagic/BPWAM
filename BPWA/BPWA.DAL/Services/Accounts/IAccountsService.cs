@@ -8,5 +8,6 @@ namespace BPWA.DAL.Services
         Task SendPasswordResetToken(string userId);
         Task DeleteExpiredGuestAccounts();
         Task SendAccountDeactivationWarningNotifications();
+        Task DeactivateExpiredAccounts();
     }
 }

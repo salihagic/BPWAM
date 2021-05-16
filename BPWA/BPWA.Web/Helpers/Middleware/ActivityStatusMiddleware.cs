@@ -16,6 +16,7 @@ namespace BPWA.Web.Helpers.Middleware
         {
             new ActivityStatusAllowedRoute { Controller = "Account", Action = "Deactivated" },
             new ActivityStatusAllowedRoute { Controller = "Authentication", Action = "Login" },
+            new ActivityStatusAllowedRoute { Controller = "Authentication", Action = "Logout" },
             new ActivityStatusAllowedRoute { Controller = "Account", Action = "Edit" },
             new ActivityStatusAllowedRoute { Controller = "Account", Action = "ChangePassword" },
             new ActivityStatusAllowedRoute { Controller = "Account", Action = "RegisterGuestAccountAndSignIn" },

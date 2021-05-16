@@ -23,13 +23,13 @@ namespace BPWA.Web.Services.Services
         AccountsService,
         IAccountsWebService
     {
+        private readonly IMapper _mapper;
         private readonly SignInManager<User> _signInManager;
         private readonly ICurrentBaseCompany _currentBaseCompany;
-        private readonly IMapper _mapper;
 
         public AccountsWebService(
-            AppSettings appSettings,
             IMapper mapper,
+            AppSettings appSettings,
             ICurrentUser currentUser,
             IEmailService emailService,
             IUsersService usersService,

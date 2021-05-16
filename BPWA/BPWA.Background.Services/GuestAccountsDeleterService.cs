@@ -11,21 +11,21 @@ namespace BPWA.Background.Services
 {
     public class GuestAccountsDeleterService : IHostedService, IDisposable
     {
+        private Timer _timer;
         private int executionCount = 0;
+        private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<GuestAccountsDeleterService> _logger;
         private readonly BackgroundServicesSettings _backgroundServicesSettings;
-        private readonly IServiceProvider _serviceProvider;
-        private Timer _timer;
 
         public GuestAccountsDeleterService(
+            IServiceProvider serviceProvider,
             ILogger<GuestAccountsDeleterService> logger,
-            BackgroundServicesSettings backgroundServicesSettings,
-            IServiceProvider serviceProvider
+            BackgroundServicesSettings backgroundServicesSettings
             )
         {
             _logger = logger;
-            _backgroundServicesSettings = backgroundServicesSettings;
             _serviceProvider = serviceProvider;
+            _backgroundServicesSettings = backgroundServicesSettings;
         }
 
         public Task StartAsync(CancellationToken stoppingToken)

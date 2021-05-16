@@ -1,4 +1,6 @@
 ﻿using BPWA.Common.Configuration;
+using BPWA.DAL.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,17 +11,20 @@ namespace BPWA.Background.Services
 {
     public class AccountDeactivationService : IHostedService, IDisposable
     {
+        private Timer _timer;
         private int executionCount = 0;
+        private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<AccountDeactivationService> _logger;
         private readonly BackgroundServicesSettings _backgroundServicesSettings;
-        private Timer _timer;
 
         public AccountDeactivationService(
+            IServiceProvider serviceProvider,
             ILogger<AccountDeactivationService> logger,
             BackgroundServicesSettings backgroundServicesSettings
             )
         {
             _logger = logger;
+            _serviceProvider = serviceProvider;
             _backgroundServicesSettings = backgroundServicesSettings;
         }
 
@@ -27,20 +32,21 @@ namespace BPWA.Background.Services
         {
             _logger.LogInformation("Account deactivation service running.");
 
-            _timer = new Timer(
-                DoWork, 
-                null, 
-                TimeSpan.Zero,
+            _timer = new Timer(DoWork, null, TimeSpan.Zero,
                 _backgroundServicesSettings.AccountDeactivationServiceRepeatingPeriod);
 
             return Task.CompletedTask;
         }
 
-        private void DoWork(object state)
+        private async void DoWork(object state)
         {
             var count = Interlocked.Increment(ref executionCount);
 
-            //Execute work here
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var accountsService = scope.ServiceProvider.GetService<IAccountsService>();
+                await accountsService.DeactivateExpiredAccounts();
+            }
 
             _logger.LogInformation("Account deactivation service is working. Count: {Count}", count);
         }

@@ -142,7 +142,13 @@ namespace BPWA.DAL.Services
                 //Only parent companies get notified
                 .Where(x => x.CompanyId == null)
                 .Where(x => x.AccountType == AccountType.Regular)
-                .Where(x => (x.CompanyActivityStatusLogs
+                .Where(x =>
+                    //Currently active
+                    x.CompanyActivityStatusLogs
+                    .OrderBy(x => x.ActivityEndUtc)
+                    .Last().ActivityStatus == ActivityStatus.Active &&
+                    //Soon to expire
+                    (x.CompanyActivityStatusLogs
                     .Where(x => x.ActivityStatus == ActivityStatus.Active)
                     .OrderBy(x => x.ActivityEndUtc)
                     .Last().ActivityEndUtc - AppSettings.AccountDeactivationNotificationMargin) < DateTime.UtcNow
@@ -173,7 +179,74 @@ namespace BPWA.DAL.Services
                     var expirationDateTime = companyActivityStatus.ActivityEndUtc.GetValueOrDefault();
                     var expirationDateTimeString = $"{expirationDateTime.ToString("dd.MM.yyyy HH:mm:ss")} UTC";
                     var title = "Company expiration";
-                    var description = $"Your company {company.Name} and all related data will be deactivated at {expirationDateTimeString} if you do extend the account duration.";
+                    var description = $"Your company {company.Name} and all related data will be deactivated at {expirationDateTimeString} if you do not extend the account duration.";
+
+                    if (companyAdmin != null)
+                    {
+                        var notification = new Notification
+                        {
+                            NotificationDistributionType = NotificationDistributionType.SingleUser,
+                            CompanyId = company.Id,
+                            UserId = companyAdmin.Id,
+                            NotificationType = NotificationType.GuestAccountExpiration,
+                            Title = title,
+                            Description = description,
+                        };
+
+                        await NotificationsService.Add(notification);
+
+                        await EmailService.Send(companyAdmin.Email, title, description);
+                    }
+
+                    await EmailService.Send(company.Email, title, description);
+
+                    #endregion
+                }
+            }
+        }
+
+        public async Task DeactivateExpiredAccounts()
+        {
+            if (!AppSettings.AccountLifespan.HasValue)
+                return;
+
+            var companiesToDeactivate = await DatabaseContext.Companies
+                .IgnoreQueryFilters()
+                .Where(x => !x.IsDeleted)
+                .Where(x => x.CompanyId == null)
+                .Where(x => x.AccountType == AccountType.Regular)
+                .Where(x => x.CompanyActivityStatusLogs
+                    .OrderBy(x => x.CreatedAtUtc)
+                    //If ActivityEndUtc is null, expression evaluates to false
+                    .Last().ActivityEndUtc < DateTime.UtcNow
+                    )
+                .ToListAsync();
+
+            if (companiesToDeactivate.Any())
+            {
+                foreach (var company in companiesToDeactivate)
+                {
+                    #region Deactivate
+
+                    await CompanyActivityStatusLogsService.Add(new CompanyActivityStatusLog
+                    {
+                        CompanyId = company.Id,
+                        ActivityStatus = ActivityStatus.Inactive
+                    });
+
+                    #endregion
+
+                    #region Add notification and send email
+
+                    var companyAdmin = await DatabaseContext.Users
+                        .IgnoreQueryFilters()
+                        .Where(x => !x.IsDeleted)
+                        .Where(x => x.CompanyId == company.Id)
+                        .Where(x => x.UserRoles.Any(y => y.Role.CompanyId == company.Id && y.Role.RoleClaims.Any(z => z.ClaimValue == AppClaims.Authorization.Company.CompanyGodMode)))
+                        .FirstOrDefaultAsync();
+
+                    var title = "Company deactivated";
+                    var description = $"Your company {company.Name} and all related data is deactivated. Please reactivate it if you want to continue using this service.";
 
                     if (companyAdmin != null)
                     {
