@@ -18,44 +18,37 @@ namespace BPWA.DAL.Services
 {
     public class AccountsService : IAccountsService
     {
-        protected readonly DatabaseContext DatabaseContext;
-        protected readonly IMapper Mapper;
-        protected readonly UserManager<User> UserManager;
-        protected readonly SignInManager<User> SignInManager;
+        protected readonly AppSettings AppSettings;
         protected readonly ICurrentUser CurrentUser;
         protected readonly IEmailService EmailService;
-        protected readonly RouteSettings RouteSettings;
         protected readonly IUsersService UsersService;
-
-        public AppSettings AppSettings { get; }
-        public ICompanyActivityStatusLogsService CompanyActivityStatusLogsService { get; }
-        public INotificationsService NotificationsService { get; }
+        protected readonly RouteSettings RouteSettings;
+        protected readonly UserManager<User> UserManager;
+        protected readonly DatabaseContext DatabaseContext;
+        protected readonly INotificationsService NotificationsService;
+        protected readonly ICompanyActivityStatusLogsService CompanyActivityStatusLogsService;
 
         public AccountsService(
-            DatabaseContext databaseContext,
-            IMapper mapper,
-            UserManager<User> userManager,
-            SignInManager<User> signInManager,
+            AppSettings appSettings,
             ICurrentUser currentUser,
             IEmailService emailService,
-            RouteSettings routeSettings,
             IUsersService usersService,
-            AppSettings appSettings,
-            ICompanyActivityStatusLogsService companyActivityStatusLogsService,
-            INotificationsService notificationsService
+            RouteSettings routeSettings,
+            UserManager<User> userManager,
+            DatabaseContext databaseContext,
+            INotificationsService notificationsService,
+            ICompanyActivityStatusLogsService companyActivityStatusLogsService
             )
         {
-            DatabaseContext = databaseContext;
-            Mapper = mapper;
-            UserManager = userManager;
-            SignInManager = signInManager;
-            CurrentUser = currentUser;
-            EmailService = emailService;
-            RouteSettings = routeSettings;
-            UsersService = usersService;
             AppSettings = appSettings;
-            CompanyActivityStatusLogsService = companyActivityStatusLogsService;
+            CurrentUser = currentUser;
+            UserManager = userManager;
+            EmailService = emailService;
+            UsersService = usersService;
+            RouteSettings = routeSettings;
+            DatabaseContext = databaseContext;
             NotificationsService = notificationsService;
+            CompanyActivityStatusLogsService = companyActivityStatusLogsService;
         }
 
         public async Task<User> GetUserByUserNameOrEmail(string userName)
@@ -158,7 +151,6 @@ namespace BPWA.DAL.Services
 
             if (activeCompaniesSoonToExpire.Any())
             {
-                //Send notification and email
                 foreach (var company in activeCompaniesSoonToExpire)
                 {
                     #region Add notification and send email
@@ -179,23 +171,28 @@ namespace BPWA.DAL.Services
                         .FirstOrDefaultAsync();
 
                     var expirationDateTime = companyActivityStatus.ActivityEndUtc.GetValueOrDefault();
-
                     var expirationDateTimeString = $"{expirationDateTime.ToString("dd.MM.yyyy HH:mm:ss")} UTC";
+                    var title = "Company expiration";
+                    var description = $"Your company {company.Name} and all related data will be deactivated at {expirationDateTimeString} if you do extend the account duration.";
 
-                    var notification = new Notification
+                    if (companyAdmin != null)
                     {
-                        NotificationDistributionType = NotificationDistributionType.SingleUser,
-                        CompanyId = company.Id,
-                        UserId = companyAdmin.Id,
-                        NotificationType = NotificationType.GuestAccountExpiration,
-                        Title = "Company expiration",
-                        Description = $"Your company {company.Name} and all related data will be deactivated at {expirationDateTimeString} if you do extend the account duration.",
-                    };
+                        var notification = new Notification
+                        {
+                            NotificationDistributionType = NotificationDistributionType.SingleUser,
+                            CompanyId = company.Id,
+                            UserId = companyAdmin.Id,
+                            NotificationType = NotificationType.GuestAccountExpiration,
+                            Title = title,
+                            Description = description,
+                        };
 
-                    await NotificationsService.Add(notification);
+                        await NotificationsService.Add(notification);
 
-                    await EmailService.Send(company.Email, notification.Title, notification.Description);
-                    await EmailService.Send(companyAdmin.Email, notification.Title, notification.Description);
+                        await EmailService.Send(companyAdmin.Email, title, description);
+                    }
+
+                    await EmailService.Send(company.Email, title, description);
 
                     #endregion
                 }

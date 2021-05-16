@@ -23,41 +23,38 @@ namespace BPWA.Web.Services.Services
         AccountsService,
         IAccountsWebService
     {
-        private ICurrentBaseCompany _currentBaseCompany;
-        private ICompanyActivityStatusLogsService _companyActivityStatusLogsService;
-        private INotificationsService _notificationsWebService;
-        private AppSettings _appSettings;
+        private readonly SignInManager<User> _signInManager;
+        private readonly ICurrentBaseCompany _currentBaseCompany;
+        private readonly IMapper _mapper;
 
         public AccountsWebService(
-            DatabaseContext databaseContext,
+            AppSettings appSettings,
             IMapper mapper,
-            UserManager<User> userManager,
-            SignInManager<User> signInManager,
             ICurrentUser currentUser,
             IEmailService emailService,
-            RouteSettings routeSettings,
             IUsersService usersService,
+            RouteSettings routeSettings,
+            UserManager<User> userManager,
+            DatabaseContext databaseContext,
+            SignInManager<User> signInManager,
             ICurrentBaseCompany currentBaseCompany,
-            ICompanyActivityStatusLogsService companyActivityStatusLogsService,
-            INotificationsWebService notificationsWebService,
-            AppSettings appSettings
+            INotificationsService notificationsService,
+            ICompanyActivityStatusLogsService companyActivityStatusLogsService
             ) : base(
-                databaseContext,
-                mapper,
-                userManager,
-                signInManager,
+                appSettings,
                 currentUser,
                 emailService,
-                routeSettings,
                 usersService,
-                appSettings,
+                routeSettings,
+                userManager,
+                databaseContext,
+                notificationsService,
                 companyActivityStatusLogsService
                 )
         {
+            _mapper = mapper;
+            _signInManager = signInManager;
             _currentBaseCompany = currentBaseCompany;
-            _companyActivityStatusLogsService = companyActivityStatusLogsService;
-            _notificationsWebService = notificationsWebService;
-            _appSettings = appSettings;
         }
 
         public async Task ChangePassword(ChangePasswordModel model)
@@ -104,12 +101,12 @@ namespace BPWA.Web.Services.Services
 
             #region Add activity status
 
-            await _companyActivityStatusLogsService.Add(new CompanyActivityStatusLog
+            await CompanyActivityStatusLogsService.Add(new CompanyActivityStatusLog
             {
                 CompanyId = company.Id,
                 ActivityStatus = ActivityStatus.Active,
                 ActivityStartUtc = DateTime.UtcNow,
-                ActivityEndUtc = DateTime.UtcNow + _appSettings.AccountLifespan
+                ActivityEndUtc = DateTime.UtcNow + AppSettings.AccountLifespan
             });
 
             #endregion
@@ -142,17 +139,17 @@ namespace BPWA.Web.Services.Services
             if (!result.Succeeded)
                 throw new ValidationException(result.Errors.Select(x => x.Description).ToArray());
 
-            await SignInManager.SignInAsync(companyAdmin, true);
+            await _signInManager.SignInAsync(companyAdmin, true);
 
             #endregion
 
             #region Add notification
 
-            var expirationDateTime = DateTime.UtcNow.Add(_appSettings.GuestAccountLifespan);
+            var expirationDateTime = DateTime.UtcNow.Add(AppSettings.GuestAccountLifespan);
 
             var expirationDateTimeString = $"{expirationDateTime.ToString("dd.MM.yyyy HH:mm:ss")} UTC"; 
 
-            await _notificationsWebService.Add(new Notification
+            await NotificationsService.Add(new Notification
             {
                 NotificationDistributionType = NotificationDistributionType.SingleUser,
                 CompanyId = company.Id,
@@ -164,7 +161,7 @@ namespace BPWA.Web.Services.Services
 
             #endregion
 
-            return Mapper.Map<UserDTO>(companyAdmin);
+            return _mapper.Map<UserDTO>(companyAdmin);
         }
 
         public async Task ConvertFromGuestToRegular()
@@ -223,7 +220,7 @@ namespace BPWA.Web.Services.Services
                     .Include(x => x.City)
                     .FirstOrDefaultAsync(x => x.Id == CurrentUser.Id());
 
-                var model = Mapper.Map<AccountUpdateModel>(user);
+                var model = _mapper.Map<AccountUpdateModel>(user);
 
                 return model;
             }
@@ -242,7 +239,7 @@ namespace BPWA.Web.Services.Services
                     .Include(x => x.City)
                     .FirstOrDefaultAsync(x => x.Id == CurrentUser.Id());
 
-                Mapper.Map(model, user);
+                _mapper.Map(model, user);
 
                 await DatabaseContext.SaveChangesAsync();
 
@@ -293,7 +290,7 @@ namespace BPWA.Web.Services.Services
         {
             var currentUser = await GetUserByIdWithoutQueryFilters(CurrentUser.Id());
 
-            await SignInManager.RefreshSignInAsync(currentUser);
+            await _signInManager.RefreshSignInAsync(currentUser);
         }
 
         public async Task<ResetPasswordModel> PrepareForResetPassword(string userId, string token)
@@ -326,7 +323,7 @@ namespace BPWA.Web.Services.Services
         {
             var userResult = await GetUserByUserNameOrEmail(userName);
 
-            var result = await SignInManager.PasswordSignInAsync(userResult, password, true, false);
+            var result = await _signInManager.PasswordSignInAsync(userResult, password, true, false);
 
             if (!result.Succeeded)
             {
@@ -340,14 +337,14 @@ namespace BPWA.Web.Services.Services
                     throw new Exception(Translations.User_name_or_email_invalid);
             }
 
-            var userDTO = Mapper.Map<UserDTO>(userResult);
+            var userDTO = _mapper.Map<UserDTO>(userResult);
 
             return userDTO;
         }
 
         public async Task SignOut()
         {
-            await SignInManager.SignOutAsync();
+            await _signInManager.SignOutAsync();
         }
     }
 }

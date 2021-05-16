@@ -23,6 +23,7 @@ namespace BPWA.Web.Configuration
                     .AddScoped<ILanguagesWebService, LanguagesWebService>()
                     .AddScoped<ILogsService, LogsService>()
                     .AddScoped<INotificationsWebService, NotificationsWebService>()
+                    .AddScoped<INotificationsService, NotificationsService>()
                     .AddScoped<ITicketsWebService, TicketsWebService>()
                     .AddScoped<ITranslationsService, TranslationsService>()
                     .AddScoped<ITranslationsWebService, TranslationsWebService>()
