@@ -25,6 +25,7 @@ namespace BPWA.DAL.Services
         protected readonly RouteSettings RouteSettings;
         protected readonly UserManager<User> UserManager;
         protected readonly DatabaseContext DatabaseContext;
+        protected readonly ICompaniesService CompaniesService;
         protected readonly INotificationsService NotificationsService;
         protected readonly ICompanyActivityStatusLogsService CompanyActivityStatusLogsService;
 
@@ -36,6 +37,7 @@ namespace BPWA.DAL.Services
             RouteSettings routeSettings,
             UserManager<User> userManager,
             DatabaseContext databaseContext,
+            ICompaniesService companiesService,
             INotificationsService notificationsService,
             ICompanyActivityStatusLogsService companyActivityStatusLogsService
             )
@@ -47,6 +49,7 @@ namespace BPWA.DAL.Services
             UsersService = usersService;
             RouteSettings = routeSettings;
             DatabaseContext = databaseContext;
+            CompaniesService = companiesService;
             NotificationsService = notificationsService;
             CompanyActivityStatusLogsService = companyActivityStatusLogsService;
         }
@@ -233,6 +236,17 @@ namespace BPWA.DAL.Services
                         CompanyId = company.Id,
                         ActivityStatus = ActivityStatus.Inactive
                     });
+
+                    var subcompanies = await CompaniesService.GetSubcompanies(company.Id);
+
+                    foreach (var subcompany in subcompanies)
+                    {
+                        await CompanyActivityStatusLogsService.Add(new CompanyActivityStatusLog
+                        {
+                            CompanyId = subcompany.Id,
+                            ActivityStatus = ActivityStatus.Inactive
+                        });
+                    }
 
                     #endregion
 

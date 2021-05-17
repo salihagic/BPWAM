@@ -5,6 +5,7 @@ using BPWA.Core.Entities;
 using BPWA.DAL.Database;
 using BPWA.DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -50,6 +51,26 @@ namespace BPWA.DAL.Services
             return await DatabaseContext.Companies
                 .IgnoreQueryFilters()
                 .AnyAsync(x => !x.IsDeleted && x.Id == companyId);
+        }
+
+        public async Task<List<Company>> GetSubcompanies(int companyId)
+        {
+            return await DatabaseContext.Companies
+                .IgnoreQueryFilters()
+                .Where(x => !x.IsDeleted)
+                .Where(x =>
+                //Level 0 company
+                (x.Id == companyId) ||
+                //Level 1 company
+                (x.CompanyId == companyId) ||
+                //Level 2 company
+                (x.Company.CompanyId == companyId) ||
+                //Level 3 company
+                (x.Company.Company.CompanyId == companyId) ||
+                //Level 4 company
+                (x.Company.Company.Company.CompanyId == companyId)
+                //...
+                ).ToListAsync();
         }
     }
 }

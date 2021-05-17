@@ -82,6 +82,7 @@ namespace BPWA.Web.Services.Services
 
         #region Items
 
+        public bool ShowDeactivatedPageReactivationOptions() => !_currentBaseCompany.HasParent() && HasCompanyAuthorizationClaim(AppClaims.Authorization.Company.CompanyGodMode);
         public bool ShowConvertFromGuestToRegularItem() => _currentBaseCompany.IsGuest();
         public bool ShowCompanyCompaniesItem() => HasCompanyAuthorizationClaim(AppClaims.Authorization.Company.CompaniesManagement);
         public bool ShowCompanyRolesItem() => HasCompanyAuthorizationClaim(AppClaims.Authorization.Company.RolesManagement);

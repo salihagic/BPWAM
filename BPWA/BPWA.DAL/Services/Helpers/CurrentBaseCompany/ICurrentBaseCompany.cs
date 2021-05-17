@@ -6,6 +6,7 @@ namespace BPWA.DAL.Services
     {
         int? Id();
         bool IsGuest();
+        bool HasParent();
         AccountType? AccountType();
     }
 }

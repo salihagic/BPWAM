@@ -19,6 +19,16 @@ namespace BPWA.DAL.Services
         }
 
         public bool IsGuest() => AccountType() == Common.Enumerations.AccountType.Guest;
+        
+        public bool HasParent()
+        {
+            var hasParent = User?.FindFirstValue(AppClaims.Meta.DoesBaseCompanyHaveParent);
+
+            if (string.IsNullOrEmpty(hasParent))
+                return false;
+
+            return bool.Parse(hasParent);
+        }
 
         public AccountType? AccountType()
         {

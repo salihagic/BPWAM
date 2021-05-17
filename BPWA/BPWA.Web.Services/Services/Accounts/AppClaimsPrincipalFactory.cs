@@ -110,13 +110,13 @@ namespace BPWA.Web.Services.Services
             {
                 claims.Add(new Claim(AppClaims.Meta.BaseCompanyId, user.CompanyId.ToString()));
 
-                var baseCompanyAccountType = (await _databaseContext.Companies
+                var baseCompany = (await _databaseContext.Companies
                     .IgnoreQueryFilters()
                     .Where(x => x.Id == user.CompanyId)
-                    .Select(x => x.AccountType)
                     .FirstOrDefaultAsync());
 
-                claims.Add(new Claim(AppClaims.Meta.BaseCompanyAccountType, baseCompanyAccountType.ToString()));
+                claims.Add(new Claim(AppClaims.Meta.BaseCompanyAccountType, baseCompany.AccountType.ToString()));
+                claims.Add(new Claim(AppClaims.Meta.DoesBaseCompanyHaveParent, baseCompany.CompanyId.HasValue.ToString()));
             }
 
             bool hasMultipleCompanies = _databaseContext.Companies

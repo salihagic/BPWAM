@@ -46,6 +46,7 @@
 
         #region Items
 
+        bool ShowDeactivatedPageReactivationOptions();
         bool ShowConvertFromGuestToRegularItem();
         bool ShowCompanyCompaniesItem();
         bool ShowCompanyRolesItem();

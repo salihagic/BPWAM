@@ -37,6 +37,7 @@ namespace BPWA.Web.Services.Services
             UserManager<User> userManager,
             DatabaseContext databaseContext,
             SignInManager<User> signInManager,
+            ICompaniesService companiesService,
             ICurrentBaseCompany currentBaseCompany,
             INotificationsService notificationsService,
             ICompanyActivityStatusLogsService companyActivityStatusLogsService
@@ -48,6 +49,7 @@ namespace BPWA.Web.Services.Services
                 routeSettings,
                 userManager,
                 databaseContext,
+                companiesService,
                 notificationsService,
                 companyActivityStatusLogsService
                 )
