@@ -59,6 +59,19 @@
                     </div>
                 </div>
             </a>
+            @if (true || viewHelperService.ShowDeactivatedPageReactivationOptions())
+            {
+                <a href="@Url.Action("Index", "Activations")" class="kt-notification__item">
+                    <div class="kt-notification__item-icon">
+                        <i class="flaticon-grid-menu kt-font-success"></i>
+                    </div>
+                    <div class="kt-notification__item-details">
+                        <div class="kt-notification__item-title kt-font-bold">
+                            Activations
+                        </div>
+                    </div>
+                </a>
+            }
             @if (viewHelperService.ShowConvertFromGuestToRegularItem())
             {
                 <a href="@Url.Action("ConvertFromGuestToRegular", "Account")" class="kt-notification__item">

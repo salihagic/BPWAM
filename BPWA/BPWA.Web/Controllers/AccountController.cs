@@ -194,8 +194,6 @@ namespace BPWA.Controllers
 
         #endregion Toggle current company
 
-        public async Task<IActionResult> Deactivated() => View();
-
         #region Reset password
 
         [AllowAnonymous]

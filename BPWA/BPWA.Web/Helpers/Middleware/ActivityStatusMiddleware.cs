@@ -48,7 +48,7 @@ namespace BPWA.Web.Helpers.Middleware
         private ICompaniesService _companiesService;
         private static List<ActivityStatusAllowedRoute> _allowedRoutes = new List<ActivityStatusAllowedRoute>
         {
-            new ActivityStatusAllowedRoute { Controller = "Account", Action = "Deactivated" },
+            new ActivityStatusAllowedRoute { Controller = "Activations", Action = "Deactivated" },
             new ActivityStatusAllowedRoute { Controller = "Authentication", Action = "Login" },
             new ActivityStatusAllowedRoute { Controller = "Authentication", Action = "Logout" },
             new ActivityStatusAllowedRoute { Controller = "Account", Action = "Edit" },
@@ -57,7 +57,7 @@ namespace BPWA.Web.Helpers.Middleware
             new ActivityStatusAllowedRoute { Controller = "Home", Action = "ChangeLanguage" },
         };
         private static ActivityStatusAllowedRoute DefaultRoute =
-            new ActivityStatusAllowedRoute { Controller = "Account", Action = "Deactivated" };
+            new ActivityStatusAllowedRoute { Controller = "Activations", Action = "Deactivated" };
         private static ActivityStatusAllowedRoute LoginRoute =
             new ActivityStatusAllowedRoute { Controller = "Authentication", Action = "Login" };
 

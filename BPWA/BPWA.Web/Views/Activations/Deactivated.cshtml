@@ -22,7 +22,13 @@
     </script>
 
     <link href="~/assets/app/custom/error/error-v1.default.css" rel="stylesheet" type="text/css" />
-
+    <style>
+        .reactivate_btn {
+            margin-left: 80px;
+            font-size: 20px;
+            color: white;
+        }
+    </style>
 </head>
 <body class="kt-header--fixed kt-header-mobile--fixed kt-subheader--fixed kt-subheader--enabled kt-subheader--solid kt-aside--enabled kt-aside--fixed kt-page--loading">
     <div class="kt-grid kt-grid--ver kt-grid--root">
@@ -32,6 +38,10 @@
                 <p class="kt-error-v1__desc">
                     OOPS! Seams that your company was deactivated
                 </p>
+                @if (viewHelperService.ShowDeactivatedPageReactivationOptions())
+                {
+                    <a href="" class="reactivate_btn btn btn-brand btn-pill kt-login__btn-primary">Reactivate</a>
+                }
             </div>
         </div>
     </div>
