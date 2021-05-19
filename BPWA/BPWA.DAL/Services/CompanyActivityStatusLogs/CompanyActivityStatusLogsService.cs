@@ -9,6 +9,7 @@ using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace BPWA.DAL.Services
@@ -93,7 +94,7 @@ namespace BPWA.DAL.Services
             await RefreshCacheByCompanyId(companyId);
 
             //Notify API to refresh the cache item
-            var request = new HttpRequestMessage(HttpMethod.Post, _routeSettings.ApiCacheUpdateUrl);
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{_routeSettings.ApiUrl}{_routeSettings.ApiCacheUpdateUrl}");
             var client = _clientFactory.CreateClient();
             await client.SendAsync(request);
         }

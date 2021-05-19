@@ -27,6 +27,7 @@ namespace BPWA.DAL.Services
         protected readonly DatabaseContext DatabaseContext;
         protected readonly ICompaniesService CompaniesService;
         protected readonly INotificationsService NotificationsService;
+        protected readonly BackgroundServicesSettings BackgroundServicesSettings;
         protected readonly ICompanyActivityStatusLogsService CompanyActivityStatusLogsService;
 
         public AccountsService(
@@ -39,6 +40,7 @@ namespace BPWA.DAL.Services
             DatabaseContext databaseContext,
             ICompaniesService companiesService,
             INotificationsService notificationsService,
+            BackgroundServicesSettings backgroundServicesSettings,
             ICompanyActivityStatusLogsService companyActivityStatusLogsService
             )
         {
@@ -51,6 +53,7 @@ namespace BPWA.DAL.Services
             DatabaseContext = databaseContext;
             CompaniesService = companiesService;
             NotificationsService = notificationsService;
+            BackgroundServicesSettings = backgroundServicesSettings;
             CompanyActivityStatusLogsService = companyActivityStatusLogsService;
         }
 
@@ -154,7 +157,7 @@ namespace BPWA.DAL.Services
                     (x.CompanyActivityStatusLogs
                     .Where(x => x.ActivityStatus == ActivityStatus.Active)
                     .OrderBy(x => x.ActivityEndUtc)
-                    .Last().ActivityEndUtc - AppSettings.AccountDeactivationNotificationMargin) < DateTime.UtcNow
+                    .Last().ActivityEndUtc - BackgroundServicesSettings.AccountDeactivationNotificationMargin) < DateTime.UtcNow
                     )
                 .ToListAsync();
 

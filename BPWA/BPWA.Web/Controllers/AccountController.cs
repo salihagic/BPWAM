@@ -20,8 +20,8 @@ namespace BPWA.Controllers
     {
         private readonly IAccountsWebService _accountsWebService;
         private readonly ICompaniesWebService _companiesWebService;
-        private IToastNotification _toast;
-        private ICurrentBaseCompany _currentBaseCompany;
+        private readonly IToastNotification _toast;
+        private readonly ICurrentBaseCompany _currentBaseCompany;
 
         public AccountController(
             IAccountsWebService accountsWebService,

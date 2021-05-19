@@ -40,6 +40,7 @@ namespace BPWA.Web.Services.Services
             ICompaniesService companiesService,
             ICurrentBaseCompany currentBaseCompany,
             INotificationsService notificationsService,
+            BackgroundServicesSettings backgroundServicesSettings,
             ICompanyActivityStatusLogsService companyActivityStatusLogsService
             ) : base(
                 appSettings,
@@ -51,6 +52,7 @@ namespace BPWA.Web.Services.Services
                 databaseContext,
                 companiesService,
                 notificationsService,
+                backgroundServicesSettings,
                 companyActivityStatusLogsService
                 )
         {
