@@ -19,15 +19,7 @@ namespace BPWA.Web.Helpers.Middleware
             _currentBaseCompany = currentBaseCompany;
             _companiesService = companiesService;
 
-            var doesNotHaveBaseCompanyId = !_currentBaseCompany.Id().HasValue;
-            var isBaseCompanyActive = await _companyActivityStatusLogsService.IsActive(_currentBaseCompany.Id().GetValueOrDefault());
-
-            var controller = context.Request.RouteValues["Controller"]?.ToString();
-            var action = context.Request.RouteValues["Action"]?.ToString();
-
-            var isAllowedRoute = _allowedRoutes.Any(x => x.Controller == controller && x.Action == action);
-
-            if (doesNotHaveBaseCompanyId || isBaseCompanyActive || isAllowedRoute)
+            if (await IsAuthorized())
             {
                 await _next.Invoke(context);
             }
@@ -42,6 +34,7 @@ namespace BPWA.Web.Helpers.Middleware
             }
         }
 
+        private readonly HttpContext _context;
         private readonly RequestDelegate _next;
         private ICompanyActivityStatusLogsService _companyActivityStatusLogsService;
         private ICurrentBaseCompany _currentBaseCompany;
@@ -66,5 +59,17 @@ namespace BPWA.Web.Helpers.Middleware
             _next = next;
         }
 
+        async Task<bool> IsAuthorized()
+        {
+            var doesNotHaveBaseCompanyId = !_currentBaseCompany.Id().HasValue;
+            var isBaseCompanyActive = await _companyActivityStatusLogsService.IsActive(_currentBaseCompany.Id().GetValueOrDefault());
+
+            var controller = _context.Request.RouteValues["Controller"]?.ToString();
+            var action = _context.Request.RouteValues["Action"]?.ToString();
+
+            var isAllowedRoute = _allowedRoutes.Any(x => x.Controller == controller && x.Action == action);
+
+            return doesNotHaveBaseCompanyId || isBaseCompanyActive || isAllowedRoute;
+        }
     }
 }
