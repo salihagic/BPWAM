@@ -15,6 +15,7 @@ namespace BPWA.Web.Helpers.Middleware
             ICompaniesService companiesService
             )
         {
+            _context = context;
             _companyActivityStatusLogsService = companyActivityStatusLogsService;
             _currentBaseCompany = currentBaseCompany;
             _companiesService = companiesService;
@@ -34,8 +35,8 @@ namespace BPWA.Web.Helpers.Middleware
             }
         }
 
-        private readonly HttpContext _context;
-        private readonly RequestDelegate _next;
+        private HttpContext _context;
+        private RequestDelegate _next;
         private ICompanyActivityStatusLogsService _companyActivityStatusLogsService;
         private ICurrentBaseCompany _currentBaseCompany;
         private ICompaniesService _companiesService;

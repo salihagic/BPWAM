@@ -1,8 +1,8 @@
 ﻿using BPWA.Common.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace BPWA.Web.Configuration
 {
