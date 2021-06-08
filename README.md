@@ -13,4 +13,4 @@ Primary goal of this project is to be used as a reference or example when implem
 ## Features
 | Feature | Description | 
 | ------ | ------ |
-| Multitenancy | Supporting multiple clients in one system by globaly filtering their data and privileges |
+| Multilevel multitenancy | Supporting hierarchy of multiple clients in one system by globaly filtering their data and privileges |
