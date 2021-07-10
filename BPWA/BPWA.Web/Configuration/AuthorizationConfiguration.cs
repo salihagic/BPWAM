@@ -1,6 +1,5 @@
 ﻿using BPWA.Common.Security;
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
 
 namespace BPWA.Web.Configuration
 {

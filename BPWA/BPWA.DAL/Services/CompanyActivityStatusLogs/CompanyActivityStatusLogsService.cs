@@ -94,9 +94,10 @@ namespace BPWA.DAL.Services
             await RefreshCacheByCompanyId(companyId);
 
             //Notify API to refresh the cache item
-            var request = new HttpRequestMessage(HttpMethod.Post, $"{_routeSettings.ApiUrl}{_routeSettings.ApiCacheUpdateUrl}");
-            var client = _clientFactory.CreateClient();
-            await client.SendAsync(request);
+            //TODO: Uncomment this once the API and Web are published
+            //var request = new HttpRequestMessage(HttpMethod.Post, $"{_routeSettings.ApiUrl}{_routeSettings.ApiCacheUpdateUrl}");
+            //var client = _clientFactory.CreateClient();
+            //await client.SendAsync(request);
         }
 
         public async Task RefreshCacheByCompanyId(int companyId)

@@ -110,7 +110,7 @@ namespace BPWA.Web.Services.Services
                 CompanyId = company.Id,
                 ActivityStatus = ActivityStatus.Active,
                 ActivityStartUtc = DateTime.UtcNow,
-                ActivityEndUtc = DateTime.UtcNow + AppSettings.AccountLifespan
+                ActivityEndUtc = DateTime.UtcNow + AppSettings.GuestAccountLifespan
             });
 
             #endregion
