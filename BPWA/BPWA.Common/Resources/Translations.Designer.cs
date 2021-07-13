@@ -115,6 +115,15 @@ namespace BPWA.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Account types management.
+        /// </summary>
+        public static string AccountTypesManagement {
+            get {
+                return ResourceManager.GetString("AccountTypesManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Actions.
         /// </summary>
         public static string Actions {
@@ -570,6 +579,15 @@ namespace BPWA.Common.Resources {
         public static string Configuration {
             get {
                 return ResourceManager.GetString("Configuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configuration management.
+        /// </summary>
+        public static string ConfigurationManagement {
+            get {
+                return ResourceManager.GetString("ConfigurationManagement", resourceCulture);
             }
         }
         

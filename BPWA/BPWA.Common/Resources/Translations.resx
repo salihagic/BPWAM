@@ -864,4 +864,10 @@
   <data name="New_password_confirmation" xml:space="preserve">
     <value>New password confirmation</value>
   </data>
+  <data name="AccountTypesManagement" xml:space="preserve">
+    <value>Account types management</value>
+  </data>
+  <data name="ConfigurationManagement" xml:space="preserve">
+    <value>Configuration management</value>
+  </data>
 </root>
