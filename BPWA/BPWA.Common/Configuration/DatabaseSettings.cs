@@ -6,5 +6,7 @@
         public bool AutoMigrate { get; set; }
         public bool RecreateDatabase { get; set; }
         public bool Seed { get; set; }
+        public bool UsingPostgresDatabase { get; set; }
+        public bool UsingMicrosoftSQLServerDatabase { get; set; }
     }
 }

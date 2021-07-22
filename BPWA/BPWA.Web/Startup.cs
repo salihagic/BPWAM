@@ -23,7 +23,7 @@ namespace BPWA
             services.ConfigureIdentity()
                     .ConfigureAppSettings(Configuration)
                     .ConfigureAppServices()
-                    .ConfigureDatabase(Configuration)
+                    .ConfigureDatabase()
                     .ConfigureAuthorizationPolicies()
                     .ConfigureAutoMapper()
                     .AddHttpContextAccessor()
