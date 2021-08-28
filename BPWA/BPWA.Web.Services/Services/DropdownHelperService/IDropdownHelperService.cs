@@ -13,6 +13,5 @@ namespace BPWA.Web.Services.Services
         List<DropdownItem<string>> GetAccountTypes();
         List<DropdownItem<string>> GetNotificationTypes();
         List<DropdownItem<string>> GetNotificationDistributionTypes();
-        List<DropdownItem<string>> GetNotificationDistributionTypes1();
     }
 }

@@ -100,15 +100,6 @@ namespace BPWA.Web.Services.Services
                 }).ToList();
         }
 
-
-        public List<DropdownItem<string>> GetNotificationDistributionTypes1()
-        {
-            return GetDropDown(
-                Enum.GetValues(typeof(NotificationDistributionType)).Cast<NotificationDistributionType>().ToList(),
-                item => new DropdownItem<string> { Id = item.ToString(), Text = TranslationsHelper.Translate(item.ToString()) },
-                Translations.Select_notification_distribution_type);
-        }
-
         public List<DropdownItem<string>> GetDropDown<T>(List<T> list, Func<T, DropdownItem<string>> getObject, string defaultText = "")
         {
             var selectList = new List<DropdownItem<string>>();
