@@ -32,7 +32,7 @@ namespace BPWA.Web.Services.Services
 
                 await DatabaseContext.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new Exception("Failed to update configuration");
             }

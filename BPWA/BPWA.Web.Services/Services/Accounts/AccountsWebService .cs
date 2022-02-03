@@ -228,7 +228,7 @@ namespace BPWA.Web.Services.Services
 
                 return model;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new Exception("Failed to load the user");
             }
@@ -249,7 +249,7 @@ namespace BPWA.Web.Services.Services
 
                 await RefreshSignIn();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new Exception("Failed to update account");
             }
@@ -282,7 +282,7 @@ namespace BPWA.Web.Services.Services
                 DatabaseContext.Users.Update(currentUser);
                 await DatabaseContext.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception(Translations.There_was_an_error_while_trying_to_change_current_company);
             }

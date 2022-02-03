@@ -38,7 +38,7 @@ namespace BPWA.Controllers
 
         #region Change password
 
-        public async Task<IActionResult> ChangePassword() => View(new ChangePasswordModel());
+        public Task<IActionResult> ChangePassword() => Task.FromResult<IActionResult>(View(new ChangePasswordModel()));
 
         [HttpPost, Transaction]
         public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
@@ -57,7 +57,7 @@ namespace BPWA.Controllers
             {
                 _toast.AddErrorToastMessage(exception.Message);
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 _toast.AddErrorToastMessage("Failed to change password");
             }
@@ -76,7 +76,7 @@ namespace BPWA.Controllers
 
                 return RedirectToAction("Index", "Dashboard");
             }
-            catch (Exception exception) { }
+            catch (Exception) { }
 
             return RedirectToAction("Login", "Authentication");
         }
@@ -92,7 +92,7 @@ namespace BPWA.Controllers
 
                 return RedirectToAction("Index", "Dashboard");
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 _toast.AddSuccessToastMessage("Failed to convert from guest to regular account type");
             }
@@ -132,7 +132,7 @@ namespace BPWA.Controllers
                 _toast.AddSuccessToastMessage("Successfully edited my profile");
                 return RedirectToAction(nameof(Edit));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 _toast.AddErrorToastMessage("Failed to edit my profile");
             }
@@ -145,7 +145,7 @@ namespace BPWA.Controllers
 
         #region Toggle current company
 
-        public async Task<IActionResult> ToggleCurrentCompany() => View();
+        public Task<IActionResult> ToggleCurrentCompany() => Task.FromResult<IActionResult>(View());
 
         [HttpPost]
         public virtual async Task<IActionResult> CurrentUserCompaniesDropdown(CompanySearchModel searchModel)
@@ -209,9 +209,9 @@ namespace BPWA.Controllers
         [HttpPost, Transaction, AllowAnonymous]
         public virtual async Task<IActionResult> ResetPassword(ResetPasswordModel model)
         {
-            async Task<IActionResult> Failed()
+            Task<IActionResult> Failed()
             {
-                return View(model);
+                return Task.FromResult<IActionResult>(View(model));
             }
 
             if (!ModelState.IsValid)
@@ -224,7 +224,7 @@ namespace BPWA.Controllers
                 _toast.AddSuccessToastMessage(Translations.Successfully_changed_password);
                 return RedirectToAction("Login", "Authentication");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 _toast.AddErrorToastMessage(Translations.Failed_to_change_password);
             }

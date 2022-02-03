@@ -50,7 +50,7 @@ namespace BPWA.DAL.Database
             builder.Entity<Role>(builder =>
             {
                 builder.Metadata.RemoveIndex(new[] { builder.Property(r => r.NormalizedName).Metadata });
-                builder.HasIndex(x => new { x.NormalizedName, x.CompanyId }).HasName("RoleNameIndex").IsUnique();
+                builder.HasIndex(x => new { x.NormalizedName, x.CompanyId }).HasDatabaseName("RoleNameIndex").IsUnique();
             });
         }
 

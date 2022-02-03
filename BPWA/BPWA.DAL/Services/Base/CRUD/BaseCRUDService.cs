@@ -85,7 +85,7 @@ namespace BPWA.DAL.Services
             return entity;
         }
 
-        virtual public async Task<TEntity> IncludeRelatedEntitiesToDelete(TEntity entity) => entity;
+        virtual public Task<TEntity> IncludeRelatedEntitiesToDelete(TEntity entity) => Task.FromResult(entity);
 
         virtual public async Task Delete(TEntity entity)
         {

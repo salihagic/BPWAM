@@ -71,7 +71,7 @@ namespace BPWA.DAL.Services
 
                 return user;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new Exception(Translations.User_name_or_email_invalid);
             }

@@ -56,7 +56,7 @@ namespace BPWA.DAL.Services
 
                 return mapped;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new Exception("Failed to map Entity to DTO");
             }

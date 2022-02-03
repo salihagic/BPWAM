@@ -72,7 +72,7 @@ namespace BPWA.DAL.Services
 
                 return await TranslationsService.Translate(notificationDTOs);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new Exception("Failed to load notifications");
             }
@@ -103,7 +103,7 @@ namespace BPWA.DAL.Services
 
                 return await TranslationsService.Translate(notificationDTOs);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new Exception("Failed to load notifications");
             }
@@ -195,7 +195,7 @@ namespace BPWA.DAL.Services
 
                 return count;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new Exception("Failed to load notifications count");
             }

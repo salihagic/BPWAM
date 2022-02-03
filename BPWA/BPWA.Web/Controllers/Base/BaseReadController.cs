@@ -58,7 +58,7 @@ namespace BPWA.Controllers
 
         #region Index
 
-        public virtual async Task<IActionResult> Index()
+        public virtual Task<IActionResult> Index()
         {
             if (ShouldResetNavigationStack)
             {
@@ -72,7 +72,7 @@ namespace BPWA.Controllers
             //TODO: Fix form reset on Index pages
             //var searchModel = _sessionSearchModel ?? (await BaseReadService.PrepareForGet()).Item;
 
-            return View(new TSearchModel());
+            return Task.FromResult<IActionResult>(View(new TSearchModel()));
         }
 
         public virtual async Task<IActionResult> IndexJson(TSearchModel searchModel)
@@ -168,16 +168,16 @@ namespace BPWA.Controllers
 
         #region Report
 
-        public virtual async Task<IActionResult> Report(ReportOptions reportOption)
+        public virtual Task<IActionResult> Report(ReportOptions reportOption)
         {
             ViewBag.Title = TranslationsHelper.Translate(CurrentController);
 
             var model = _sessionSearchModel;
 
             if (reportOption == ReportOptions.Pdf)
-                return View(model);
+                return Task.FromResult<IActionResult>(View(model));
 
-            return Error();
+            return Task.FromResult(Error());
         }
 
         public virtual async Task<IActionResult> ReportJson()

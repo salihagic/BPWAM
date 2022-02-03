@@ -75,12 +75,12 @@ namespace BPWA.Controllers
 
         #region Add
 
-        public virtual async Task<IActionResult> Add(bool fullPage = false)
+        public virtual Task<IActionResult> Add(bool fullPage = false)
         {
             if (fullPage)
                 BreadcrumbItem(null, new { fullPage });
 
-            return View(new TAddModel());
+            return Task.FromResult<IActionResult>(View(new TAddModel()));
         }
 
         [HttpPost]
@@ -169,7 +169,7 @@ namespace BPWA.Controllers
                 Toast.AddSuccessToastMessage(Message_edit_success);
                 return fullPage ? RedirectToAction("Index") : Json(new { success = true });
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 Toast.AddErrorToastMessage(Message_edit_error);
             }
@@ -190,7 +190,7 @@ namespace BPWA.Controllers
 
                 return Ok();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return BadRequest();
             }

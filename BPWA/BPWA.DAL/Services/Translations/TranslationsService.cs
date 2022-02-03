@@ -191,7 +191,7 @@ namespace BPWA.DAL.Services
                     if (cacheEntry != null)
                         translations.Add(cacheEntry.Key, cacheEntry.Value);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                 }
             }

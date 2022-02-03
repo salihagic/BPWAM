@@ -150,7 +150,7 @@ namespace BPWA.DAL.Database
                     #endregion
                 }
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 throw;
             }

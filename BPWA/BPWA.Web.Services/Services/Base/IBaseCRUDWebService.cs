@@ -25,8 +25,8 @@ namespace BPWA.Web.Services.Services
         where TAddModel : class, new()
         where TUpdateModel : class, IBaseUpdateModel<TId>, new()
     {
-        virtual async Task<TDTO> Add(TAddModel model) => throw new NotImplementedException();
-        virtual async Task<TUpdateModel> PrepareForUpdate(TId id) => throw new NotImplementedException();
-        virtual async Task<TDTO> Update(TUpdateModel model) => throw new NotImplementedException();
+        virtual Task<TDTO> Add(TAddModel model) => throw new NotImplementedException();
+        virtual Task<TUpdateModel> PrepareForUpdate(TId id) => throw new NotImplementedException();
+        virtual Task<TDTO> Update(TUpdateModel model) => throw new NotImplementedException();
     }
 }

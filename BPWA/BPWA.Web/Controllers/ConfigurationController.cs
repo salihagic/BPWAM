@@ -62,7 +62,7 @@ namespace BPWA.Administration.Controllers
                 _toast.AddSuccessToastMessage("Successfully edited configuration");
                 return RedirectToAction(nameof(Edit));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 _toast.AddErrorToastMessage("Failed to edit configuration");
             }
